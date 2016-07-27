@@ -1,0 +1,9 @@
+UUID: ****-****-****-****
+UserName: dart2112
+Warps:
+  name:
+    type: public
+    location: location as base64
+  name1:
+    type: faction
+    location: location1 as base64

@@ -1,0 +1,5 @@
+name: WarpPoint
+version: ${project.version}
+main: net.lapismc.warppoint.WarpPoint
+authors: [dart2112]
+description: The best way to warp
