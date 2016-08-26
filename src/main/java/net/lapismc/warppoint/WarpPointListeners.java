@@ -20,7 +20,7 @@ public class WarpPointListeners implements Listener {
         Player p = e.getPlayer();
         File f = new File(plugin.getDataFolder().getAbsolutePath() + "PlayerData" +
                 File.separator + p.getUniqueId() + ".yml");
-        if (f.exists()) {
+        if (!f.exists()) {
 
         }
     }

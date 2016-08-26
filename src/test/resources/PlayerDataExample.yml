@@ -1,6 +1,9 @@
 UUID: ****-****-****-****
 UserName: dart2112
 Warps:
+  list:
+    - name
+    - name1
   name:
     type: public
     location: location as base64

@@ -1,20 +1,16 @@
 package net.lapismc.warppoint;
 
-import com.sun.media.jfxmedia.logging.Logger;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static javax.swing.UIManager.get;
-
 public class WarpPointConfigurations {
 
-    WarpPoint plugin;
     public HashMap<UUID, YamlConfiguration> playerWarps = new HashMap<>();
+    WarpPoint plugin;
 
     protected WarpPointConfigurations(WarpPoint plugin) {
         this.plugin = plugin;

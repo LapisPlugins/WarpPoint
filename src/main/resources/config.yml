@@ -1,0 +1,9 @@
+## This is the configuration file for WarpPoint
+## If you don't know what you are doing I suggest
+## you leave this file as is
+
+## Changing this vaule will generate a new configuration file
+ConfigurationVersion: 1
+
+##
+thing: yes
