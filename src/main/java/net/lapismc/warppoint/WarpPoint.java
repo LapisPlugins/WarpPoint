@@ -10,6 +10,8 @@ public final class WarpPoint extends JavaPlugin {
     public WarpPointCommands WPCommands;
     public WarpPointListeners WPListeners;
     public WarpPointConfigurations WPConfigs;
+    public WarpPointWarps WPWarps;
+    public WarpPointFactions WPFactions;
     Logger logger = Bukkit.getLogger();
 
     @Override
@@ -17,6 +19,8 @@ public final class WarpPoint extends JavaPlugin {
         WPCommands = new WarpPointCommands(this);
         WPListeners = new WarpPointListeners(this);
         WPConfigs = new WarpPointConfigurations(this);
+        WPWarps = new WarpPointWarps(this);
+        WPFactions = new WarpPointFactions(this);
         WPConfigs.generateConfigurations();
         WPConfigs.loadConfigurations();
         logger.info("WarpPoint v." + getDescription().getVersion() + " has been enabled");

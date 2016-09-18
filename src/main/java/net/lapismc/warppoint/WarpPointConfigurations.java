@@ -1,6 +1,7 @@
 package net.lapismc.warppoint;
 
 import com.sun.xml.internal.messaging.saaj.util.Base64;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.*;
@@ -94,6 +95,25 @@ public class WarpPointConfigurations {
         for (File pd : files) {
             YamlConfiguration yaml = YamlConfiguration.loadConfiguration(pd);
             UUID uuid = UUID.fromString(yaml.getString("UUID"));
+            ConfigurationSection cs = yaml.getConfigurationSection("Warps");
+            for (String key : cs.getKeys(false)) {
+                if (!key.endsWith("list")) {
+                    String[] nameArray = key.split(".");
+                    String name = nameArray[nameArray.length - 1];
+                    String type = yaml.getString(key + "type");
+                    switch (type) {
+                        case "public":
+                            plugin.WPWarps.addPublicWarp(name, uuid);
+                            break;
+                        case "private":
+                            plugin.WPWarps.addPrivateWarp(name, uuid);
+                            break;
+                        case "faction":
+                            plugin.WPFactions.setWarp(uuid, name);
+                            break;
+                    }
+                }
+            }
             playerWarps.put(uuid, yaml);
         }
     }

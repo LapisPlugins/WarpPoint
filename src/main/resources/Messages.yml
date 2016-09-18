@@ -1,4 +1,5 @@
 Set:
+  notAvail: "&cThat warp name and type combination is not available!"
   public: "&6Public warp &c%name&6 set at your current location"
   private: "&6Private warp &c%name&6 set at your current location"
   faction: "&6Faction warp &c%name&6 set at your current location"

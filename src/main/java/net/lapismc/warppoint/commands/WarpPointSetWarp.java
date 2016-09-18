@@ -38,18 +38,45 @@ public class WarpPointSetWarp {
                         warpType = WarpPoint.WarpType.Private;
                         break;
                 }
+                if (warpName.equalsIgnoreCase("list") || warpExits(warpName, warpType, p)) {
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.WPConfigs.Messages.getString("Set.notAvail")));
+                }
                 List<String> warpList = warps.getStringList("Warps.list");
                 if (!warpList.contains(warpName)) {
                     warpList.add(warpName);
                 }
                 warps.set("Warps." + warpName + ".type", warpType.toString());
                 warps.set("Warps." + warpName + ".location", plugin.WPConfigs.encodeBase64(p.getLocation()));
+                switch (warpType) {
+                    case Public:
+                        plugin.WPWarps.addPublicWarp(warpName, p.getUniqueId());
+                        break;
+                    case Private:
+                        plugin.WPWarps.addPrivateWarp(warpName, p.getUniqueId());
+                        break;
+                    case Faction:
+                        plugin.WPFactions.setWarp(p, warpName);
+                        break;
+                }
                 p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.WPConfigs.Messages.getString("Set." + warpType.toString())));
             } else {
                 //help
             }
         } else {
             sender.sendMessage(plugin.WPConfigs.Messages.getString("NotAPlayer"));
+        }
+    }
+
+    private boolean warpExits(String s, WarpPoint.WarpType type, Player p) {
+        switch (type) {
+            case Public:
+                return plugin.WPWarps.publicWarps.containsKey(s);
+            case Private:
+                return plugin.WPWarps.privateWarps.containsKey(s);
+            case Faction:
+                return plugin.WPFactions.isWarp(s, p);
+            default:
+                return true;
         }
     }
 
