@@ -1,7 +1,6 @@
 package net.lapismc.warppoint;
 
 import org.bukkit.Bukkit;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
@@ -19,6 +18,7 @@ public final class WarpPoint extends JavaPlugin {
         WPListeners = new WarpPointListeners(this);
         WPConfigs = new WarpPointConfigurations(this);
         WPConfigs.generateConfigurations();
+        WPConfigs.loadConfigurations();
         logger.info("WarpPoint v." + getDescription().getVersion() + " has been enabled");
     }
 
@@ -26,5 +26,14 @@ public final class WarpPoint extends JavaPlugin {
     public void onDisable() {
         WPConfigs.saveConfigurations();
         logger.info("WarpPoint Disabled");
+    }
+
+    public enum WarpType {
+        Private, Public, Faction;
+
+        @Override
+        public String toString() {
+            return super.toString().toLowerCase();
+        }
     }
 }

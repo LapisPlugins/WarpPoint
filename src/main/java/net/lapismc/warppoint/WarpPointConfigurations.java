@@ -1,15 +1,16 @@
 package net.lapismc.warppoint;
 
+import com.sun.xml.internal.messaging.saaj.util.Base64;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.UUID;
 
 public class WarpPointConfigurations {
 
     public HashMap<UUID, YamlConfiguration> playerWarps = new HashMap<>();
+    public YamlConfiguration Messages;
     WarpPoint plugin;
 
     protected WarpPointConfigurations(WarpPoint plugin) {
@@ -30,16 +31,74 @@ public class WarpPointConfigurations {
         if (!playerData.exists()) {
             playerData.mkdir();
         }
-        for (File f : playerData.listFiles()) {
-            YamlConfiguration yaml = YamlConfiguration.loadConfiguration(f);
-            String uuidString = yaml.getString("UUID");
-            UUID uuid = UUID.fromString(uuidString);
-            playerWarps.put(uuid, yaml);
+        File f2 = new File(plugin.getDataFolder().getAbsolutePath() + "Messages.yml");
+        if (!f2.exists()) {
+            try {
+                f2.createNewFile();
+                setMessages();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        plugin.logger.info("Player Data Files Loaded!");
+        Messages = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder().getAbsolutePath() + "Messages.yml"));
     }
 
-    public void saveConfigurations() {
+    private void setMessages() throws IOException {
+        InputStream is = null;
+        OutputStream os = null;
+        try {
+            is = plugin.getResource("Messages.yml");
+
+            int readBytes;
+            byte[] buffer = new byte[4096];
+            os = new FileOutputStream(plugin.getDataFolder().getAbsolutePath() + "Messages.yml");
+            while ((readBytes = is.read(buffer)) > 0) {
+                os.write(buffer, 0, readBytes);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            is.close();
+            os.close();
+        }
+    }
+
+    public String encodeBase64(Object o) {
+        String ed = o.toString();
+        byte[] encodedBytes = Base64.encode(ed.getBytes());
+        String str = null;
+        try {
+            str = new String(encodedBytes, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return str;
+    }
+
+    public Object decodeBase64(String s) {
+        s = Base64.base64Decode(s);
+        return s;
+    }
+
+    public void reloadConfigurations() {
+        saveConfigurations();
+        loadConfigurations();
+    }
+
+    protected void loadConfigurations() {
+        if (!playerWarps.isEmpty()) {
+            saveConfigurations();
+        }
+        File playerData = new File(plugin.getDataFolder().getAbsolutePath() + "PlayerData");
+        File[] files = playerData.listFiles();
+        for (File pd : files) {
+            YamlConfiguration yaml = YamlConfiguration.loadConfiguration(pd);
+            UUID uuid = UUID.fromString(yaml.getString("UUID"));
+            playerWarps.put(uuid, yaml);
+        }
+    }
+
+    protected void saveConfigurations() {
         File playerData = new File(plugin.getDataFolder().getAbsolutePath() + "PlayerData");
         for (UUID uuid : playerWarps.keySet()) {
             YamlConfiguration yaml = playerWarps.get(uuid);

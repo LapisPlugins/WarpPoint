@@ -1,7 +1,6 @@
 package net.lapismc.warppoint;
 
-import net.lapismc.warppoint.commands.WarpPointWarp;
-import org.bukkit.Bukkit;
+import net.lapismc.warppoint.commands.WarpPointSetWarp;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -9,12 +8,12 @@ import org.bukkit.command.CommandSender;
 public class WarpPointCommands implements CommandExecutor {
 
     WarpPoint plugin;
-    WarpPointWarp warp;
+    WarpPointSetWarp warp;
     net.lapismc.warppoint.commands.WarpPoint warpPoint;
 
     protected WarpPointCommands(WarpPoint plugin) {
         this.plugin = plugin;
-        this.warp = new WarpPointWarp(plugin);
+        this.warp = new WarpPointSetWarp(plugin);
         this.warpPoint = new net.lapismc.warppoint.commands.WarpPoint(plugin);
 
         plugin.getCommand("warp").setExecutor(this);
