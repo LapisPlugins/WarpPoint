@@ -16,7 +16,7 @@ public class WarpPointSetWarp {
         this.plugin = plugin;
     }
 
-    public void warp(CommandSender sender, String[] args) {
+    public void setWarp(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             YamlConfiguration warps = plugin.WPConfigs.playerWarps.get(p.getUniqueId());
