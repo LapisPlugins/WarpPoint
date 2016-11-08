@@ -10,9 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Created by benja on 18/09/2016.
- */
 public class WarpPointFactions {
 
     public HashMap<Faction, HashMap<String, UUID>> factionWarps = new HashMap<>();
@@ -27,6 +24,10 @@ public class WarpPointFactions {
         } catch (ClassNotFoundException e) {
             factions = false;
         }
+    }
+
+    public boolean isFactions() {
+        return factions;
     }
 
     public boolean isWarp(String s, Player p) {
