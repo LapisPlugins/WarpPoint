@@ -1,3 +1,8 @@
+Help:
+  setWarp: "&6Usage: /setwarp [name] [private/public/faction]"
+  warp: "&6Usage: /warp [name] [private/public/faction] Type is only needed if there are 2+ homes of the same name"
+  delWarp: "&6Usage: /delwarp [name] [private/public/faction]"
+  warpPoint: ""
 Set:
   notAvail: "&cThat warp name and type combination is not available!"
   public: "&6Public warp &c%name&6 set at your current location"
@@ -8,4 +13,5 @@ Deleted:
   private: "&6Private warp &c%name&6 was deleted"
   faction: "&6Faction warp &c%name&6 was deleted"
 Teleport: "&6You have been teleported to warp &c%name"
+NoPermission: "&cSorry, You don't have permission to do this"
 NotAPlayer: "Sorry, this command can only be used by players"

@@ -1,6 +1,7 @@
 package net.lapismc.warppoint.commands;
 
 import net.lapismc.warppoint.WarpPoint;
+import net.lapismc.warppoint.WarpPointPerms;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -24,28 +25,44 @@ public class WarpPointSetWarp {
                 String warpName = args[0];
                 String type = args[1];
                 WarpPoint.WarpType warpType;
+                Boolean[] setMove = {false, false};
                 switch (type) {
                     case "public":
                         warpType = WarpPoint.WarpType.Public;
+                        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perm.PublicSet)) {
+                            setMove[0] = true;
+                        }
+                        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perm.PublicMove)) {
+                            setMove[1] = true;
+                        }
                         break;
                     case "private":
                         warpType = WarpPoint.WarpType.Private;
+                        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perm.Private)) {
+                            setMove[0] = true;
+                        }
                         break;
                     case "faction":
                         warpType = WarpPoint.WarpType.Faction;
+                        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perm.FactionSet)) {
+                            setMove[0] = true;
+                        }
+                        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perm.FactionMove)) {
+                            setMove[1] = true;
+                        }
                         break;
                     default:
                         warpType = WarpPoint.WarpType.Private;
                         break;
                 }
-                //permission check
+                if (!setMove[0]) {
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.WPConfigs.Messages.getString("NoPermission")));
+                }
                 if (warpName.equalsIgnoreCase("list")) {
                     p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.WPConfigs.Messages.getString("Set.notAvail")));
                 }
                 if (warpExits(warpName, warpType, p)) {
-                    boolean perms = false;
-                    if (!warpType.equals(WarpPoint.WarpType.Private) || !perms) {
-                        //if not allowed to move
+                    if (!setMove[1]) {
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.WPConfigs.Messages.getString("Set.notAvail")));
                         return;
                     }
@@ -53,6 +70,7 @@ public class WarpPointSetWarp {
                 List<String> warpList = warps.getStringList("Warps.list");
                 if (!warpList.contains(warpName)) {
                     warpList.add(warpName);
+                    warps.set("Warps.list", warpList);
                 }
                 warps.set("Warps." + warpName + ".type", warpType.toString());
                 warps.set("Warps." + warpName + ".location", plugin.WPConfigs.encodeBase64(p.getLocation()));
@@ -69,7 +87,7 @@ public class WarpPointSetWarp {
                 }
                 p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.WPConfigs.Messages.getString("Set." + warpType.toString())));
             } else {
-                //help
+                p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.WPConfigs.Messages.getString("Help.setWarp")));
             }
         } else {
             sender.sendMessage(plugin.WPConfigs.Messages.getString("NotAPlayer"));
@@ -81,7 +99,7 @@ public class WarpPointSetWarp {
             case Public:
                 return plugin.WPWarps.publicWarps.containsKey(s);
             case Private:
-                return plugin.WPWarps.privateWarps.contains(s + ":" + p.getUniqueId());
+                return false;
             case Faction:
                 return plugin.WPFactions.isWarp(s, p);
             default:
