@@ -38,8 +38,17 @@ public class WarpPointSetWarp {
                         warpType = WarpPoint.WarpType.Private;
                         break;
                 }
-                if (warpName.equalsIgnoreCase("list") || warpExits(warpName, warpType, p)) {
+                //permission check
+                if (warpName.equalsIgnoreCase("list")) {
                     p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.WPConfigs.Messages.getString("Set.notAvail")));
+                }
+                if (warpExits(warpName, warpType, p)) {
+                    boolean perms = false;
+                    if (!warpType.equals(WarpPoint.WarpType.Private) || !perms) {
+                        //if not allowed to move
+                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.WPConfigs.Messages.getString("Set.notAvail")));
+                        return;
+                    }
                 }
                 List<String> warpList = warps.getStringList("Warps.list");
                 if (!warpList.contains(warpName)) {
@@ -72,7 +81,7 @@ public class WarpPointSetWarp {
             case Public:
                 return plugin.WPWarps.publicWarps.containsKey(s);
             case Private:
-                return plugin.WPWarps.privateWarps.containsKey(s);
+                return plugin.WPWarps.privateWarps.contains(s + ":" + p.getUniqueId());
             case Faction:
                 return plugin.WPFactions.isWarp(s, p);
             default:

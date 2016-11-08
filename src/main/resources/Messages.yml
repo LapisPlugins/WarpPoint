@@ -3,9 +3,9 @@ Set:
   public: "&6Public warp &c%name&6 set at your current location"
   private: "&6Private warp &c%name&6 set at your current location"
   faction: "&6Faction warp &c%name&6 set at your current location"
-Deleated:
-  public: "&6Public warp &c%name&6 was deleated"
-  private: "&6Private warp &c%name&6 was deleated"
-  faction: "&6Faction warp &c%name&6 was deleated"
+Deleted:
+  public: "&6Public warp &c%name&6 was deleted"
+  private: "&6Private warp &c%name&6 was deleted"
+  faction: "&6Faction warp &c%name&6 was deleted"
 Teleport: "&6You have been teleported to warp &c%name"
 NotAPlayer: "Sorry, this command can only be used by players"

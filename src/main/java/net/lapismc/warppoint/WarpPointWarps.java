@@ -1,5 +1,6 @@
 package net.lapismc.warppoint;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -9,7 +10,7 @@ import java.util.UUID;
 public class WarpPointWarps {
 
     public HashMap<String, UUID> publicWarps = new HashMap<>();
-    public HashMap<String, UUID> privateWarps = new HashMap<>();
+    public ArrayList<String> privateWarps = new ArrayList<>();
     WarpPoint plugin;
 
     protected WarpPointWarps(WarpPoint p) {
@@ -21,7 +22,7 @@ public class WarpPointWarps {
     }
 
     public void addPrivateWarp(String s, UUID uuid) {
-        privateWarps.put(s, uuid);
+        privateWarps.add(s + ":" + uuid);
     }
 
 }
