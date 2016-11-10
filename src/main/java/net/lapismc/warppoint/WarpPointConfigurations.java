@@ -100,7 +100,7 @@ public class WarpPointConfigurations {
                 if (!key.endsWith("list")) {
                     String[] nameArray = key.split(".");
                     String name = nameArray[nameArray.length - 1];
-                    String type = yaml.getString(key + "type");
+                    String type = yaml.getString(key + ".type");
                     switch (type) {
                         case "public":
                             plugin.WPWarps.addPublicWarp(name, uuid);

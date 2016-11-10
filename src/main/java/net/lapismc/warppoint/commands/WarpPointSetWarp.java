@@ -79,6 +79,7 @@ public class WarpPointSetWarp {
                 }
                 warps.set("Warps." + warpName + ".type", warpType.toString());
                 warps.set("Warps." + warpName + ".location", plugin.WPConfigs.encodeBase64(p.getLocation()));
+                plugin.WPConfigs.playerWarps.put(p.getUniqueId(), warps);
                 switch (warpType) {
                     case Public:
                         plugin.WPWarps.addPublicWarp(warpName, p.getUniqueId());
