@@ -13,21 +13,10 @@ import java.util.UUID;
 public class WarpPointFactions {
 
     public HashMap<Faction, HashMap<String, UUID>> factionWarps = new HashMap<>();
-    public boolean factions;
     WarpPoint plugin;
 
     protected WarpPointFactions(WarpPoint p) {
         plugin = p;
-        try {
-            Class.forName("com.massivecraft.factions");
-            factions = true;
-        } catch (ClassNotFoundException e) {
-            factions = false;
-        }
-    }
-
-    public boolean isFactions() {
-        return factions;
     }
 
     public boolean isWarp(String s, Player p) {

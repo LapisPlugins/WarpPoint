@@ -1,7 +1,7 @@
 Help:
-  setWarp: "&6Usage: /setwarp [name] [private/public/faction]"
-  warp: "&6Usage: /warp [name] [private/public/faction] Type is only needed if there are 2+ homes of the same name"
-  delWarp: "&6Usage: /delwarp [name] [private/public/faction]"
+  setWarp: "&6Usage: /setwarp [name] [%types]"
+  warp: "&6Usage: /warp [name] [%types] Type is only needed if there are 2+ homes of the same name"
+  delWarp: "&6Usage: /delwarp [name] [%types]"
   warpPoint: ""
 Set:
   notAvail: "&cThat warp name and type combination is not available!"
@@ -12,6 +12,9 @@ Deleted:
   public: "&6Public warp &c%name&6 was deleted"
   private: "&6Private warp &c%name&6 was deleted"
   faction: "&6Faction warp &c%name&6 was deleted"
-Teleport: "&6You have been teleported to warp &c%name"
+Teleported: "&6You have been teleported to warp &c%name"
+WarpDoesntExist: "&6That warp name and type conbination doesn't exist"
+FactionsDisabled: "&6Sorry, Faction warps have been disabled for this server"
+TypeNeeded: "There are 2 or more types of warp with that name, Please specify a type"
 NoPermission: "&cSorry, You don't have permission to do this"
 NotAPlayer: "Sorry, this command can only be used by players"

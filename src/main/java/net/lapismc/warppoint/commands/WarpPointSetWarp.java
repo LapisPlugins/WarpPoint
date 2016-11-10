@@ -43,6 +43,11 @@ public class WarpPointSetWarp {
                         }
                         break;
                     case "faction":
+                        if (!plugin.factions) {
+                            p.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                                    plugin.WPConfigs.Messages.getString("FactionsDisabled")));
+                            return;
+                        }
                         warpType = WarpPoint.WarpType.Faction;
                         if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perm.FactionSet)) {
                             setMove[0] = true;
@@ -85,9 +90,17 @@ public class WarpPointSetWarp {
                         plugin.WPFactions.setWarp(p, warpName);
                         break;
                 }
-                p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.WPConfigs.Messages.getString("Set." + warpType.toString())));
+                p.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                        plugin.WPConfigs.Messages.getString("Set." + warpType.toString())));
             } else {
-                p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.WPConfigs.Messages.getString("Help.setWarp")));
+                String types;
+                if (plugin.factions) {
+                    types = "private/public/factions";
+                } else {
+                    types = "private/public";
+                }
+                p.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                        plugin.WPConfigs.Messages.getString("Help.setWarp").replace("%types", types)));
             }
         } else {
             sender.sendMessage(plugin.WPConfigs.Messages.getString("NotAPlayer"));

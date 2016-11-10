@@ -13,6 +13,7 @@ public final class WarpPoint extends JavaPlugin {
     public WarpPointWarps WPWarps;
     public WarpPointFactions WPFactions;
     public WarpPointPerms WPPerms;
+    public boolean factions;
     Logger logger = Bukkit.getLogger();
 
     @Override
@@ -20,12 +21,20 @@ public final class WarpPoint extends JavaPlugin {
         WPCommands = new WarpPointCommands(this);
         WPListeners = new WarpPointListeners(this);
         WPWarps = new WarpPointWarps(this);
-        WPFactions = new WarpPointFactions(this);
         WPPerms = new WarpPointPerms(this);
         WPConfigs = new WarpPointConfigurations(this);
         WPConfigs.generateConfigurations();
         WPConfigs.loadConfigurations();
         logger.info("WarpPoint v." + getDescription().getVersion() + " has been enabled");
+        try {
+            Class.forName("com.massivecraft.factions");
+            factions = true;
+        } catch (ClassNotFoundException e) {
+            factions = false;
+        }
+        if (factions) {
+            WPFactions = new WarpPointFactions(this);
+        }
     }
 
     @Override
