@@ -1,6 +1,7 @@
 package net.lapismc.warppoint.commands;
 
 import net.lapismc.warppoint.WarpPoint;
+import net.lapismc.warppoint.WarpPointPerms;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -40,6 +41,9 @@ public class WarpPointWarp {
                 } else {
                     switch (types.get(1)) {
                         case Public:
+                            if (!plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.PublicTele)) {
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.WPConfigs.Messages.getString("NoPermission")));
+                            }
                             Location loc = plugin.WPWarps.getPublicWarp(warpName);
                             if (loc != null) {
                                 p.teleport(loc);
@@ -51,6 +55,9 @@ public class WarpPointWarp {
                             }
                             break;
                         case Private:
+                            if (!plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.Private)) {
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.WPConfigs.Messages.getString("NoPermission")));
+                            }
                             Location loc0 = plugin.WPWarps.getPrivateWarp(warpName, p);
                             if (loc0 != null) {
                                 p.teleport(loc0);
@@ -62,6 +69,12 @@ public class WarpPointWarp {
                             }
                             break;
                         case Faction:
+                            if (!plugin.factions) {
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.WPConfigs.Messages.getString("FactionsDisabled")));
+                            }
+                            if (!plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.FactionTele)) {
+                                p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.WPConfigs.Messages.getString("NoPermission")));
+                            }
                             if (plugin.WPFactions.isWarp(warpName, p)) {
                                 Location loc1 = plugin.WPFactions.getWarp(p, warpName);
                                 if (loc1 != null) {

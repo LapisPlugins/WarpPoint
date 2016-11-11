@@ -11,22 +11,34 @@ public class WarpPointPerms {
     private WarpPoint plugin;
 
 
-    private HashMap<UUID, HashMap<Perm, Boolean>> Perms = new HashMap<>();
+    private HashMap<UUID, HashMap<Perms, Integer>> PlayerPerms = new HashMap<>();
 
     protected WarpPointPerms(WarpPoint p) {
         p = plugin;
     }
 
-    public void setPerms(UUID uuid, HashMap<Perm, Boolean> map) {
-        Perms.put(uuid, map);
+    public HashMap<Perms, Integer> getBlankPerms() {
+        Perms[] permsArray = Perms.values();
+        HashMap<Perms, Integer> map = new HashMap<>();
+        int i = 0;
+        while (i != 7) {
+            Perms perm = permsArray[i];
+            map.put(perm, 0);
+            i++;
+        }
+        return map;
     }
 
-    public boolean isPermitted(Player p, Perm perm) {
-        HashMap<Perm, Boolean> map = Perms.get(p.getUniqueId());
-        return map.get(perm);
+    public void setPerms(UUID uuid, HashMap<Perms, Integer> map) {
+        PlayerPerms.put(uuid, map);
     }
 
-    public enum Perm {
+    public Boolean isPermitted(Player p, Perms perm) {
+        HashMap<Perms, Integer> map = PlayerPerms.get(p.getUniqueId());
+        return map.get(perm) == 5;
+    }
+
+    public enum Perms {
         Private, PublicSet, PublicMove, PublicTele, FactionSet, FactionMove, FactionTele;
 
         @Override

@@ -6,4 +6,28 @@
 ConfigurationVersion: 1
 
 ##
-thing: yes
+Permissions:
+  warppoint.player:
+    PrivateWarps: 5
+    PublicTele: 1
+    PublicSet: 2
+    PublicMove: 0
+    FactionTele: 1
+    FactionMove: 1
+    FactionSet: 2
+  warppoint.vip:
+    PrivateWarps: 10
+    PublicTele: 1
+    PublicSet: 2
+    PublicMove: 0
+    FactionTele: 1
+    FactionMove: 1
+    FactionSet: true
+  warppoint.admin:
+    PrivateWarps: true
+    PublicTele: true
+    PublicSet: true
+    PublicMove: true
+    FactionTele: true
+    FactionMove: true
+    FactionSet: true

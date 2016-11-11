@@ -9,6 +9,7 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class WarpPointListeners implements Listener {
@@ -36,7 +37,12 @@ public class WarpPointListeners implements Listener {
             yaml.set("UserName", p.getName());
             List<String> sl = new ArrayList<String>();
             yaml.set("Warps.list", sl);
+            HashMap<WarpPointPerms.Perms, Integer> map = plugin.WPPerms.getBlankPerms();
+            for (WarpPointPerms.Perms perm : map.keySet()) {
+
+            }
         }
+
     }
 
 }
