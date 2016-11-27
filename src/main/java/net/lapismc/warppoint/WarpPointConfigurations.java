@@ -1,10 +1,10 @@
 package net.lapismc.warppoint;
 
-import com.sun.xml.internal.messaging.saaj.util.Base64;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.*;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -16,6 +16,12 @@ public class WarpPointConfigurations {
 
     protected WarpPointConfigurations(WarpPoint plugin) {
         this.plugin = plugin;
+        try {
+            Class Base64 = Class.forName("com.sun.xml.internal.messaging.saaj.util.Base64");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            plugin.logger.severe("Failed to find Base64 class, The plugin cannot run!");
+        }
     }
 
     protected void generateConfigurations() {
@@ -66,7 +72,7 @@ public class WarpPointConfigurations {
 
     public String encodeBase64(Object o) {
         String ed = o.toString();
-        byte[] encodedBytes = Base64.encode(ed.getBytes());
+        byte[] encodedBytes = Base64.getEncoder().encode(ed.getBytes());
         String str = null;
         try {
             str = new String(encodedBytes, "UTF-8");
@@ -77,8 +83,15 @@ public class WarpPointConfigurations {
     }
 
     public Object decodeBase64(String s) {
-        s = Base64.base64Decode(s);
-        return s;
+        try {
+            byte[] decoded = Base64.getDecoder().decode(s.getBytes("UTF-8"));
+            ByteArrayInputStream in = new ByteArrayInputStream(decoded);
+            ObjectInputStream is = new ObjectInputStream(in);
+            return is.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public void reloadConfigurations() {

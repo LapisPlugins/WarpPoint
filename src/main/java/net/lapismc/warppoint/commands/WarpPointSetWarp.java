@@ -29,16 +29,16 @@ public class WarpPointSetWarp {
                 switch (type) {
                     case "public":
                         warpType = WarpPoint.WarpType.Public;
-                        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perm.PublicSet)) {
+                        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.PublicSet)) {
                             setMove[0] = true;
                         }
-                        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perm.PublicMove)) {
+                        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.PublicMove)) {
                             setMove[1] = true;
                         }
                         break;
                     case "private":
                         warpType = WarpPoint.WarpType.Private;
-                        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perm.Private)) {
+                        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.Private)) {
                             setMove[0] = true;
                         }
                         break;
@@ -49,10 +49,10 @@ public class WarpPointSetWarp {
                             return;
                         }
                         warpType = WarpPoint.WarpType.Faction;
-                        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perm.FactionSet)) {
+                        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.FactionSet)) {
                             setMove[0] = true;
                         }
-                        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perm.FactionMove)) {
+                        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.FactionMove)) {
                             setMove[1] = true;
                         }
                         break;
