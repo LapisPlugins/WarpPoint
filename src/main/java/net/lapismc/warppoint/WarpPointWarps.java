@@ -21,12 +21,12 @@ public class WarpPointWarps {
         plugin = p;
     }
 
-    public void addPublicWarp(String s, UUID uuid) {
-        publicWarps.put(s, uuid);
+    public void addPublicWarp(String name, UUID uuid) {
+        publicWarps.put(name, uuid);
     }
 
-    public void addPrivateWarp(String s, UUID uuid) {
-        privateWarps.add(s + ":" + uuid.toString());
+    public void addPrivateWarp(String name, UUID uuid) {
+        privateWarps.add(name + ":" + uuid.toString());
     }
 
     public Location getPrivateWarp(String s, Player p) {

@@ -5,29 +5,46 @@
 ## Changing this vaule will generate a new configuration file
 ConfigurationVersion: 1
 
-##
+## Permissions are handled below, there is no limit to how many permission
+## groups you can have as long as they contain all of the settings
+## (NOTE: in a permission name "," will be replaced with "." EG. warppoint,player = warppoint.player)
 Permissions:
-  warppoint.player:
+  warppoint,player:
+    ## Who will be given this permission automaticly, 0 = no one, 1 = all players, 1 = ops
+    default: 1
+    ## The permission with the highest priority will be the one a player will be given if they have more than 1
+    priority: 1
+    ## How many public warps can they set
     PrivateWarps: 5
+    ## Is this player allowed to teleport to public warps
     PublicTele: 1
-    PublicSet: 2
+    ## How many public warps can this player set
+    PublicWarps: 2
+    ## Can this player move an already set warp
     PublicMove: 0
+    ## Can this player teleport to faction warps
     FactionTele: 1
+    ## How many warps can this player set
+    FactionWarps: 2
+    ## Can this player move faction warps
     FactionMove: 1
-    FactionSet: 2
-  warppoint.vip:
+  warppoint,vip:
+    default: 1
+    priority: 1
     PrivateWarps: 10
     PublicTele: 1
-    PublicSet: 2
+    PublicWarps: 2
     PublicMove: 0
     FactionTele: 1
+    FactionWarps: 5
     FactionMove: 1
-    FactionSet: true
-  warppoint.admin:
-    PrivateWarps: true
-    PublicTele: true
-    PublicSet: true
-    PublicMove: true
-    FactionTele: true
-    FactionMove: true
-    FactionSet: true
+  warppoint,admin:
+    default: 1
+    priority: 1
+    PrivateWarps: 15
+    PublicTele: 1
+    PublicWarps: 5
+    PublicMove: 1
+    FactionTele: 1
+    FactionWarps: 10
+    FactionMove: 1

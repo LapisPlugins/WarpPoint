@@ -59,7 +59,7 @@ public class WarpPointFactions {
         return warps;
     }
 
-    private Faction getFaction(Player p) {
+    protected Faction getFaction(Player p) {
         MPlayer fp = MPlayer.get(p);
         return fp.getFaction();
     }

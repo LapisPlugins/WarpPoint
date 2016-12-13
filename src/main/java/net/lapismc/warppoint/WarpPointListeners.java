@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.permissions.Permission;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,12 +38,22 @@ public class WarpPointListeners implements Listener {
             yaml.set("UserName", p.getName());
             List<String> sl = new ArrayList<String>();
             yaml.set("Warps.list", sl);
-            HashMap<WarpPointPerms.Perms, Integer> map = plugin.WPPerms.getBlankPerms();
-            for (WarpPointPerms.Perms perm : map.keySet()) {
-
+        }
+        Integer priority = 0;
+        Permission currentPerm = null;
+        for (Permission perm : plugin.WPPerms.pluginPerms.keySet()) {
+            if (p.hasPermission(perm)) {
+                HashMap<WarpPointPerms.Perms, Integer> map = plugin.WPPerms.pluginPerms.get(perm);
+                if (map.get(WarpPointPerms.Perms.Priority) > priority) {
+                    priority = map.get(WarpPointPerms.Perms.Priority);
+                    currentPerm = perm;
+                }
             }
         }
-
+        if (currentPerm != null) {
+            plugin.logger.info("Player " + p.getName() + " has been assigned permission " + currentPerm.getName());
+            plugin.WPPerms.setPerms(p.getUniqueId(), currentPerm);
+        }
     }
 
 }

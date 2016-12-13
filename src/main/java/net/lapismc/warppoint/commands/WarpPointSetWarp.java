@@ -29,7 +29,7 @@ public class WarpPointSetWarp {
                 switch (type) {
                     case "public":
                         warpType = WarpPoint.WarpType.Public;
-                        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.PublicSet)) {
+                        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.PublicWarps)) {
                             setMove[0] = true;
                         }
                         if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.PublicMove)) {
@@ -49,7 +49,7 @@ public class WarpPointSetWarp {
                             return;
                         }
                         warpType = WarpPoint.WarpType.Faction;
-                        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.FactionSet)) {
+                        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.FactionWarps)) {
                             setMove[0] = true;
                         }
                         if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.FactionMove)) {
@@ -68,7 +68,7 @@ public class WarpPointSetWarp {
                 }
                 if (warpExits(warpName, warpType, p)) {
                     if (!setMove[1]) {
-                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.WPConfigs.Messages.getString("Set.notAvail")));
+                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.WPConfigs.Messages.getString("Set.noMovePerm")));
                         return;
                     }
                 }

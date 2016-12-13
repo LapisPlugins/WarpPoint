@@ -22,6 +22,7 @@ public final class WarpPoint extends JavaPlugin {
         WPListeners = new WarpPointListeners(this);
         WPWarps = new WarpPointWarps(this);
         WPPerms = new WarpPointPerms(this);
+        WPPerms.loadPermissions();
         WPConfigs = new WarpPointConfigurations(this);
         WPConfigs.generateConfigurations();
         WPConfigs.loadConfigurations();
@@ -29,11 +30,9 @@ public final class WarpPoint extends JavaPlugin {
         try {
             Class.forName("com.massivecraft.factions");
             factions = true;
+            WPFactions = new WarpPointFactions(this);
         } catch (ClassNotFoundException e) {
             factions = false;
-        }
-        if (factions) {
-            WPFactions = new WarpPointFactions(this);
         }
     }
 

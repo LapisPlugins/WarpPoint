@@ -16,12 +16,6 @@ public class WarpPointConfigurations {
 
     protected WarpPointConfigurations(WarpPoint plugin) {
         this.plugin = plugin;
-        try {
-            Class Base64 = Class.forName("com.sun.xml.internal.messaging.saaj.util.Base64");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            plugin.logger.severe("Failed to find Base64 class, The plugin cannot run!");
-        }
     }
 
     protected void generateConfigurations() {
@@ -122,7 +116,9 @@ public class WarpPointConfigurations {
                             plugin.WPWarps.addPrivateWarp(name, uuid);
                             break;
                         case "faction":
-                            plugin.WPFactions.setWarp(uuid, name);
+                            if (plugin.factions) {
+                                plugin.WPFactions.setWarp(uuid, name);
+                            }
                             break;
                     }
                 }
