@@ -8,9 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-/**
- * Created by benja on 18/09/2016.
- */
 public class WarpPointWarps {
 
     public HashMap<String, UUID> publicWarps = new HashMap<>();

@@ -1,0 +1,5 @@
+Permissions Sytem for WarpPoint:
+Load Values from config
+place them into hashmaps or arrays of some kind
+check when a player joins if they have one of the permissions and check its priority(See homespawn)
+assign them the highest priority permission
