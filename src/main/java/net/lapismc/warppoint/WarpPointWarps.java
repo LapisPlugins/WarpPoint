@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class WarpPointWarps {
@@ -45,6 +46,21 @@ public class WarpPointWarps {
             return loc;
         } else {
             return null;
+        }
+    }
+
+    public boolean removePublicWarp(Player p, String warpName) {
+        if (publicWarps.get(warpName) != null && publicWarps.get(warpName).equals(p.getUniqueId())) {
+            publicWarps.remove(warpName);
+            YamlConfiguration warps = plugin.WPConfigs.playerWarps.get(p.getUniqueId());
+            List<String> warpsList = warps.getStringList("Warps.list");
+            warpsList.remove(warpName);
+            warps.set("Warps.list", warpsList);
+            warps.set("Warps." + warpName, null);
+            plugin.WPConfigs.playerWarps.put(p.getUniqueId(), warps);
+            return true;
+        } else {
+            return false;
         }
     }
 
