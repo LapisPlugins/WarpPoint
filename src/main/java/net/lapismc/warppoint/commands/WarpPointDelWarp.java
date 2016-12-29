@@ -77,7 +77,7 @@ public class WarpPointDelWarp {
                         break;
                 }
             } else {
-                //no permission
+                p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.WPConfigs.Messages.getString("NoPermission")));
             }
         } else {
             String types;
