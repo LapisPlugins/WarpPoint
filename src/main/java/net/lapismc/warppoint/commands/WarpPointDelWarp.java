@@ -12,7 +12,13 @@ public class WarpPointDelWarp {
     }
 
     public void delWarp(CommandSender sender, String[] args) {
+        WarpPoint.WarpType warpType;
+        if (args.length == 2) {
+            String warpTypeString = args[0];
+            String warpName = args[1];
+        } else {
 
+        }
     }
 
 }

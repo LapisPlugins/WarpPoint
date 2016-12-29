@@ -1,5 +1,6 @@
 name: WarpPoint
-version: Alpha 1
+version: ${version}
 main: net.lapismc.warppoint.WarpPoint
 authors: [dart2112]
 description: The best way to warp
+##Add Commands

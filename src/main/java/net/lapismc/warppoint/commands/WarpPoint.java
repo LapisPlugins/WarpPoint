@@ -11,7 +11,9 @@ public class WarpPoint {
     }
 
     public void warpPoint(CommandSender sender, String[] args) {
-
+        sender.sendMessage("WarpPoint v." + plugin.getDescription().getVersion());
+        sender.sendMessage("Author: dart2112");
+        sender.sendMessage("Spigot: ");
     }
 
 }
