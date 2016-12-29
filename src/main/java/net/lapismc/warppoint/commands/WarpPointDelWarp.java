@@ -1,7 +1,10 @@
 package net.lapismc.warppoint.commands;
 
 import net.lapismc.warppoint.WarpPoint;
+import net.lapismc.warppoint.WarpPointPerms;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 public class WarpPointDelWarp {
 
@@ -13,9 +16,61 @@ public class WarpPointDelWarp {
 
     public void delWarp(CommandSender sender, String[] args) {
         WarpPoint.WarpType warpType;
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(plugin.WPConfigs.Messages.getString("NotAPlayer"));
+            return;
+        }
+        Player p = (Player) sender;
         if (args.length == 2) {
             String warpTypeString = args[0];
             String warpName = args[1];
+            switch (warpTypeString.toLowerCase()) {
+                case "faction":
+                    warpType = WarpPoint.WarpType.Faction;
+                    break;
+                case "private":
+                    warpType = WarpPoint.WarpType.Private;
+                    break;
+                case "public":
+                    warpType = WarpPoint.WarpType.Public;
+                    break;
+                default:
+                    warpType = null;
+                    break;
+            }
+            if (warpType == null) {
+                p.sendMessage("Usage: /delwarp (type) (name): the type you entered was not a real type");
+                return;
+            }
+            YamlConfiguration warps = plugin.WPConfigs.playerWarps.get(p.getUniqueId());
+            if (warps.getStringList("Warps.list").contains(warpName)
+                    || plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.Admin)) {
+                switch (warpType) {
+                    case Faction:
+                        if (plugin.WPFactions.delWarp(p, warpName)) {
+                            p.sendMessage("Removed your faction warp " + warpName);
+                        } else {
+                            p.sendMessage("Failed to remove faction warp " + warpName);
+                        }
+                        break;
+                    case Public:
+                        if (plugin.WPWarps.removePublicWarp(p, warpName)) {
+                            p.sendMessage("Removed your public warp " + warpName);
+                        } else {
+                            p.sendMessage("Failed to remove public warp " + warpName);
+                        }
+                        break;
+                    case Private:
+                        if (plugin.WPWarps.removePrivateWarp(p, warpName)) {
+                            p.sendMessage("Removed your private warp " + warpName);
+                        } else {
+                            p.sendMessage("Failed to remove private warp " + warpName);
+                        }
+                        break;
+                }
+            } else {
+                //no permission
+            }
         } else {
 
         }

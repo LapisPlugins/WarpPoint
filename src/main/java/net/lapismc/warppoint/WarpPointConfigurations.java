@@ -21,18 +21,18 @@ public class WarpPointConfigurations {
     protected void generateConfigurations() {
         plugin.saveDefaultConfig();
         if (plugin.getConfig().getInt("ConfigurationVersion") != 1) {
-            File f = new File(plugin.getDataFolder().getAbsolutePath() + "config_old.yml");
-            File f1 = new File(plugin.getDataFolder().getAbsolutePath() + "config.yml");
+            File f = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "config_old.yml");
+            File f1 = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "config.yml");
             f1.renameTo(f);
             plugin.saveDefaultConfig();
             plugin.logger.info("New Configuration Generated," +
                     " Please Transfer Values From config_old.yml");
         }
-        File playerData = new File(plugin.getDataFolder().getAbsolutePath() + "PlayerData");
+        File playerData = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "PlayerData");
         if (!playerData.exists()) {
             playerData.mkdir();
         }
-        File f2 = new File(plugin.getDataFolder().getAbsolutePath() + "Messages.yml");
+        File f2 = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "Messages.yml");
         if (!f2.exists()) {
             try {
                 f2.createNewFile();
@@ -41,7 +41,7 @@ public class WarpPointConfigurations {
                 e.printStackTrace();
             }
         }
-        Messages = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder().getAbsolutePath() + "Messages.yml"));
+        Messages = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "Messages.yml"));
     }
 
     private void setMessages() throws IOException {
@@ -52,7 +52,7 @@ public class WarpPointConfigurations {
 
             int readBytes;
             byte[] buffer = new byte[4096];
-            os = new FileOutputStream(plugin.getDataFolder().getAbsolutePath() + "Messages.yml");
+            os = new FileOutputStream(plugin.getDataFolder().getAbsolutePath() + File.separator + "Messages.yml");
             while ((readBytes = is.read(buffer)) > 0) {
                 os.write(buffer, 0, readBytes);
             }
@@ -97,7 +97,7 @@ public class WarpPointConfigurations {
         if (!playerWarps.isEmpty()) {
             saveConfigurations();
         }
-        File playerData = new File(plugin.getDataFolder().getAbsolutePath() + "PlayerData");
+        File playerData = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "PlayerData");
         File[] files = playerData.listFiles();
         for (File pd : files) {
             YamlConfiguration yaml = YamlConfiguration.loadConfiguration(pd);
@@ -128,10 +128,10 @@ public class WarpPointConfigurations {
     }
 
     protected void saveConfigurations() {
-        File playerData = new File(plugin.getDataFolder().getAbsolutePath() + "PlayerData");
+        File playerData = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "PlayerData");
         for (UUID uuid : playerWarps.keySet()) {
             YamlConfiguration yaml = playerWarps.get(uuid);
-            File f = new File(playerData.getAbsolutePath() + uuid.toString() + ".yml");
+            File f = new File(playerData.getAbsolutePath() + File.separator + uuid.toString() + ".yml");
             try {
                 yaml.save(f);
             } catch (IOException e) {

@@ -3,6 +3,7 @@ package net.lapismc.warppoint;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.MPlayer;
 import org.bukkit.Location;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -19,9 +20,9 @@ public class WarpPointFactions {
         plugin = p;
     }
 
-    public boolean isWarp(String s, Player p) {
+    public boolean isWarp(String warpName, Player p) {
         Faction f = getFaction(p);
-        return factionWarps.get(f).containsKey(s);
+        return factionWarps.get(f).containsKey(warpName);
     }
 
     public void setWarp(Player p, String warpName) {
@@ -38,6 +39,24 @@ public class WarpPointFactions {
         HashMap<String, UUID> fw = factionWarps.get(f);
         fw.put(warpName, uuid);
         factionWarps.put(f, fw);
+    }
+
+    public boolean delWarp(Player p, String warpName) {
+        if (isWarp(warpName, p)) {
+            Faction f = getFaction(p);
+            HashMap<String, UUID> map = factionWarps.get(f);
+            map.remove(warpName);
+            factionWarps.put(f, map);
+            YamlConfiguration warps = plugin.WPConfigs.playerWarps.get(p.getUniqueId());
+            List<String> warpsList = warps.getStringList("Warps.list");
+            warpsList.remove(warpName);
+            warps.set("Warps.list", warpsList);
+            warps.set("Warps." + warpName, null);
+            plugin.WPConfigs.playerWarps.put(p.getUniqueId(), warps);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public Location getWarp(Player p, String s) {

@@ -14,6 +14,8 @@ Permissions:
     default: 1
     ## The permission with the highest priority will be the one a player will be given if they have more than 1
     priority: 1
+    ## If enabled players with this permission will be able to delete all warps and access the admin panel
+    admin: 0
     ## How many public warps can they set
     PrivateWarps: 5
     ## Is this player allowed to teleport to public warps
@@ -31,6 +33,7 @@ Permissions:
   warppoint,vip:
     default: 1
     priority: 1
+    admin: 0
     PrivateWarps: 10
     PublicTele: 1
     PublicWarps: 2
@@ -41,6 +44,7 @@ Permissions:
   warppoint,admin:
     default: 1
     priority: 1
+    admin: 1
     PrivateWarps: 15
     PublicTele: 1
     PublicWarps: 5

@@ -146,6 +146,8 @@ public class WarpPointWarp {
             } else {
 
             }
+        } else {
+            sender.sendMessage(plugin.WPConfigs.Messages.getString("NotAPlayer"));
         }
     }
 

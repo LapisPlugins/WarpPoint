@@ -20,16 +20,21 @@ public class WarpPointPerms {
     private HashMap<UUID, Permission> playerPerms = new HashMap<>();
 
     protected WarpPointPerms(WarpPoint p) {
-        p = plugin;
+        plugin = p;
     }
 
     protected void loadPermissions() {
+        if (plugin == null) {
+            System.out.println("Plugin null");
+            return;
+        }
         ConfigurationSection permsSection = plugin.getConfig().getConfigurationSection("Permissions");
         Set<String> perms = permsSection.getKeys(false);
         for (String perm : perms) {
             String permName = perm.replace(",", ".");
             int Default = plugin.getConfig().getInt("Permissions." + perm + ".default");
             int priority = plugin.getConfig().getInt("Permissions." + perm + ".priority");
+            int Admin = plugin.getConfig().getInt("Permissions." + perm + ".admin");
             int privateWarps = plugin.getConfig().getInt("Permissions." + perm + ".PrivateWarps");
             int publicTele = plugin.getConfig().getInt("Permissions." + perm + ".PublicTele");
             int publicWarps = plugin.getConfig().getInt("Permissions." + perm + ".PublicWarps");
@@ -38,8 +43,9 @@ public class WarpPointPerms {
             int factionWarps = plugin.getConfig().getInt("Permissions." + perm + ".FactionWarps");
             int factionMove = plugin.getConfig().getInt("Permissions." + perm + ".FactionMove");
             HashMap<Perms, Integer> permMap = new HashMap<>();
-            permMap.put(Perms.Priority, priority);
             permMap.put(Perms.Default, Default);
+            permMap.put(Perms.Priority, priority);
+            permMap.put(Perms.Admin, Admin);
             permMap.put(Perms.Private, privateWarps);
             permMap.put(Perms.PublicTele, publicTele);
             permMap.put(Perms.PublicWarps, publicWarps);
@@ -116,7 +122,7 @@ public class WarpPointPerms {
     }
 
     public enum Perms {
-        Priority, Default, Private, PublicWarps, PublicMove, PublicTele, FactionWarps, FactionMove, FactionTele;
+        Default, Priority, Admin, Private, PublicWarps, PublicMove, PublicTele, FactionWarps, FactionMove, FactionTele;
 
         @Override
         public String toString() {

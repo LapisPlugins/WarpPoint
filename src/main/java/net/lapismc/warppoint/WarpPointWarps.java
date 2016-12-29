@@ -38,6 +38,21 @@ public class WarpPointWarps {
         }
     }
 
+    public boolean removePrivateWarp(Player p, String warpName) {
+        if (privateWarps.contains(warpName + ":" + p.getUniqueId().toString())) {
+            privateWarps.remove(warpName + ":" + p.getUniqueId().toString());
+            YamlConfiguration warps = plugin.WPConfigs.playerWarps.get(p.getUniqueId());
+            List<String> warpsList = warps.getStringList("Warps.list");
+            warpsList.remove(warpName);
+            warps.set("Warps.list", warpsList);
+            warps.set("Warps." + warpName, null);
+            plugin.WPConfigs.playerWarps.put(p.getUniqueId(), warps);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public Location getPublicWarp(String s) {
         if (publicWarps.containsKey(s)) {
             UUID uuid = publicWarps.get(s);

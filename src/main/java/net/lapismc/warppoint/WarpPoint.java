@@ -18,14 +18,14 @@ public final class WarpPoint extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        WPConfigs = new WarpPointConfigurations(this);
+        WPConfigs.generateConfigurations();
+        WPConfigs.loadConfigurations();
         WPCommands = new WarpPointCommands(this);
         WPListeners = new WarpPointListeners(this);
         WPWarps = new WarpPointWarps(this);
         WPPerms = new WarpPointPerms(this);
         WPPerms.loadPermissions();
-        WPConfigs = new WarpPointConfigurations(this);
-        WPConfigs.generateConfigurations();
-        WPConfigs.loadConfigurations();
         logger.info("WarpPoint v." + getDescription().getVersion() + " has been enabled");
         try {
             Class.forName("com.massivecraft.factions");
