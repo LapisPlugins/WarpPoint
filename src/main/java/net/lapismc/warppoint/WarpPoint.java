@@ -14,10 +14,15 @@ public final class WarpPoint extends JavaPlugin {
     public WarpPointFactions WPFactions;
     public WarpPointPerms WPPerms;
     public boolean factions;
+    protected LapisUpdater lapisUpdater;
     Logger logger = Bukkit.getLogger();
 
     @Override
     public void onEnable() {
+        lapisUpdater = new LapisUpdater(this, "WarpPoint", "Dart2112", "WarpPoint", "master");
+        lapisUpdater.checkUpdate("WarpPoint");
+        Metrics metrics = new Metrics(this);
+        metrics.start();
         WPWarps = new WarpPointWarps(this);
         WPConfigs = new WarpPointConfigurations(this);
         WPConfigs.generateConfigurations();
