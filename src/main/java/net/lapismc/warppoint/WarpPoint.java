@@ -20,7 +20,11 @@ public final class WarpPoint extends JavaPlugin {
     @Override
     public void onEnable() {
         lapisUpdater = new LapisUpdater(this, "WarpPoint", "Dart2112", "WarpPoint", "master");
-        lapisUpdater.checkUpdate("WarpPoint");
+        if (lapisUpdater.checkUpdate("WarpPoint")) {
+            logger.info("Update for WarpPoint available");
+        } else {
+            logger.info("No updates found for WarpPoint");
+        }
         Metrics metrics = new Metrics(this);
         metrics.start();
         WPWarps = new WarpPointWarps(this);
