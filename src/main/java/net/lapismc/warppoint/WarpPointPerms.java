@@ -83,6 +83,9 @@ public class WarpPointPerms {
 
     public Boolean isPermitted(Player p, Perms perm) {
         HashMap<Perms, Integer> permMap = pluginPerms.get(playerPerms.get(p.getUniqueId()));
+        if (permMap == null || permMap.get(perm) == null) {
+            return false;
+        }
         if (perm.equals(Perms.FactionWarps)) {
             if (plugin.factions) {
                 Integer i = 0;

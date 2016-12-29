@@ -38,8 +38,10 @@ public class WarpPointWarp {
                 }
                 if (types.size() > 1) {
                     p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.WPConfigs.Messages.getString("TypeNeeded")));
+                } else if (types.size() == 0) {
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.WPConfigs.Messages.getString("WarpDoesntExist")));
                 } else {
-                    switch (types.get(1)) {
+                    switch (types.get(0)) {
                         case Public:
                             if (!plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.PublicTele)) {
                                 p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.WPConfigs.Messages.getString("NoPermission")));
@@ -144,7 +146,8 @@ public class WarpPointWarp {
                         break;
                 }
             } else {
-
+                p.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                        plugin.WPConfigs.Messages.getString("Help.warp")));
             }
         } else {
             sender.sendMessage(plugin.WPConfigs.Messages.getString("NotAPlayer"));

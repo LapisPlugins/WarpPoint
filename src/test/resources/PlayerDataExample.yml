@@ -1,12 +1,24 @@
-UUID: ****-****-****-****
+UUID: cc227820-9060-4ebd-a00d-511e4815f125
 UserName: dart2112
 Warps:
   list:
-    - name
-    - name1
-  name:
-    type: public
-    location: location as base64
-  name1:
-    type: faction
-    location: location1 as base64
+  - name_private
+  - name_public
+  name_private:
+    location:
+      ==: org.bukkit.Location
+      world: world
+      x: 192.37028441610263
+      y: 82.0
+      z: 248.26608246401568
+      pitch: 12.449975
+      yaw: 298.3496
+  name_public:
+    location:
+      ==: org.bukkit.Location
+      world: world
+      x: 205.69491055267565
+      y: 81.0
+      z: 255.52947868697143
+      pitch: 1.1999999
+      yaw: 95.8497

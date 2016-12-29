@@ -73,13 +73,12 @@ public class WarpPointSetWarp {
                     }
                 }
                 List<String> warpList = warps.getStringList("Warps.list");
-                if (!warpList.contains(warpName)) {
-                    warpList.add(warpName);
+                if (!warpList.contains(warpName + "_" + warpType.toString())) {
+                    warpList.add(warpName + "_" + warpType.toString());
                     warps.set("Warps.list", warpList);
                 }
-                warps.set("Warps." + warpName + ".type", warpType.toString());
-                warps.set("Warps." + warpName + ".location", plugin.WPConfigs.encodeBase64(p.getLocation()));
-                plugin.WPConfigs.playerWarps.put(p.getUniqueId(), warps);
+                warps.set("Warps." + warpName + "_" + warpType.toString() + ".location", p.getLocation());
+                plugin.WPConfigs.reloadPlayerConfig(p, warps);
                 switch (warpType) {
                     case Public:
                         plugin.WPWarps.addPublicWarp(warpName, p.getUniqueId());
@@ -92,7 +91,7 @@ public class WarpPointSetWarp {
                         break;
                 }
                 p.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                        plugin.WPConfigs.Messages.getString("Set." + warpType.toString())));
+                        plugin.WPConfigs.Messages.getString("Set." + warpType.toString()).replace("%name", warpName)));
             } else {
                 String types;
                 if (plugin.factions) {

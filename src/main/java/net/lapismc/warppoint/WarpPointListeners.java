@@ -1,5 +1,6 @@
 package net.lapismc.warppoint;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,12 +20,14 @@ public class WarpPointListeners implements Listener {
 
     protected WarpPointListeners(WarpPoint plugin) {
         this.plugin = plugin;
+        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler
     public void playerJoinEvent(PlayerLoginEvent e) {
         Player p = e.getPlayer();
-        File f = new File(plugin.getDataFolder().getAbsolutePath() + "PlayerData" +
+        YamlConfiguration warps;
+        File f = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "PlayerData" +
                 File.separator + p.getUniqueId() + ".yml");
         if (!f.exists()) {
             try {
@@ -33,17 +36,34 @@ public class WarpPointListeners implements Listener {
                 ex.printStackTrace();
                 return;
             }
-            YamlConfiguration yaml = YamlConfiguration.loadConfiguration(f);
-            yaml.set("UUID", p.getUniqueId());
-            yaml.set("UserName", p.getName());
-            List<String> sl = new ArrayList<String>();
-            yaml.set("Warps.list", sl);
+            warps = YamlConfiguration.loadConfiguration(f);
+            warps.set("UUID", p.getUniqueId().toString());
+            warps.set("UserName", p.getName());
+            List<String> sl = new ArrayList<>();
+            warps.set("Warps.list", sl);
+            plugin.WPConfigs.reloadPlayerConfig(p, warps);
+        }
+        warps = YamlConfiguration.loadConfiguration(f);
+        if (!warps.getString("UUID").equals(p.getUniqueId().toString())) {
+            warps.set("UUID", p.getUniqueId().toString());
+            plugin.WPConfigs.reloadPlayerConfig(p, warps);
+        }
+        if (!warps.getString("UserName").equals(p.getName())) {
+            warps.set("UserName", p.getName());
+            plugin.WPConfigs.reloadPlayerConfig(p, warps);
         }
         Integer priority = 0;
+        Integer lowestPriority = null;
+        Permission lowestPermission = null;
         Permission currentPerm = null;
         for (Permission perm : plugin.WPPerms.pluginPerms.keySet()) {
+            HashMap<WarpPointPerms.Perms, Integer> map = plugin.WPPerms.pluginPerms.get(perm);
+            if (lowestPriority == null || map.get(WarpPointPerms.Perms.Priority) < lowestPriority) {
+                lowestPermission = perm;
+                lowestPriority = map.get(WarpPointPerms.Perms.Priority);
+            }
             if (p.hasPermission(perm)) {
-                HashMap<WarpPointPerms.Perms, Integer> map = plugin.WPPerms.pluginPerms.get(perm);
+
                 if (map.get(WarpPointPerms.Perms.Priority) > priority) {
                     priority = map.get(WarpPointPerms.Perms.Priority);
                     currentPerm = perm;
@@ -53,6 +73,10 @@ public class WarpPointListeners implements Listener {
         if (currentPerm != null) {
             plugin.logger.info("Player " + p.getName() + " has been assigned permission " + currentPerm.getName());
             plugin.WPPerms.setPerms(p.getUniqueId(), currentPerm);
+        } else {
+            plugin.logger.info("Player " + p.getName() + " has no permissions so they have been given "
+                    + lowestPermission.getName() + " by default");
+            plugin.WPPerms.setPerms(p.getUniqueId(), lowestPermission);
         }
     }
 

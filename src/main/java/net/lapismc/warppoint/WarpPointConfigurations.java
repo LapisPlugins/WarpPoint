@@ -2,9 +2,9 @@ package net.lapismc.warppoint;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.*;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -64,33 +64,19 @@ public class WarpPointConfigurations {
         }
     }
 
-    public String encodeBase64(Object o) {
-        String ed = o.toString();
-        byte[] encodedBytes = Base64.getEncoder().encode(ed.getBytes());
-        String str = null;
-        try {
-            str = new String(encodedBytes, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return str;
-    }
-
-    public Object decodeBase64(String s) {
-        try {
-            byte[] decoded = Base64.getDecoder().decode(s.getBytes("UTF-8"));
-            ByteArrayInputStream in = new ByteArrayInputStream(decoded);
-            ObjectInputStream is = new ObjectInputStream(in);
-            return is.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public void reloadConfigurations() {
         saveConfigurations();
         loadConfigurations();
+    }
+
+    public void reloadPlayerConfig(Player p, YamlConfiguration warps) {
+        File warpsFile = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "PlayerData" + File.separator + p.getUniqueId() + ".yml");
+        try {
+            warps.save(warpsFile);
+            playerWarps.put(p.getUniqueId(), warps);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     protected void loadConfigurations() {
@@ -105,27 +91,36 @@ public class WarpPointConfigurations {
             ConfigurationSection cs = yaml.getConfigurationSection("Warps");
             for (String key : cs.getKeys(false)) {
                 if (!key.endsWith("list")) {
-                    String[] nameArray = key.split(".");
-                    String name = nameArray[nameArray.length - 1];
-                    String type = yaml.getString(key + ".type");
-                    switch (type) {
-                        case "public":
-                            plugin.WPWarps.addPublicWarp(name, uuid);
-                            break;
-                        case "private":
-                            plugin.WPWarps.addPrivateWarp(name, uuid);
-                            break;
-                        case "faction":
-                            if (plugin.factions) {
-                                plugin.WPFactions.setWarp(uuid, name);
-                            }
-                            break;
+                    String name = key.replace("Warps.", "");
+                    if (key.endsWith("_public")) {
+                        plugin.WPWarps.addPublicWarp(name.replace("_public", ""), uuid);
+                    }
+                    if (key.endsWith("_private")) {
+                        if (plugin == null) {
+                            System.out.println("Plugin is null");
+                            return;
+                        }
+                        if (plugin.WPWarps == null) {
+                            System.out.println("Warps is null");
+                            return;
+                        }
+                        if (name == null) {
+                            System.out.println("name is null");
+                            return;
+                        }
+                        plugin.WPWarps.addPrivateWarp(name.replace("_private", ""), uuid);
+                    }
+                    if (key.endsWith("_faction")) {
+                        if (plugin.factions) {
+                            plugin.WPFactions.setWarp(uuid, name.replace("_faction", ""));
+                        }
                     }
                 }
             }
             playerWarps.put(uuid, yaml);
         }
     }
+
 
     protected void saveConfigurations() {
         File playerData = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "PlayerData");

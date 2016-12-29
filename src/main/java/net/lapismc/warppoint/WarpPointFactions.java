@@ -51,7 +51,7 @@ public class WarpPointFactions {
             List<String> warpsList = warps.getStringList("Warps.list");
             warpsList.remove(warpName);
             warps.set("Warps.list", warpsList);
-            warps.set("Warps." + warpName, null);
+            warps.set("Warps." + warpName + "_" + WarpPoint.WarpType.Faction.toString(), null);
             plugin.WPConfigs.playerWarps.put(p.getUniqueId(), warps);
             return true;
         } else {
@@ -63,8 +63,7 @@ public class WarpPointFactions {
         Faction f = getFaction(p);
         HashMap<String, UUID> fw = factionWarps.get(f);
         UUID uuid = fw.get(s);
-        String b64Loc = plugin.WPConfigs.playerWarps.get(uuid).getString("Warps." + s + ".location");
-        Location loc = (Location) plugin.WPConfigs.decodeBase64(b64Loc);
+        Location loc = (Location) plugin.WPConfigs.playerWarps.get(uuid).get("Warps." + s + "_" + WarpPoint.WarpType.Faction.toString() + ".location");
         return loc;
     }
 
