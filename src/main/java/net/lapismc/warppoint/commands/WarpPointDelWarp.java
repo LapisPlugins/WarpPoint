@@ -2,7 +2,6 @@ package net.lapismc.warppoint.commands;
 
 import net.lapismc.warppoint.WarpPoint;
 import net.lapismc.warppoint.WarpPointPerms;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -46,8 +45,7 @@ public class WarpPointDelWarp {
                 } else {
                     types = "private/public";
                 }
-                p.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                        plugin.WPConfigs.Messages.getString("Help.delWarp").replace("%types", types)));
+                p.sendMessage(plugin.WPConfigs.coloredMessage("Help.delWarp").replace("%types", types));
                 return;
             }
             YamlConfiguration warps = plugin.WPConfigs.playerWarps.get(p.getUniqueId());
@@ -77,7 +75,7 @@ public class WarpPointDelWarp {
                         break;
                 }
             } else {
-                p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.WPConfigs.Messages.getString("NoPermission")));
+                p.sendMessage(plugin.WPConfigs.coloredMessage("NoPermission"));
             }
         } else {
             String types;
@@ -86,8 +84,7 @@ public class WarpPointDelWarp {
             } else {
                 types = "private/public";
             }
-            p.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                    plugin.WPConfigs.Messages.getString("Help.delWarp").replace("%types", types)));
+            p.sendMessage(plugin.WPConfigs.coloredMessage("Help.delWarp").replace("%types", types));
         }
     }
 

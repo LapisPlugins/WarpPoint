@@ -14,16 +14,20 @@ public final class WarpPoint extends JavaPlugin {
     public WarpPointFactions WPFactions;
     public WarpPointPerms WPPerms;
     public boolean factions;
-    protected LapisUpdater lapisUpdater;
+    public LapisUpdater lapisUpdater;
     Logger logger = Bukkit.getLogger();
 
     @Override
     public void onEnable() {
         lapisUpdater = new LapisUpdater(this, "WarpPoint", "Dart2112", "WarpPoint", "master");
-        if (lapisUpdater.checkUpdate("WarpPoint")) {
-            logger.info("Update for WarpPoint available");
+        if (getConfig().getBoolean("DownloadUpdates")) {
+            lapisUpdater.downloadUpdate("WarpPoint");
         } else {
-            logger.info("No updates found for WarpPoint");
+            if (lapisUpdater.checkUpdate("WarpPoint")) {
+                logger.info("Update for WarpPoint available, you can install it with /warppoint update");
+            } else {
+                logger.info("No updates found for WarpPoint");
+            }
         }
         Metrics metrics = new Metrics(this);
         metrics.start();

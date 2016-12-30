@@ -78,6 +78,18 @@ public class WarpPointListeners implements Listener {
                     + lowestPermission.getName() + " by default");
             plugin.WPPerms.setPerms(p.getUniqueId(), lowestPermission);
         }
+        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.Admin)) {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    if (plugin.lapisUpdater.checkUpdate("WarpPoint")) {
+                        if (!plugin.getConfig().getBoolean("DownloadUpdates")) {
+                            p.sendMessage(plugin.WPConfigs.coloredMessage("Update.Available"));
+                        }
+                    }
+                }
+            });
+        }
     }
 
 }

@@ -2,7 +2,6 @@ package net.lapismc.warppoint.commands;
 
 import net.lapismc.warppoint.WarpPoint;
 import net.lapismc.warppoint.WarpPointPerms;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -44,8 +43,7 @@ public class WarpPointSetWarp {
                         break;
                     case "faction":
                         if (!plugin.factions) {
-                            p.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                                    plugin.WPConfigs.Messages.getString("FactionsDisabled")));
+                            p.sendMessage(plugin.WPConfigs.coloredMessage("FactionsDisabled"));
                             return;
                         }
                         warpType = WarpPoint.WarpType.Faction;
@@ -61,14 +59,14 @@ public class WarpPointSetWarp {
                         break;
                 }
                 if (!setMove[0]) {
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.WPConfigs.Messages.getString("NoPermission")));
+                    p.sendMessage(plugin.WPConfigs.coloredMessage("NoPermission"));
                 }
                 if (warpName.equalsIgnoreCase("list")) {
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.WPConfigs.Messages.getString("Set.notAvail")));
+                    p.sendMessage(plugin.WPConfigs.coloredMessage("Set.notAvail"));
                 }
                 if (warpExits(warpName, warpType, p)) {
                     if (!setMove[1]) {
-                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.WPConfigs.Messages.getString("Set.noMovePerm")));
+                        p.sendMessage(plugin.WPConfigs.coloredMessage("Set.noMovePerm"));
                         return;
                     }
                 }
@@ -90,8 +88,7 @@ public class WarpPointSetWarp {
                         plugin.WPFactions.setWarp(p, warpName);
                         break;
                 }
-                p.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                        plugin.WPConfigs.Messages.getString("Set." + warpType.toString()).replace("%name", warpName)));
+                p.sendMessage(plugin.WPConfigs.coloredMessage("Set." + warpType.toString()).replace("%name", warpName));
             } else {
                 String types;
                 if (plugin.factions) {
@@ -99,8 +96,7 @@ public class WarpPointSetWarp {
                 } else {
                     types = "private/public";
                 }
-                p.sendMessage(ChatColor.translateAlternateColorCodes('&',
-                        plugin.WPConfigs.Messages.getString("Help.setWarp").replace("%types", types)));
+                p.sendMessage(plugin.WPConfigs.coloredMessage("Help.setWarp").replace("%types", types));
             }
         } else {
             sender.sendMessage(plugin.WPConfigs.Messages.getString("NotAPlayer"));

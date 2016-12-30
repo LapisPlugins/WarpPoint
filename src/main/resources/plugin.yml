@@ -4,7 +4,6 @@ main: net.lapismc.warppoint.WarpPoint
 authors: [dart2112]
 softdepend: [Factions]
 description: The best way to warp
-##Add Commands
 commands:
   warppoint:
     description: shows plugin info

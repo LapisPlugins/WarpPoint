@@ -1,5 +1,6 @@
 package net.lapismc.warppoint;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -44,6 +45,10 @@ public class WarpPointConfigurations {
         Messages = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "Messages.yml"));
     }
 
+    public String coloredMessage(String path) {
+        return ChatColor.translateAlternateColorCodes('&', Messages.getString(path));
+    }
+
     private void setMessages() throws IOException {
         InputStream is = null;
         OutputStream os = null;
@@ -65,8 +70,10 @@ public class WarpPointConfigurations {
     }
 
     public void reloadConfigurations() {
+        plugin.logger.info("WarpPoint being reloaded, You may experience a small lag spike");
         saveConfigurations();
         loadConfigurations();
+        plugin.logger.info("WarpPoint has been reloaded!");
     }
 
     public void reloadPlayerConfig(Player p, YamlConfiguration warps) {
