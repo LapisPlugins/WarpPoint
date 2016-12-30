@@ -8,3 +8,6 @@
   - "Faction warps will now move to your new faction the moment you join"
 1.0.2:
   - "changelog.yml now works"
+1.0.3:
+  - "Critical updater errors fixed"
+  - "updater now works properly, and I tested it this time"

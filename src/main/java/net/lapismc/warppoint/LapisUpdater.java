@@ -56,12 +56,11 @@ public class LapisUpdater {
                         "https://raw.githubusercontent.com/" + username + "/" + repoName + "/" + branch + "/updater/"
                                 + ID + "/" + jarName + ".jar");
                 ReadableByteChannel jarByteChannel = Channels.newChannel(jarURL.openStream());
-                File update = new File(plugin.getDataFolder().getParent() + File.separator +
-                        "update");
+                File update = plugin.getServer().getUpdateFolderFile();
                 if (!update.exists()) {
                     update.mkdir();
                 }
-                File jar = new File(update.getAbsolutePath() + File.separator + "Homespawn.jar");
+                File jar = new File(update.getAbsolutePath() + File.separator + jarName + ".jar");
                 if (!jar.exists()) {
                     jar.createNewFile();
                 }
