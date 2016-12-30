@@ -98,7 +98,7 @@ public class LapisUpdater {
         YamlConfiguration yaml = null;
         try {
             URL website = new URL(
-                    "https://raw.githubusercontent.com/Dart2112/HomeSpawn/master/updater" +
+                    "https://raw.githubusercontent.com/" + username + "/" + repoName + "/" + branch + "/updater" +
                             "/update.yml");
             ReadableByteChannel rbc = Channels.newChannel(website.openStream());
             f = new File(plugin.getDataFolder().getAbsolutePath() + File.separator +
