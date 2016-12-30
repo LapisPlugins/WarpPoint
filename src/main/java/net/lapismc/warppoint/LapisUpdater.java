@@ -21,7 +21,7 @@ public class LapisUpdater {
     private String branch;
     private WarpPoint plugin;
     private Boolean force;
-    private Integer newVersion;
+    private String newVersionRawString;
 
     public LapisUpdater(WarpPoint plugin, String jarName, String username, String repoName, String branch) {
         this.plugin = plugin;
@@ -51,7 +51,7 @@ public class LapisUpdater {
                                 "/changelog.yml");
                 ReadableByteChannel changelogByteChannel = Channels.newChannel(changeLogURL.openStream());
                 File changeLogFile = new File(plugin.getDataFolder().getAbsolutePath() + File.separator +
-                        "ChangeLog.yml");
+                        "changelog.yml");
                 URL jarURL = new URL(
                         "https://raw.githubusercontent.com/" + username + "/" + repoName + "/" + branch + "/updater/"
                                 + ID + "/" + jarName + ".jar");
@@ -78,7 +78,7 @@ public class LapisUpdater {
                 changeLogOutputStream.close();
                 YamlConfiguration changeLog = YamlConfiguration.loadConfiguration(changeLogFile);
                 plugin.logger.info("Changes in newest Version \n" +
-                        changeLog.getStringList("ChangeLog." + newVersion));
+                        changeLog.getStringList(newVersionRawString).toString().replace("[", "").replace("]", ""));
                 return true;
             } catch (IOException e) {
                 plugin.logger.severe("HomeSpawn updater failed to download updates!");
@@ -93,7 +93,7 @@ public class LapisUpdater {
 
     private boolean updateCheck() {
         Integer oldVersion = null;
-        newVersion = null;
+        Integer newVersion = null;
         File f = null;
         YamlConfiguration yaml = null;
         try {
@@ -127,6 +127,7 @@ public class LapisUpdater {
             }
             String oldVersionString = plugin.getDescription().getVersion()
                     .replace(".", "").replace("Beta ", "");
+            newVersionRawString = yaml.getString(ID);
             String newVersionString = yaml.getString(ID).replace(".", "")
                     .replace("Beta ", "");
             oldVersion = Integer.parseInt(oldVersionString);
