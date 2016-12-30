@@ -2,22 +2,27 @@ package net.lapismc.warppoint;
 
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.MPlayer;
+import com.massivecraft.factions.event.EventFactionsMembershipChange;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class WarpPointFactions {
+public class WarpPointFactions implements Listener {
 
     public HashMap<Faction, HashMap<String, UUID>> factionWarps = new HashMap<>();
     WarpPoint plugin;
 
     protected WarpPointFactions(WarpPoint p) {
         plugin = p;
+        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     public boolean isWarp(String warpName, Player p) {
@@ -36,7 +41,12 @@ public class WarpPointFactions {
     public void setWarp(UUID uuid, String warpName) {
         MPlayer fp = MPlayer.get(uuid);
         Faction f = fp.getFaction();
-        HashMap<String, UUID> fw = factionWarps.get(f);
+        HashMap<String, UUID> fw;
+        if (factionWarps.containsKey(f)) {
+            fw = factionWarps.get(f);
+        } else {
+            fw = new HashMap<>();
+        }
         fw.put(warpName, uuid);
         factionWarps.put(f, fw);
     }
@@ -63,7 +73,10 @@ public class WarpPointFactions {
         Faction f = getFaction(p);
         HashMap<String, UUID> fw = factionWarps.get(f);
         UUID uuid = fw.get(s);
-        Location loc = (Location) plugin.WPConfigs.playerWarps.get(uuid).get("Warps." + s + "_" + WarpPoint.WarpType.Faction.toString() + ".location");
+        HashMap<String, UUID> map = factionWarps.get(f);
+        UUID uuid0 = map.get(s);
+        Location loc = (Location) plugin.WPConfigs.playerWarps
+                .get(uuid0).get("Warps." + s + "_faction.location");
         return loc;
     }
 
@@ -80,6 +93,51 @@ public class WarpPointFactions {
     protected Faction getFaction(Player p) {
         MPlayer fp = MPlayer.get(p);
         return fp.getFaction();
+    }
+
+    @EventHandler
+    public void playerFactionChangeEvent(EventFactionsMembershipChange e) {
+        boolean online = e.getMPlayer().isOnline();
+        Player p = null;
+        if (online) {
+            p = e.getMPlayer().getPlayer();
+        }
+        Faction currentFac = e.getMPlayer().getFaction();
+        Faction newFac = e.getNewFaction();
+        if (!factionWarps.containsKey(currentFac) || !factionWarps.get(currentFac).containsValue(e.getMPlayer().getUuid())) {
+            return;
+        }
+        HashMap<String, UUID> oldmap = factionWarps.get(currentFac);
+        HashMap<String, UUID> newmap;
+        if (factionWarps.containsKey(newFac)) {
+            newmap = factionWarps.get(newFac);
+        } else {
+            newmap = new HashMap<>();
+        }
+        for (String s : oldmap.keySet()) {
+            if (oldmap.get(s).equals(e.getMPlayer().getUuid())) {
+                if (newmap.containsKey(s)) {
+                    if (online) {
+                        p.sendMessage("Your factions warp " + s + " was renamed to " + p.getName() + s +
+                                " because your new faction already has a faction warp named " + s);
+                    }
+                    newmap.put(p.getName() + s, e.getMPlayer().getUuid());
+                    oldmap.remove(s);
+                    YamlConfiguration warps = plugin.WPConfigs.playerWarps.get(e.getMPlayer().getUuid());
+                    Location loc = (Location) warps.get("Warps." + s + "_faction.location");
+                    warps.set("Warps." + p.getName() + s + "_faction.location", loc);
+                    warps.set("Warps." + s + "_faction", null);
+                    plugin.WPConfigs.reloadPlayerConfig(p, warps);
+                }
+                newmap.put(s, e.getMPlayer().getUuid());
+                oldmap.remove(s);
+                if (online) {
+                    p.sendMessage("Your warp " + s + "was moved to your new faction");
+                }
+            }
+        }
+        factionWarps.put(currentFac, oldmap);
+        factionWarps.put(newFac, newmap);
     }
 
 }

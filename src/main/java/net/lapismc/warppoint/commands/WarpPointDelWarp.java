@@ -1,7 +1,6 @@
 package net.lapismc.warppoint.commands;
 
 import net.lapismc.warppoint.WarpPoint;
-import net.lapismc.warppoint.WarpPointPerms;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -49,8 +48,7 @@ public class WarpPointDelWarp {
                 return;
             }
             YamlConfiguration warps = plugin.WPConfigs.playerWarps.get(p.getUniqueId());
-            if (warps.getStringList("Warps.list").contains(warpName)
-                    || plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.Admin)) {
+            if (warps.getStringList("Warps.list").contains(warpName)) {
                 switch (warpType) {
                     case Faction:
                         if (plugin.WPFactions.delWarp(p, warpName)) {
@@ -77,6 +75,7 @@ public class WarpPointDelWarp {
             } else {
                 p.sendMessage(plugin.WPConfigs.coloredMessage("NoPermission"));
             }
+            //TODO: add admin can delete other players warps
         } else {
             String types;
             if (plugin.factions) {

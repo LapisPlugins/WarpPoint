@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.lapismc</groupId>
     <artifactId>WarpPoint</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
     <name>WarpPoint</name>
     <description>The best way to warp</description>

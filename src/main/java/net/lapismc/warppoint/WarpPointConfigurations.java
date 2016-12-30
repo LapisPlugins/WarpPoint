@@ -128,7 +128,6 @@ public class WarpPointConfigurations {
         }
     }
 
-
     protected void saveConfigurations() {
         File playerData = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "PlayerData");
         for (UUID uuid : playerWarps.keySet()) {
