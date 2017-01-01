@@ -20,15 +20,7 @@ public final class WarpPoint extends JavaPlugin {
     @Override
     public void onEnable() {
         lapisUpdater = new LapisUpdater(this, "WarpPoint", "Dart2112", "WarpPoint", "master");
-        if (getConfig().getBoolean("DownloadUpdates")) {
-            lapisUpdater.downloadUpdate("WarpPoint");
-        } else {
-            if (lapisUpdater.checkUpdate("WarpPoint")) {
-                logger.info("Update for WarpPoint available, you can install it with /warppoint update");
-            } else {
-                logger.info("No updates found for WarpPoint");
-            }
-        }
+        update();
         Metrics metrics = new Metrics(this);
         metrics.start();
         WPWarps = new WarpPointWarps(this);
@@ -53,6 +45,23 @@ public final class WarpPoint extends JavaPlugin {
     public void onDisable() {
         WPConfigs.saveConfigurations();
         logger.info("WarpPoint Disabled");
+    }
+
+    public void update() {
+        Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
+            @Override
+            public void run() {
+                if (getConfig().getBoolean("DownloadUpdates")) {
+                    lapisUpdater.downloadUpdate("WarpPoint");
+                } else {
+                    if (lapisUpdater.checkUpdate("WarpPoint")) {
+                        logger.info("Update for WarpPoint available, you can install it with /warppoint update");
+                    } else {
+                        logger.info("No updates found for WarpPoint");
+                    }
+                }
+            }
+        });
     }
 
     public enum WarpType {

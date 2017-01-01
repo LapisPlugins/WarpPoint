@@ -38,6 +38,16 @@ public class WarpPointWarps {
         }
     }
 
+    public List<String> getPrivateWarps(Player p) {
+        List<String> list = new ArrayList<>();
+        for (String s : privateWarps) {
+            if (s.contains(p.getUniqueId().toString())) {
+                list.add(s.replace(":" + p.getUniqueId().toString(), ""));
+            }
+        }
+        return list;
+    }
+
     public boolean removePrivateWarp(Player p, String warpName) {
         if (privateWarps.contains(warpName + ":" + p.getUniqueId().toString())) {
             privateWarps.remove(warpName + ":" + p.getUniqueId().toString());

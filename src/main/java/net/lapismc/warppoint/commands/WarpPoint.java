@@ -14,20 +14,19 @@ public class WarpPoint {
     }
 
     public void warpPoint(CommandSender sender, String[] args) {
+        boolean permitted = false;
+        if (sender instanceof Player) {
+            Player p = (Player) sender;
+            permitted = plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.Admin);
+        } else {
+            permitted = true;
+        }
         if (args.length == 0) {
             sender.sendMessage(ChatColor.GOLD + "WarpPoint:" + ChatColor.RED + " v." + plugin.getDescription().getVersion());
             sender.sendMessage(ChatColor.GOLD + "Author:" + ChatColor.RED + " dart2112");
             sender.sendMessage(ChatColor.GOLD + "Spigot: " + ChatColor.RED + "https://goo.gl/vUJ8KC");
         } else if (args.length == 1) {
-
             if (args[0].equalsIgnoreCase("update")) {
-                boolean permitted = false;
-                if (sender instanceof Player) {
-                    Player p = (Player) sender;
-                    permitted = plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.Admin);
-                } else {
-                    permitted = true;
-                }
                 if (permitted) {
                     sender.sendMessage(plugin.WPConfigs.coloredMessage("Update.Checking"));
                     if (plugin.lapisUpdater.checkUpdate("WarpPoint")) {
@@ -45,7 +44,7 @@ public class WarpPoint {
                 help(sender);
 
             } else if (args[0].equalsIgnoreCase("reload")) {
-                boolean permitted = false;
+                permitted = false;
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
                     permitted = plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.Admin);
@@ -58,6 +57,12 @@ public class WarpPoint {
                     sender.sendMessage("WarpPoint has been reloaded!");
                 } else {
                     sender.sendMessage(plugin.WPConfigs.coloredMessage("NoPermission"));
+                }
+            } else {
+                if (permitted) {
+                    sender.sendMessage(plugin.WPConfigs.coloredMessage("Help.warpPointAdmin"));
+                } else {
+                    sender.sendMessage(plugin.WPConfigs.coloredMessage("Help.warpPoint"));
                 }
             }
         }
@@ -81,10 +86,11 @@ public class WarpPoint {
         sender.sendMessage(ChatColor.RED + "--- " + ChatColor.GOLD + "HomeSpawn Help" + ChatColor.RED + " ---");
         sender.sendMessage(plugin.WPConfigs.coloredMessage("Help.warp").replace("%types", types));
         sender.sendMessage(plugin.WPConfigs.coloredMessage("Help.setWarp").replace("%types", types));
-        sender.sendMessage(plugin.WPConfigs.coloredMessage("Help.delWarp").replace("%types", types));
         if (admin) {
+            sender.sendMessage(plugin.WPConfigs.coloredMessage("Help.delWarpAdmin").replace("%types", types));
             sender.sendMessage(plugin.WPConfigs.coloredMessage("Help.warpPointAdmin"));
         } else {
+            sender.sendMessage(plugin.WPConfigs.coloredMessage("Help.delWarp").replace("%types", types));
             sender.sendMessage(plugin.WPConfigs.coloredMessage("Help.warpPoint"));
         }
     }

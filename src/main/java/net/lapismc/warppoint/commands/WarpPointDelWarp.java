@@ -1,6 +1,9 @@
 package net.lapismc.warppoint.commands;
 
 import net.lapismc.warppoint.WarpPoint;
+import net.lapismc.warppoint.WarpPointPerms;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -20,7 +23,7 @@ public class WarpPointDelWarp {
             return;
         }
         Player p = (Player) sender;
-        if (args.length == 2) {
+        if (args.length >= 2) {
             String warpTypeString = args[1];
             String warpName = args[0];
             switch (warpTypeString.toLowerCase()) {
@@ -47,7 +50,22 @@ public class WarpPointDelWarp {
                 p.sendMessage(plugin.WPConfigs.coloredMessage("Help.delWarp").replace("%types", types));
                 return;
             }
-            YamlConfiguration warps = plugin.WPConfigs.playerWarps.get(p.getUniqueId());
+            YamlConfiguration warps;
+            if (args.length == 3) {
+                if (!plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.Admin)) {
+                    p.sendMessage(plugin.WPConfigs.coloredMessage("NoPermission"));
+                    return;
+                }
+                String pName = args[2];
+                OfflinePlayer p0 = Bukkit.getOfflinePlayer(pName);
+                warps = plugin.WPConfigs.playerWarps.get(p0.getUniqueId());
+                if (warps == null) {
+                    p.sendMessage(plugin.WPConfigs.coloredMessage("NoPlayerData"));
+                    return;
+                }
+            } else {
+                warps = plugin.WPConfigs.playerWarps.get(p.getUniqueId());
+            }
             if (warps.getStringList("Warps.list").contains(warpName)) {
                 switch (warpType) {
                     case Faction:
@@ -73,9 +91,8 @@ public class WarpPointDelWarp {
                         break;
                 }
             } else {
-                p.sendMessage(plugin.WPConfigs.coloredMessage("NoPermission"));
+                p.sendMessage(plugin.WPConfigs.coloredMessage("WarpDoesntExist"));
             }
-            //TODO: add admin can delete other players warps
         } else {
             String types;
             if (plugin.factions) {

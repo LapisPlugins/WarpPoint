@@ -25,7 +25,7 @@ public class WarpPointListeners implements Listener {
 
     @EventHandler
     public void playerJoinEvent(PlayerLoginEvent e) {
-        Player p = e.getPlayer();
+        final Player p = e.getPlayer();
         YamlConfiguration warps;
         File f = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "PlayerData" +
                 File.separator + p.getUniqueId() + ".yml");
