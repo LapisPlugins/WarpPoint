@@ -1,9 +1,9 @@
 package net.lapismc.warppoint;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 
 import java.io.*;
 import java.util.HashMap;
@@ -11,12 +11,18 @@ import java.util.UUID;
 
 public class WarpPointConfigurations {
 
-    public HashMap<UUID, YamlConfiguration> playerWarps = new HashMap<>();
-    public YamlConfiguration Messages;
     WarpPoint plugin;
+    private HashMap<UUID, YamlConfiguration> playerWarps = new HashMap<>();
+    private YamlConfiguration Messages;
 
     protected WarpPointConfigurations(WarpPoint plugin) {
         this.plugin = plugin;
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+            @Override
+            public void run() {
+                playerWarps = new HashMap<>();
+            }
+        }, 20 * 60 * 5, 20 * 60 * 5);
     }
 
     protected void generateConfigurations() {
@@ -45,8 +51,12 @@ public class WarpPointConfigurations {
         Messages = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "Messages.yml"));
     }
 
-    public String coloredMessage(String path) {
+    public String getColoredMessage(String path) {
         return ChatColor.translateAlternateColorCodes('&', Messages.getString(path));
+    }
+
+    public String getMessage(String path) {
+        return ChatColor.stripColor(getColoredMessage(path));
     }
 
     private void setMessages() throws IOException {
@@ -69,6 +79,23 @@ public class WarpPointConfigurations {
         }
     }
 
+    public YamlConfiguration getPlayerConfig(UUID uuid) {
+        if (playerWarps.containsKey(uuid) && playerWarps.get(uuid) != null) {
+            return playerWarps.get(uuid);
+        } else {
+            File f = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "PlayerData"
+                    + File.separator + uuid.toString() + ".yml");
+            if (!f.exists()) {
+                try {
+                    f.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return YamlConfiguration.loadConfiguration(f);
+        }
+    }
+
     public void reloadConfigurations() {
         plugin.logger.info("WarpPoint being reloaded, You may experience a small lag spike");
         saveConfigurations();
@@ -76,13 +103,27 @@ public class WarpPointConfigurations {
         plugin.logger.info("WarpPoint has been reloaded!");
     }
 
-    public void reloadPlayerConfig(Player p, YamlConfiguration warps) {
-        File warpsFile = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "PlayerData" + File.separator + p.getUniqueId() + ".yml");
+    public void reloadPlayerConfig(UUID uuid, YamlConfiguration warps) {
+        File warpsFile = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "PlayerData" + File.separator + uuid + ".yml");
         try {
             warps.save(warpsFile);
-            playerWarps.put(p.getUniqueId(), warps);
+            playerWarps.put(uuid, warps);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    protected void unloadPlayerData(UUID uuid) {
+        if (playerWarps.containsKey(uuid)) {
+            YamlConfiguration warps = playerWarps.get(uuid);
+            File f = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "PlayerData"
+                    + File.separator + uuid.toString() + ".yml");
+            try {
+                warps.save(f);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            playerWarps.remove(uuid);
         }
     }
 
@@ -124,7 +165,6 @@ public class WarpPointConfigurations {
                     }
                 }
             }
-            playerWarps.put(uuid, yaml);
         }
     }
 

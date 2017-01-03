@@ -57,12 +57,12 @@ public class WarpPointFactions implements Listener {
             HashMap<String, UUID> map = factionWarps.get(f);
             map.remove(warpName);
             factionWarps.put(f, map);
-            YamlConfiguration warps = plugin.WPConfigs.playerWarps.get(p.getUniqueId());
+            YamlConfiguration warps = plugin.WPConfigs.getPlayerConfig(p.getUniqueId());
             List<String> warpsList = warps.getStringList("Warps.list");
             warpsList.remove(warpName);
             warps.set("Warps.list", warpsList);
             warps.set("Warps." + warpName + "_" + WarpPoint.WarpType.Faction.toString(), null);
-            plugin.WPConfigs.playerWarps.put(p.getUniqueId(), warps);
+            plugin.WPConfigs.reloadPlayerConfig(p.getUniqueId(), warps);
             return true;
         } else {
             return false;
@@ -75,8 +75,7 @@ public class WarpPointFactions implements Listener {
         UUID uuid = fw.get(s);
         HashMap<String, UUID> map = factionWarps.get(f);
         UUID uuid0 = map.get(s);
-        Location loc = (Location) plugin.WPConfigs.playerWarps
-                .get(uuid0).get("Warps." + s + "_faction.location");
+        Location loc = (Location) plugin.WPConfigs.getPlayerConfig(uuid0).get("Warps." + s + "_faction.location");
         return loc;
     }
 
@@ -92,6 +91,11 @@ public class WarpPointFactions implements Listener {
 
     protected Faction getFaction(Player p) {
         MPlayer fp = MPlayer.get(p);
+        return fp.getFaction();
+    }
+
+    protected Faction getFaction(UUID uuid) {
+        MPlayer fp = MPlayer.get(uuid);
         return fp.getFaction();
     }
 
@@ -123,11 +127,11 @@ public class WarpPointFactions implements Listener {
                     }
                     newmap.put(p.getName() + s, e.getMPlayer().getUuid());
                     oldmap.remove(s);
-                    YamlConfiguration warps = plugin.WPConfigs.playerWarps.get(e.getMPlayer().getUuid());
+                    YamlConfiguration warps = plugin.WPConfigs.getPlayerConfig(e.getMPlayer().getUuid());
                     Location loc = (Location) warps.get("Warps." + s + "_faction.location");
                     warps.set("Warps." + p.getName() + s + "_faction.location", loc);
                     warps.set("Warps." + s + "_faction", null);
-                    plugin.WPConfigs.reloadPlayerConfig(p, warps);
+                    plugin.WPConfigs.reloadPlayerConfig(p.getUniqueId(), warps);
                 }
                 newmap.put(s, e.getMPlayer().getUuid());
                 oldmap.remove(s);

@@ -17,7 +17,7 @@ public class WarpPoint {
         boolean permitted = false;
         if (sender instanceof Player) {
             Player p = (Player) sender;
-            permitted = plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.Admin);
+            permitted = plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perms.Admin);
         } else {
             permitted = true;
         }
@@ -28,16 +28,16 @@ public class WarpPoint {
         } else if (args.length == 1) {
             if (args[0].equalsIgnoreCase("update")) {
                 if (permitted) {
-                    sender.sendMessage(plugin.WPConfigs.coloredMessage("Update.Checking"));
+                    sender.sendMessage(plugin.WPConfigs.getColoredMessage("Update.Checking"));
                     if (plugin.lapisUpdater.checkUpdate("WarpPoint")) {
-                        sender.sendMessage(plugin.WPConfigs.coloredMessage("Update.Downloading"));
+                        sender.sendMessage(plugin.WPConfigs.getColoredMessage("Update.Downloading"));
                         plugin.lapisUpdater.downloadUpdate("WarpPoint");
-                        sender.sendMessage(plugin.WPConfigs.coloredMessage("Update.Installed"));
+                        sender.sendMessage(plugin.WPConfigs.getColoredMessage("Update.Installed"));
                     } else {
-                        sender.sendMessage(plugin.WPConfigs.coloredMessage("Update.NoUpdate"));
+                        sender.sendMessage(plugin.WPConfigs.getColoredMessage("Update.NoUpdate"));
                     }
                 } else {
-                    sender.sendMessage(plugin.WPConfigs.coloredMessage("NoPermission"));
+                    sender.sendMessage(plugin.WPConfigs.getColoredMessage("NoPermission"));
                 }
 
             } else if (args[0].equalsIgnoreCase("help")) {
@@ -47,7 +47,7 @@ public class WarpPoint {
                 permitted = false;
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
-                    permitted = plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.Admin);
+                    permitted = plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perms.Admin);
                 } else {
                     permitted = true;
                 }
@@ -56,13 +56,13 @@ public class WarpPoint {
                     plugin.WPConfigs.reloadConfigurations();
                     sender.sendMessage("WarpPoint has been reloaded!");
                 } else {
-                    sender.sendMessage(plugin.WPConfigs.coloredMessage("NoPermission"));
+                    sender.sendMessage(plugin.WPConfigs.getColoredMessage("NoPermission"));
                 }
             } else {
                 if (permitted) {
-                    sender.sendMessage(plugin.WPConfigs.coloredMessage("Help.warpPointAdmin"));
+                    sender.sendMessage(plugin.WPConfigs.getColoredMessage("Help.warpPointAdmin"));
                 } else {
-                    sender.sendMessage(plugin.WPConfigs.coloredMessage("Help.warpPoint"));
+                    sender.sendMessage(plugin.WPConfigs.getColoredMessage("Help.warpPoint"));
                 }
             }
         }
@@ -73,7 +73,7 @@ public class WarpPoint {
         Player p = null;
         if (sender instanceof Player) {
             p = (Player) sender;
-            admin = plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.Admin);
+            admin = plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perms.Admin);
         } else {
             admin = true;
         }
@@ -84,14 +84,14 @@ public class WarpPoint {
             types = "private/public";
         }
         sender.sendMessage(ChatColor.RED + "--- " + ChatColor.GOLD + "HomeSpawn Help" + ChatColor.RED + " ---");
-        sender.sendMessage(plugin.WPConfigs.coloredMessage("Help.warp").replace("%types", types));
-        sender.sendMessage(plugin.WPConfigs.coloredMessage("Help.setWarp").replace("%types", types));
+        sender.sendMessage(plugin.WPConfigs.getColoredMessage("Help.warp").replace("%types", types));
+        sender.sendMessage(plugin.WPConfigs.getColoredMessage("Help.setWarp").replace("%types", types));
         if (admin) {
-            sender.sendMessage(plugin.WPConfigs.coloredMessage("Help.delWarpAdmin").replace("%types", types));
-            sender.sendMessage(plugin.WPConfigs.coloredMessage("Help.warpPointAdmin"));
+            sender.sendMessage(plugin.WPConfigs.getColoredMessage("Help.delWarpAdmin").replace("%types", types));
+            sender.sendMessage(plugin.WPConfigs.getColoredMessage("Help.warpPointAdmin"));
         } else {
-            sender.sendMessage(plugin.WPConfigs.coloredMessage("Help.delWarp").replace("%types", types));
-            sender.sendMessage(plugin.WPConfigs.coloredMessage("Help.warpPoint"));
+            sender.sendMessage(plugin.WPConfigs.getColoredMessage("Help.delWarp").replace("%types", types));
+            sender.sendMessage(plugin.WPConfigs.getColoredMessage("Help.warpPoint"));
         }
     }
 

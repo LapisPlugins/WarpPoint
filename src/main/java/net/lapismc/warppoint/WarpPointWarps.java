@@ -30,7 +30,7 @@ public class WarpPointWarps {
     public Location getPrivateWarp(String s, Player p) {
         UUID uuid = p.getUniqueId();
         if (privateWarps.contains(s + ":" + uuid)) {
-            YamlConfiguration yaml = plugin.WPConfigs.playerWarps.get(uuid);
+            YamlConfiguration yaml = plugin.WPConfigs.getPlayerConfig(uuid);
             Location loc = (Location) yaml.get("Warps." + s + "_" + WarpPoint.WarpType.Private.toString() + ".location");
             return loc;
         } else {
@@ -38,25 +38,25 @@ public class WarpPointWarps {
         }
     }
 
-    public List<String> getPrivateWarps(Player p) {
+    public List<String> getPrivateWarps(UUID uuid) {
         List<String> list = new ArrayList<>();
         for (String s : privateWarps) {
-            if (s.contains(p.getUniqueId().toString())) {
-                list.add(s.replace(":" + p.getUniqueId().toString(), ""));
+            if (s.contains(uuid.toString())) {
+                list.add(s.replace(":" + uuid.toString(), ""));
             }
         }
         return list;
     }
 
-    public boolean removePrivateWarp(Player p, String warpName) {
-        if (privateWarps.contains(warpName + ":" + p.getUniqueId().toString())) {
-            privateWarps.remove(warpName + ":" + p.getUniqueId().toString());
-            YamlConfiguration warps = plugin.WPConfigs.playerWarps.get(p.getUniqueId());
+    public boolean removePrivateWarp(UUID uuid, String warpName) {
+        if (privateWarps.contains(warpName + ":" + uuid)) {
+            privateWarps.remove(warpName + ":" + uuid);
+            YamlConfiguration warps = plugin.WPConfigs.getPlayerConfig(uuid);
             List<String> warpsList = warps.getStringList("Warps.list");
             warpsList.remove(warpName + "_" + WarpPoint.WarpType.Private.toString());
             warps.set("Warps.list", warpsList);
             warps.set("Warps." + warpName + "_" + WarpPoint.WarpType.Private.toString(), null);
-            plugin.WPConfigs.reloadPlayerConfig(p, warps);
+            plugin.WPConfigs.reloadPlayerConfig(uuid, warps);
             return true;
         } else {
             return false;
@@ -66,7 +66,7 @@ public class WarpPointWarps {
     public Location getPublicWarp(String s) {
         if (publicWarps.containsKey(s)) {
             UUID uuid = publicWarps.get(s);
-            YamlConfiguration yaml = plugin.WPConfigs.playerWarps.get(uuid);
+            YamlConfiguration yaml = plugin.WPConfigs.getPlayerConfig(uuid);
             Location loc = (Location) yaml.get("Warps." + s + "_" + WarpPoint.WarpType.Public.toString() + ".location");
             return loc;
         } else {
@@ -74,15 +74,15 @@ public class WarpPointWarps {
         }
     }
 
-    public boolean removePublicWarp(Player p, String warpName) {
-        if (publicWarps.get(warpName) != null && publicWarps.get(warpName).equals(p.getUniqueId())) {
+    public boolean removePublicWarp(UUID uuid, String warpName) {
+        if (publicWarps.get(warpName) != null && publicWarps.get(warpName).equals(uuid)) {
             publicWarps.remove(warpName);
-            YamlConfiguration warps = plugin.WPConfigs.playerWarps.get(p.getUniqueId());
+            YamlConfiguration warps = plugin.WPConfigs.getPlayerConfig(uuid);
             List<String> warpsList = warps.getStringList("Warps.list");
             warpsList.remove(warpName + "_" + WarpPoint.WarpType.Private.toString());
             warps.set("Warps.list", warpsList);
             warps.set("Warps." + warpName + "_" + WarpPoint.WarpType.Public.toString(), null);
-            plugin.WPConfigs.reloadPlayerConfig(p, warps);
+            plugin.WPConfigs.reloadPlayerConfig(uuid, warps);
             return true;
         } else {
             return false;

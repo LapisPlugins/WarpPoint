@@ -19,7 +19,7 @@ public class WarpPointDelWarp {
     public void delWarp(CommandSender sender, String[] args) {
         WarpPoint.WarpType warpType;
         if (!(sender instanceof Player)) {
-            sender.sendMessage(plugin.WPConfigs.Messages.getString("NotAPlayer"));
+            sender.sendMessage(plugin.WPConfigs.getMessage("NotAPlayer"));
             return;
         }
         Player p = (Player) sender;
@@ -47,24 +47,24 @@ public class WarpPointDelWarp {
                 } else {
                     types = "private/public";
                 }
-                p.sendMessage(plugin.WPConfigs.coloredMessage("Help.delWarp").replace("%types", types));
+                p.sendMessage(plugin.WPConfigs.getColoredMessage("Help.delWarp").replace("%types", types));
                 return;
             }
             YamlConfiguration warps;
             if (args.length == 3) {
-                if (!plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.Admin)) {
-                    p.sendMessage(plugin.WPConfigs.coloredMessage("NoPermission"));
+                if (!plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perms.Admin)) {
+                    p.sendMessage(plugin.WPConfigs.getColoredMessage("NoPermission"));
                     return;
                 }
                 String pName = args[2];
                 OfflinePlayer p0 = Bukkit.getOfflinePlayer(pName);
-                warps = plugin.WPConfigs.playerWarps.get(p0.getUniqueId());
+                warps = plugin.WPConfigs.getPlayerConfig(p0.getUniqueId());
                 if (warps == null) {
-                    p.sendMessage(plugin.WPConfigs.coloredMessage("NoPlayerData"));
+                    p.sendMessage(plugin.WPConfigs.getColoredMessage("NoPlayerData"));
                     return;
                 }
             } else {
-                warps = plugin.WPConfigs.playerWarps.get(p.getUniqueId());
+                warps = plugin.WPConfigs.getPlayerConfig(p.getUniqueId());
             }
             if (warps.getStringList("Warps.list").contains(warpName)) {
                 switch (warpType) {
@@ -76,14 +76,14 @@ public class WarpPointDelWarp {
                         }
                         break;
                     case Public:
-                        if (plugin.WPWarps.removePublicWarp(p, warpName)) {
+                        if (plugin.WPWarps.removePublicWarp(p.getUniqueId(), warpName)) {
                             p.sendMessage("Removed your public warp " + warpName);
                         } else {
                             p.sendMessage("Failed to remove public warp " + warpName);
                         }
                         break;
                     case Private:
-                        if (plugin.WPWarps.removePrivateWarp(p, warpName)) {
+                        if (plugin.WPWarps.removePrivateWarp(p.getUniqueId(), warpName)) {
                             p.sendMessage("Removed your private warp " + warpName);
                         } else {
                             p.sendMessage("Failed to remove private warp " + warpName);
@@ -91,7 +91,7 @@ public class WarpPointDelWarp {
                         break;
                 }
             } else {
-                p.sendMessage(plugin.WPConfigs.coloredMessage("WarpDoesntExist"));
+                p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpDoesntExist"));
             }
         } else {
             String types;
@@ -100,7 +100,7 @@ public class WarpPointDelWarp {
             } else {
                 types = "private/public";
             }
-            p.sendMessage(plugin.WPConfigs.coloredMessage("Help.delWarp").replace("%types", types));
+            p.sendMessage(plugin.WPConfigs.getColoredMessage("Help.delWarp").replace("%types", types));
         }
     }
 

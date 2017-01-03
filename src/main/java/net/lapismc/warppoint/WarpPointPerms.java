@@ -21,6 +21,12 @@ public class WarpPointPerms {
 
     protected WarpPointPerms(WarpPoint p) {
         plugin = p;
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+            @Override
+            public void run() {
+                playerPerms = new HashMap<>();
+            }
+        }, 20 * 60 * 5, 20 * 60 * 5);
     }
 
     protected void loadPermissions() {
@@ -81,18 +87,44 @@ public class WarpPointPerms {
         playerPerms.put(uuid, p);
     }
 
-    public Boolean isPermitted(Player p, Perms perm) {
-        HashMap<Perms, Integer> permMap = pluginPerms.get(playerPerms.get(p.getUniqueId()));
-        if (permMap == null || permMap.get(perm) == null) {
-            return false;
+    public Permission getPlayerPermission(UUID uuid) {
+        Permission p = null;
+        Player player = Bukkit.getPlayer(uuid);
+        if (!playerPerms.containsKey(uuid) || playerPerms.get(uuid).equals(null)) {
+            Integer priority = 0;
+            for (Permission perm : pluginPerms.keySet()) {
+                if (player.hasPermission(perm) &&
+                        (pluginPerms.get(perm).get(Perms.Priority) > priority)) {
+                    p = perm;
+                }
+            }
+            if (p == null) {
+                return null;
+            } else {
+                playerPerms.put(uuid, p);
+            }
+        } else {
+            p = playerPerms.get(uuid);
+        }
+        return p;
+    }
+
+    public Boolean isPermitted(UUID uuid, Perms perm) {
+        HashMap<Perms, Integer> permMap;
+        Permission p = getPlayerPermission(uuid);
+        if (!pluginPerms.containsKey(p) || pluginPerms.get(p).equals(null)) {
+            loadPermissions();
+            permMap = pluginPerms.get(p);
+        } else {
+            permMap = pluginPerms.get(p);
         }
         if (perm.equals(Perms.FactionWarps)) {
             if (plugin.factions) {
                 Integer i = 0;
-                Faction f = plugin.WPFactions.getFaction(p);
+                Faction f = plugin.WPFactions.getFaction(uuid);
                 HashMap<String, UUID> map = plugin.WPFactions.factionWarps.get(f);
-                for (UUID uuid : map.values()) {
-                    if (uuid.equals(p.getUniqueId())) {
+                for (UUID uuid0 : map.values()) {
+                    if (uuid0.equals(uuid)) {
                         i++;
                     }
                 }
@@ -103,8 +135,8 @@ public class WarpPointPerms {
         } else if (perm.equals(Perms.PublicWarps)) {
             Integer i = 0;
             HashMap<String, UUID> map = plugin.WPWarps.publicWarps;
-            for (UUID uuid : map.values()) {
-                if (uuid.equals(p.getUniqueId())) {
+            for (UUID uuid0 : map.values()) {
+                if (uuid0.equals(uuid)) {
                     i++;
                 }
             }
@@ -114,7 +146,7 @@ public class WarpPointPerms {
             Integer i = 0;
             for (String s : list) {
                 String[] sArray = s.split(":");
-                if (sArray[1].equals(p.getUniqueId().toString())) {
+                if (sArray[1].equals(uuid.toString())) {
                     i++;
                 }
             }

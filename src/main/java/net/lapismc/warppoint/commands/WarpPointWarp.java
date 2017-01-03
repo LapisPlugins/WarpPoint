@@ -36,52 +36,52 @@ public class WarpPointWarp {
                     }
                 }
                 if (types.size() > 1) {
-                    p.sendMessage(plugin.WPConfigs.coloredMessage("TypeNeeded"));
+                    p.sendMessage(plugin.WPConfigs.getColoredMessage("TypeNeeded"));
                 } else if (types.size() == 0) {
-                    p.sendMessage(plugin.WPConfigs.coloredMessage("WarpDoesntExist"));
+                    p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpDoesntExist"));
                 } else {
                     switch (types.get(0)) {
                         case Public:
-                            if (!plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.PublicTele)) {
-                                p.sendMessage(plugin.WPConfigs.coloredMessage("NoPermission"));
+                            if (!plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perms.PublicTele)) {
+                                p.sendMessage(plugin.WPConfigs.getColoredMessage("NoPermission"));
                             }
                             Location loc = plugin.WPWarps.getPublicWarp(warpName);
                             if (loc != null) {
                                 p.teleport(loc);
-                                p.sendMessage(plugin.WPConfigs.coloredMessage("Teleported").replace("%name", warpName));
+                                p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
                             } else {
-                                p.sendMessage(plugin.WPConfigs.coloredMessage("WarpDoesntExist"));
+                                p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpDoesntExist"));
                             }
                             break;
                         case Private:
-                            if (!plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.Private)) {
-                                p.sendMessage(plugin.WPConfigs.coloredMessage("NoPermission"));
+                            if (!plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perms.Private)) {
+                                p.sendMessage(plugin.WPConfigs.getColoredMessage("NoPermission"));
                             }
                             Location loc0 = plugin.WPWarps.getPrivateWarp(warpName, p);
                             if (loc0 != null) {
                                 p.teleport(loc0);
-                                p.sendMessage(plugin.WPConfigs.coloredMessage("Teleported").replace("%name", warpName));
+                                p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
                             } else {
-                                p.sendMessage(plugin.WPConfigs.coloredMessage("WarpDoesntExist"));
+                                p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpDoesntExist"));
                             }
                             break;
                         case Faction:
                             if (!plugin.factions) {
-                                p.sendMessage(plugin.WPConfigs.coloredMessage("FactionsDisabled"));
+                                p.sendMessage(plugin.WPConfigs.getColoredMessage("FactionsDisabled"));
                             }
-                            if (!plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.FactionTele)) {
-                                p.sendMessage(plugin.WPConfigs.coloredMessage("NoPermission"));
+                            if (!plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perms.FactionTele)) {
+                                p.sendMessage(plugin.WPConfigs.getColoredMessage("NoPermission"));
                             }
                             if (plugin.WPFactions.isWarp(warpName, p)) {
                                 Location loc1 = plugin.WPFactions.getWarp(p, warpName);
                                 if (loc1 != null) {
                                     p.teleport(loc1);
-                                    p.sendMessage(plugin.WPConfigs.coloredMessage("Teleported").replace("%name", warpName));
+                                    p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
                                 } else {
-                                    p.sendMessage(plugin.WPConfigs.coloredMessage("WarpDoesntExist"));
+                                    p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpDoesntExist"));
                                 }
                             } else {
-                                p.sendMessage(plugin.WPConfigs.coloredMessage("WarpDoesntExist"));
+                                p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpDoesntExist"));
                             }
                             break;
                     }
@@ -96,12 +96,12 @@ public class WarpPointWarp {
                             Location loc = plugin.WPWarps.getPublicWarp(warpName);
                             if (loc != null) {
                                 p.teleport(loc);
-                                p.sendMessage(plugin.WPConfigs.coloredMessage("Teleported").replace("%name", warpName));
+                                p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
                             } else {
-                                p.sendMessage(plugin.WPConfigs.coloredMessage("WarpDoesntExist"));
+                                p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpDoesntExist"));
                             }
                         } else {
-                            p.sendMessage(plugin.WPConfigs.coloredMessage("WarpDoesntExist"));
+                            p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpDoesntExist"));
                         }
                         break;
                     case "faction":
@@ -109,12 +109,12 @@ public class WarpPointWarp {
                             if (plugin.WPFactions.isWarp(warpName, p)) {
                                 Location loc = plugin.WPFactions.getWarp(p, warpName);
                                 p.teleport(loc);
-                                p.sendMessage(plugin.WPConfigs.coloredMessage("Teleported").replace("%name", warpName));
+                                p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
                             } else {
-                                p.sendMessage(plugin.WPConfigs.coloredMessage("WarpDoesntExist"));
+                                p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpDoesntExist"));
                             }
                         } else {
-                            p.sendMessage(plugin.WPConfigs.coloredMessage("FactionsDisabled"));
+                            p.sendMessage(plugin.WPConfigs.getColoredMessage("FactionsDisabled"));
                             return;
                         }
                         break;
@@ -123,17 +123,17 @@ public class WarpPointWarp {
                         Location loc = plugin.WPWarps.getPrivateWarp(warpName, p);
                         if (loc != null) {
                             p.teleport(loc);
-                            p.sendMessage(plugin.WPConfigs.coloredMessage("Teleported").replace("%name", warpName));
+                            p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
                         } else {
-                            p.sendMessage(plugin.WPConfigs.coloredMessage("WarpDoesntExist"));
+                            p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpDoesntExist"));
                         }
                         break;
                 }
             } else {
-                p.sendMessage(plugin.WPConfigs.coloredMessage("Help.warp"));
+                p.sendMessage(plugin.WPConfigs.getColoredMessage("Help.warp"));
             }
         } else {
-            sender.sendMessage(plugin.WPConfigs.Messages.getString("NotAPlayer"));
+            sender.sendMessage(plugin.WPConfigs.getMessage("NotAPlayer"));
         }
     }
 

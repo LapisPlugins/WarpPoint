@@ -11,3 +11,7 @@
 1.0.3:
   - "Critical updater errors fixed"
   - "updater now works properly, and I tested it this time"
+1.0.4:
+  - "Made player data caching dynamic"
+  - "Added /warplist [type]"
+  - "Added admin ability to delete other players warps"

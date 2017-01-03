@@ -19,7 +19,7 @@ public class WarpPointSetWarp {
     public void setWarp(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
-            YamlConfiguration warps = plugin.WPConfigs.playerWarps.get(p.getUniqueId());
+            YamlConfiguration warps = plugin.WPConfigs.getPlayerConfig(p.getUniqueId());
             if (args.length == 2) {
                 String warpName = args[0];
                 String type = args[1];
@@ -28,29 +28,29 @@ public class WarpPointSetWarp {
                 switch (type) {
                     case "public":
                         warpType = WarpPoint.WarpType.Public;
-                        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.PublicWarps)) {
+                        if (plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perms.PublicWarps)) {
                             setMove[0] = true;
                         }
-                        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.PublicMove)) {
+                        if (plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perms.PublicMove)) {
                             setMove[1] = true;
                         }
                         break;
                     case "private":
                         warpType = WarpPoint.WarpType.Private;
-                        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.Private)) {
+                        if (plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perms.Private)) {
                             setMove[0] = true;
                         }
                         break;
                     case "faction":
                         if (!plugin.factions) {
-                            p.sendMessage(plugin.WPConfigs.coloredMessage("FactionsDisabled"));
+                            p.sendMessage(plugin.WPConfigs.getColoredMessage("FactionsDisabled"));
                             return;
                         }
                         warpType = WarpPoint.WarpType.Faction;
-                        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.FactionWarps)) {
+                        if (plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perms.FactionWarps)) {
                             setMove[0] = true;
                         }
-                        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.FactionMove)) {
+                        if (plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perms.FactionMove)) {
                             setMove[1] = true;
                         }
                         break;
@@ -59,14 +59,14 @@ public class WarpPointSetWarp {
                         break;
                 }
                 if (!setMove[0]) {
-                    p.sendMessage(plugin.WPConfigs.coloredMessage("NoPermission"));
+                    p.sendMessage(plugin.WPConfigs.getColoredMessage("NoPermission"));
                 }
                 if (warpName.equalsIgnoreCase("list")) {
-                    p.sendMessage(plugin.WPConfigs.coloredMessage("Set.notAvail"));
+                    p.sendMessage(plugin.WPConfigs.getColoredMessage("Set.notAvail"));
                 }
                 if (warpExits(warpName, warpType, p)) {
                     if (!setMove[1]) {
-                        p.sendMessage(plugin.WPConfigs.coloredMessage("Set.noMovePerm"));
+                        p.sendMessage(plugin.WPConfigs.getColoredMessage("Set.noMovePerm"));
                         return;
                     }
                 }
@@ -76,7 +76,7 @@ public class WarpPointSetWarp {
                     warps.set("Warps.list", warpList);
                 }
                 warps.set("Warps." + warpName + "_" + warpType.toString() + ".location", p.getLocation());
-                plugin.WPConfigs.reloadPlayerConfig(p, warps);
+                plugin.WPConfigs.reloadPlayerConfig(p.getUniqueId(), warps);
                 switch (warpType) {
                     case Public:
                         plugin.WPWarps.addPublicWarp(warpName, p.getUniqueId());
@@ -88,7 +88,7 @@ public class WarpPointSetWarp {
                         plugin.WPFactions.setWarp(p, warpName);
                         break;
                 }
-                p.sendMessage(plugin.WPConfigs.coloredMessage("Set." + warpType.toString()).replace("%name", warpName));
+                p.sendMessage(plugin.WPConfigs.getColoredMessage("Set." + warpType.toString()).replace("%name", warpName));
             } else {
                 String types;
                 if (plugin.factions) {
@@ -96,10 +96,10 @@ public class WarpPointSetWarp {
                 } else {
                     types = "private/public";
                 }
-                p.sendMessage(plugin.WPConfigs.coloredMessage("Help.setWarp").replace("%types", types));
+                p.sendMessage(plugin.WPConfigs.getColoredMessage("Help.setWarp").replace("%types", types));
             }
         } else {
-            sender.sendMessage(plugin.WPConfigs.Messages.getString("NotAPlayer"));
+            sender.sendMessage(plugin.WPConfigs.getMessage("NotAPlayer"));
         }
     }
 

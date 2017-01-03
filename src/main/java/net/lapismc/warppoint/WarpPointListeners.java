@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.permissions.Permission;
 
 import java.io.File;
@@ -41,16 +42,16 @@ public class WarpPointListeners implements Listener {
             warps.set("UserName", p.getName());
             List<String> sl = new ArrayList<>();
             warps.set("Warps.list", sl);
-            plugin.WPConfigs.reloadPlayerConfig(p, warps);
+            plugin.WPConfigs.reloadPlayerConfig(p.getUniqueId(), warps);
         }
         warps = YamlConfiguration.loadConfiguration(f);
         if (!warps.getString("UUID").equals(p.getUniqueId().toString())) {
             warps.set("UUID", p.getUniqueId().toString());
-            plugin.WPConfigs.reloadPlayerConfig(p, warps);
+            plugin.WPConfigs.reloadPlayerConfig(p.getUniqueId(), warps);
         }
         if (!warps.getString("UserName").equals(p.getName())) {
             warps.set("UserName", p.getName());
-            plugin.WPConfigs.reloadPlayerConfig(p, warps);
+            plugin.WPConfigs.reloadPlayerConfig(p.getUniqueId(), warps);
         }
         Integer priority = 0;
         Integer lowestPriority = null;
@@ -78,18 +79,24 @@ public class WarpPointListeners implements Listener {
                     + lowestPermission.getName() + " by default");
             plugin.WPPerms.setPerms(p.getUniqueId(), lowestPermission);
         }
-        if (plugin.WPPerms.isPermitted(p, WarpPointPerms.Perms.Admin)) {
+        if (plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perms.Admin)) {
             Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
                 @Override
                 public void run() {
                     if (plugin.lapisUpdater.checkUpdate("WarpPoint")) {
                         if (!plugin.getConfig().getBoolean("DownloadUpdates")) {
-                            p.sendMessage(plugin.WPConfigs.coloredMessage("Update.Available"));
+                            p.sendMessage(plugin.WPConfigs.getColoredMessage("Update.Available"));
                         }
                     }
                 }
             });
         }
+    }
+
+    @EventHandler
+    public void playerQuitEvent(PlayerQuitEvent e) {
+        Player p = e.getPlayer();
+        plugin.WPConfigs.unloadPlayerData(p.getUniqueId());
     }
 
 }
