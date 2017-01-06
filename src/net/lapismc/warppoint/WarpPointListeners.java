@@ -28,6 +28,7 @@ import org.bukkit.permissions.Permission;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -56,6 +57,7 @@ public class WarpPointListeners implements Listener {
             warps = YamlConfiguration.loadConfiguration(f);
             warps.set("UUID", p.getUniqueId().toString());
             warps.set("UserName", p.getName());
+            warps.set("OfflineSince", "-");
             List<String> sl = new ArrayList<>();
             warps.set("Warps.list", sl);
             plugin.WPConfigs.reloadPlayerConfig(p.getUniqueId(), warps);
@@ -74,15 +76,15 @@ public class WarpPointListeners implements Listener {
         Permission lowestPermission = null;
         Permission currentPerm = null;
         for (Permission perm : plugin.WPPerms.pluginPerms.keySet()) {
-            HashMap<WarpPointPerms.Perms, Integer> map = plugin.WPPerms.pluginPerms.get(perm);
-            if (lowestPriority == null || map.get(WarpPointPerms.Perms.Priority) < lowestPriority) {
+            HashMap<WarpPointPerms.Perm, Integer> map = plugin.WPPerms.pluginPerms.get(perm);
+            if (lowestPriority == null || map.get(WarpPointPerms.Perm.Priority) < lowestPriority) {
                 lowestPermission = perm;
-                lowestPriority = map.get(WarpPointPerms.Perms.Priority);
+                lowestPriority = map.get(WarpPointPerms.Perm.Priority);
             }
             if (p.hasPermission(perm)) {
 
-                if (map.get(WarpPointPerms.Perms.Priority) > priority) {
-                    priority = map.get(WarpPointPerms.Perms.Priority);
+                if (map.get(WarpPointPerms.Perm.Priority) > priority) {
+                    priority = map.get(WarpPointPerms.Perm.Priority);
                     currentPerm = perm;
                 }
             }
@@ -95,7 +97,7 @@ public class WarpPointListeners implements Listener {
                     + lowestPermission.getName() + " by default");
             plugin.WPPerms.setPerms(p.getUniqueId(), lowestPermission);
         }
-        if (plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perms.Admin)) {
+        if (plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perm.Admin)) {
             Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
                 @Override
                 public void run() {
@@ -112,6 +114,10 @@ public class WarpPointListeners implements Listener {
     @EventHandler
     public void playerQuitEvent(PlayerQuitEvent e) {
         Player p = e.getPlayer();
+        Date date = new Date();
+        YamlConfiguration warps = plugin.WPConfigs.getPlayerConfig(p.getUniqueId());
+        warps.set("OfflineSince", date.getTime());
+        plugin.WPConfigs.reloadPlayerConfig(p.getUniqueId(), warps);
         plugin.WPConfigs.unloadPlayerData(p.getUniqueId());
     }
 

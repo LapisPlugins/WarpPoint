@@ -68,7 +68,7 @@ public class WarpPointDelWarp {
             }
             YamlConfiguration warps;
             if (args.length == 3) {
-                if (!plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perms.Admin)) {
+                if (!plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perm.Admin)) {
                     p.sendMessage(plugin.WPConfigs.getColoredMessage("NoPermission"));
                     return;
                 }

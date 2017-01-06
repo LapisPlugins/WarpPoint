@@ -23,15 +23,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 
 public class WarpPointPerms {
 
-    protected HashMap<Permission, HashMap<Perms, Integer>> pluginPerms = new HashMap<>();
+    protected HashMap<Permission, HashMap<Perm, Integer>> pluginPerms = new HashMap<>();
     private WarpPoint plugin;
     private HashMap<UUID, Permission> playerPerms = new HashMap<>();
 
@@ -46,10 +46,6 @@ public class WarpPointPerms {
     }
 
     protected void loadPermissions() {
-        if (plugin == null) {
-            System.out.println("Plugin null");
-            return;
-        }
         ConfigurationSection permsSection = plugin.getConfig().getConfigurationSection("Permissions");
         Set<String> perms = permsSection.getKeys(false);
         for (String perm : perms) {
@@ -64,17 +60,17 @@ public class WarpPointPerms {
             int factionTele = plugin.getConfig().getInt("Permissions." + perm + ".FactionTele");
             int factionWarps = plugin.getConfig().getInt("Permissions." + perm + ".FactionWarps");
             int factionMove = plugin.getConfig().getInt("Permissions." + perm + ".FactionMove");
-            HashMap<Perms, Integer> permMap = new HashMap<>();
-            permMap.put(Perms.Default, Default);
-            permMap.put(Perms.Priority, priority);
-            permMap.put(Perms.Admin, Admin);
-            permMap.put(Perms.Private, privateWarps);
-            permMap.put(Perms.PublicTele, publicTele);
-            permMap.put(Perms.PublicWarps, publicWarps);
-            permMap.put(Perms.PublicMove, publicMove);
-            permMap.put(Perms.FactionTele, factionTele);
-            permMap.put(Perms.FactionWarps, factionWarps);
-            permMap.put(Perms.FactionMove, factionMove);
+            HashMap<Perm, Integer> permMap = new HashMap<>();
+            permMap.put(Perm.Default, Default);
+            permMap.put(Perm.Priority, priority);
+            permMap.put(Perm.Admin, Admin);
+            permMap.put(Perm.Private, privateWarps);
+            permMap.put(Perm.PublicTele, publicTele);
+            permMap.put(Perm.PublicWarps, publicWarps);
+            permMap.put(Perm.PublicMove, publicMove);
+            permMap.put(Perm.FactionTele, factionTele);
+            permMap.put(Perm.FactionWarps, factionWarps);
+            permMap.put(Perm.FactionMove, factionMove);
             PermissionDefault permissionDefault;
             switch (Default) {
                 case 1:
@@ -110,7 +106,7 @@ public class WarpPointPerms {
             Integer priority = 0;
             for (Permission perm : pluginPerms.keySet()) {
                 if (player.hasPermission(perm) &&
-                        (pluginPerms.get(perm).get(Perms.Priority) > priority)) {
+                        (pluginPerms.get(perm).get(Perm.Priority) > priority)) {
                     p = perm;
                 }
             }
@@ -125,8 +121,8 @@ public class WarpPointPerms {
         return p;
     }
 
-    public Boolean isPermitted(UUID uuid, Perms perm) {
-        HashMap<Perms, Integer> permMap;
+    public Boolean isPermitted(UUID uuid, Perm perm) {
+        HashMap<Perm, Integer> permMap;
         Permission p = getPlayerPermission(uuid);
         if (!pluginPerms.containsKey(p) || pluginPerms.get(p).equals(null)) {
             loadPermissions();
@@ -134,7 +130,7 @@ public class WarpPointPerms {
         } else {
             permMap = pluginPerms.get(p);
         }
-        if (perm.equals(Perms.FactionWarps)) {
+        if (perm.equals(Perm.FactionWarps)) {
             if (plugin.factions) {
                 Integer i = 0;
                 Faction f = plugin.WPFactions.getFaction(uuid);
@@ -148,31 +144,25 @@ public class WarpPointPerms {
             } else {
                 return false;
             }
-        } else if (perm.equals(Perms.PublicWarps)) {
-            Integer i = 0;
-            HashMap<String, UUID> map = plugin.WPWarps.publicWarps;
-            for (UUID uuid0 : map.values()) {
-                if (uuid0.equals(uuid)) {
-                    i++;
-                }
-            }
+        } else if (perm.equals(Perm.PublicWarps)) {
+            List<String> publicWarps = plugin.WPWarps.getOwnedPublicWarps(uuid);
+            Integer i = publicWarps.size();
             return i < permMap.get(perm);
-        } else if (perm.equals(Perms.Private)) {
-            ArrayList<String> list = plugin.WPWarps.privateWarps;
-            Integer i = 0;
-            for (String s : list) {
-                String[] sArray = s.split(":");
-                if (sArray[1].equals(uuid.toString())) {
-                    i++;
-                }
-            }
+        } else if (perm.equals(Perm.Private)) {
+            List<String> list = plugin.WPWarps.getPrivateWarps(uuid);
+            Integer i = list.size();
             return i < permMap.get(perm);
         } else {
             return permMap.get(perm) == 1;
         }
     }
 
-    public enum Perms {
+    public Integer getPermissionValue(UUID uuid, Perm p) {
+        Permission perm = getPlayerPermission(uuid);
+        return pluginPerms.get(perm).get(p);
+    }
+
+    public enum Perm {
         Default, Priority, Admin, Private, PublicWarps, PublicMove, PublicTele, FactionWarps, FactionMove, FactionTele;
 
         @Override

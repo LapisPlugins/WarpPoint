@@ -24,16 +24,18 @@ import org.bukkit.entity.Player;
 public class WarpPoint {
 
     net.lapismc.warppoint.WarpPoint plugin;
+    WarpPointPlayer WPPlayer;
 
     public WarpPoint(net.lapismc.warppoint.WarpPoint plugin) {
         this.plugin = plugin;
+        WPPlayer = new WarpPointPlayer(plugin);
     }
 
     public void warpPoint(CommandSender sender, String[] args) {
         boolean permitted = false;
         if (sender instanceof Player) {
             Player p = (Player) sender;
-            permitted = plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perms.Admin);
+            permitted = plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perm.Admin);
         } else {
             permitted = true;
         }
@@ -63,7 +65,7 @@ public class WarpPoint {
                 permitted = false;
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
-                    permitted = plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perms.Admin);
+                    permitted = plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perm.Admin);
                 } else {
                     permitted = true;
                 }
@@ -74,6 +76,9 @@ public class WarpPoint {
                 } else {
                     sender.sendMessage(plugin.WPConfigs.getColoredMessage("NoPermission"));
                 }
+            } else if (args[0].equalsIgnoreCase("player")) {
+                WPPlayer.WarpPointPlayer(sender, args, permitted);
+                return;
             } else {
                 if (permitted) {
                     sender.sendMessage(plugin.WPConfigs.getColoredMessage("Help.warpPointAdmin"));
@@ -89,7 +94,7 @@ public class WarpPoint {
         Player p = null;
         if (sender instanceof Player) {
             p = (Player) sender;
-            admin = plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perms.Admin);
+            admin = plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perm.Admin);
         } else {
             admin = true;
         }

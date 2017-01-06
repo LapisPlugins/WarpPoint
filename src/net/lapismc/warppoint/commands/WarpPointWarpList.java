@@ -51,7 +51,7 @@ public class WarpPointWarpList {
             switch (typeString) {
                 case "faction":
                     p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpList.faction"));
-                    List<String> warps0 = plugin.WPFactions.getWarps(p);
+                    List<String> warps0 = plugin.WPFactions.getFactionWarps(p.getUniqueId());
                     String warpsString0 = ChatColor.GOLD + warps0.toString().replace("[", "").replace("]", "");
                     p.sendMessage(warpsString0);
                     break;
@@ -63,7 +63,7 @@ public class WarpPointWarpList {
                     break;
                 case "public":
                     p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpList.public"));
-                    Set<String> warps2 = plugin.WPWarps.publicWarps.keySet();
+                    Set<String> warps2 = plugin.WPWarps.getAllPublicWarps();
                     String warpsString2 = ChatColor.GOLD + warps2.toString().replace("[", "").replace("]", "");
                     p.sendMessage(warpsString2);
                     break;

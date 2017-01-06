@@ -18,18 +18,14 @@ package net.lapismc.warppoint;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class WarpPointWarps {
 
-    public HashMap<String, UUID> publicWarps = new HashMap<>();
-    public ArrayList<String> privateWarps = new ArrayList<>();
     WarpPoint plugin;
+    private HashMap<String, UUID> publicWarps = new HashMap<>();
+    private ArrayList<String> privateWarps = new ArrayList<>();
 
     protected WarpPointWarps(WarpPoint p) {
         plugin = p;
@@ -43,8 +39,7 @@ public class WarpPointWarps {
         privateWarps.add(name + ":" + uuid.toString());
     }
 
-    public Location getPrivateWarp(String s, Player p) {
-        UUID uuid = p.getUniqueId();
+    public Location getPrivateWarp(String s, UUID uuid) {
         if (privateWarps.contains(s + ":" + uuid)) {
             YamlConfiguration yaml = plugin.WPConfigs.getPlayerConfig(uuid);
             Location loc = (Location) yaml.get("Warps." + s + "_" + WarpPoint.WarpType.Private.toString() + ".location");
@@ -59,6 +54,20 @@ public class WarpPointWarps {
         for (String s : privateWarps) {
             if (s.contains(uuid.toString())) {
                 list.add(s.replace(":" + uuid.toString(), ""));
+            }
+        }
+        return list;
+    }
+
+    public Set<String> getAllPublicWarps() {
+        return publicWarps.keySet();
+    }
+
+    public List<String> getOwnedPublicWarps(UUID uuid) {
+        List<String> list = new ArrayList<>();
+        for (String s : publicWarps.keySet()) {
+            if (publicWarps.get(s).equals(uuid)) {
+                list.add(s);
             }
         }
         return list;

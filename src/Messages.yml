@@ -5,6 +5,7 @@ Help:
   delWarpAdmin: "&6Usage: /delwarp [name] [%types] [username]"
   warpPointAdmin: "&6Usage: /warppoint [help/update/reload]"
   warpPoint: "&6Usage: /warppoint [help]"
+  warpPointPlayer: "&6Usage: /warppoint player [name] (warp name) (type) warp name and type is only if you want to teleport to that players warp"
   warpList: "&6Usage: /warplist [%types]"
 WarpList:
   public: "&6Here is a list of public warps:"

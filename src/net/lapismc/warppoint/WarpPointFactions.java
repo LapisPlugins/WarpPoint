@@ -85,18 +85,28 @@ public class WarpPointFactions implements Listener {
         }
     }
 
-    public Location getWarp(Player p, String s) {
-        Faction f = getFaction(p);
-        HashMap<String, UUID> fw = factionWarps.get(f);
-        UUID uuid = fw.get(s);
+    public Location getWarp(String s, UUID uuid) {
+        Faction f = getFaction(uuid);
         HashMap<String, UUID> map = factionWarps.get(f);
         UUID uuid0 = map.get(s);
         Location loc = (Location) plugin.WPConfigs.getPlayerConfig(uuid0).get("Warps." + s + "_faction.location");
         return loc;
     }
 
-    public List<String> getWarps(Player p) {
-        Faction f = getFaction(p);
+    public List<String> getOwnedWarps(UUID uuid) {
+        List<String> list = new ArrayList<>();
+        Faction f = getFaction(uuid);
+        HashMap<String, UUID> fw = factionWarps.get(f);
+        for (String s : fw.keySet()) {
+            if (fw.get(s) == uuid) {
+                list.add(s);
+            }
+        }
+        return list;
+    }
+
+    public List<String> getFactionWarps(UUID uuid) {
+        Faction f = getFaction(uuid);
         HashMap<String, UUID> fw = factionWarps.get(f);
         List<String> warps = new ArrayList<>();
         for (String s : fw.keySet()) {

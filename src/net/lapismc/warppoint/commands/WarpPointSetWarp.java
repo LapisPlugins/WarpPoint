@@ -44,16 +44,16 @@ public class WarpPointSetWarp {
                 switch (type) {
                     case "public":
                         warpType = WarpPoint.WarpType.Public;
-                        if (plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perms.PublicWarps)) {
+                        if (plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perm.PublicWarps)) {
                             setMove[0] = true;
                         }
-                        if (plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perms.PublicMove)) {
+                        if (plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perm.PublicMove)) {
                             setMove[1] = true;
                         }
                         break;
                     case "private":
                         warpType = WarpPoint.WarpType.Private;
-                        if (plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perms.Private)) {
+                        if (plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perm.Private)) {
                             setMove[0] = true;
                         }
                         break;
@@ -63,10 +63,10 @@ public class WarpPointSetWarp {
                             return;
                         }
                         warpType = WarpPoint.WarpType.Faction;
-                        if (plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perms.FactionWarps)) {
+                        if (plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perm.FactionWarps)) {
                             setMove[0] = true;
                         }
-                        if (plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perms.FactionMove)) {
+                        if (plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perm.FactionMove)) {
                             setMove[1] = true;
                         }
                         break;
@@ -122,7 +122,7 @@ public class WarpPointSetWarp {
     private boolean warpExits(String s, WarpPoint.WarpType type, Player p) {
         switch (type) {
             case Public:
-                return plugin.WPWarps.publicWarps.containsKey(s);
+                return plugin.WPWarps.getOwnedPublicWarps(p.getUniqueId()).contains(s);
             case Private:
                 return false;
             case Faction:
