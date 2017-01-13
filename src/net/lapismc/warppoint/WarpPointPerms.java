@@ -103,11 +103,12 @@ public class WarpPointPerms {
         Permission p = null;
         Player player = Bukkit.getPlayer(uuid);
         if (!playerPerms.containsKey(uuid) || playerPerms.get(uuid).equals(null)) {
-            Integer priority = 0;
+            Integer priority = -1;
             for (Permission perm : pluginPerms.keySet()) {
                 if (player.hasPermission(perm) &&
                         (pluginPerms.get(perm).get(Perm.Priority) > priority)) {
                     p = perm;
+                    priority = pluginPerms.get(perm).get(Perm.Priority);
                 }
             }
             if (p == null) {
