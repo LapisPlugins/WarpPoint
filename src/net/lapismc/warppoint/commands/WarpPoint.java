@@ -43,7 +43,7 @@ public class WarpPoint {
             sender.sendMessage(ChatColor.GOLD + "WarpPoint:" + ChatColor.RED + " v." + plugin.getDescription().getVersion());
             sender.sendMessage(ChatColor.GOLD + "Author:" + ChatColor.RED + " dart2112");
             sender.sendMessage(ChatColor.GOLD + "Spigot: " + ChatColor.RED + "https://goo.gl/vUJ8KC");
-        } else if (args.length == 1) {
+        } else if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("update")) {
                 if (permitted) {
                     sender.sendMessage(plugin.WPConfigs.getColoredMessage("Update.Checking"));

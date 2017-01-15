@@ -59,36 +59,38 @@ public class WarpPointPlayer {
                             }
                         }
                         sender.sendMessage("--- Stats for " + op.getName() + " ---");
-                        sender.sendMessage("Player Permission: " + plugin.WPPerms.getPlayerPermission(op.getUniqueId()).getName());
                         sender.sendMessage("Last Online: " + timeOffline);
-                        List<String> publicWarps = plugin.WPWarps.getOwnedPublicWarps(op.getUniqueId());
-                        sender.sendMessage("Public Warps: " + publicWarps.size() + " of "
-                                + plugin.WPPerms.getPermissionValue(op.getUniqueId(),
-                                WarpPointPerms.Perm.PublicWarps) + " used");
-                        if (publicWarps.size() > 0) {
-                            sender.sendMessage(publicWarps.toString().replace("[", "").replace("]", ""));
-                        }
-                        List<String> privateWarps = plugin.WPWarps.getPrivateWarps(op.getUniqueId());
-                        sender.sendMessage("Private Warps: " + privateWarps.size() + " of "
-                                + plugin.WPPerms.getPermissionValue(op.getUniqueId(),
-                                WarpPointPerms.Perm.Private) + " used");
-                        if (privateWarps.size() > 0) {
-                            sender.sendMessage(privateWarps.toString().replace("[", "").replace("]", ""));
-                        }
-                        if (plugin.factions) {
-                            List<String> factionWarps = plugin.WPFactions.getOwnedWarps(op.getUniqueId());
-                            sender.sendMessage("Faction Warps: " + factionWarps.size() + " of "
+                        if (op.isOnline()) {
+                            sender.sendMessage("Player Permission: " + plugin.WPPerms.getPlayerPermission(op.getUniqueId()).getName());
+                            List<String> publicWarps = plugin.WPWarps.getOwnedPublicWarps(op.getUniqueId());
+                            sender.sendMessage("Public Warps: " + publicWarps.size() + " of "
                                     + plugin.WPPerms.getPermissionValue(op.getUniqueId(),
-                                    WarpPointPerms.Perm.FactionWarps) + " used");
-                            if (factionWarps.size() > 0) {
-                                sender.sendMessage(factionWarps.toString().replace("[", "").replace("]", ""));
+                                    WarpPointPerms.Perm.PublicWarps) + " used");
+                            if (publicWarps.size() > 0) {
+                                sender.sendMessage(publicWarps.toString().replace("[", "").replace("]", ""));
+                            }
+                            List<String> privateWarps = plugin.WPWarps.getPrivateWarps(op.getUniqueId());
+                            sender.sendMessage("Private Warps: " + privateWarps.size() + " of "
+                                    + plugin.WPPerms.getPermissionValue(op.getUniqueId(),
+                                    WarpPointPerms.Perm.Private) + " used");
+                            if (privateWarps.size() > 0) {
+                                sender.sendMessage(privateWarps.toString().replace("[", "").replace("]", ""));
+                            }
+                            if (plugin.factions) {
+                                List<String> factionWarps = plugin.WPFactions.getOwnedWarps(op.getUniqueId());
+                                sender.sendMessage("Faction Warps: " + factionWarps.size() + " of "
+                                        + plugin.WPPerms.getPermissionValue(op.getUniqueId(),
+                                        WarpPointPerms.Perm.FactionWarps) + " used");
+                                if (factionWarps.size() > 0) {
+                                    sender.sendMessage(factionWarps.toString().replace("[", "").replace("]", ""));
+                                }
                             }
                         }
                     } else {
                         if (sender instanceof Player) {
-                            plugin.WPConfigs.getColoredMessage("NoPlayerData");
+                            sender.sendMessage(plugin.WPConfigs.getColoredMessage("NoPlayerData"));
                         } else {
-                            plugin.WPConfigs.getMessage("NoPlayerData");
+                            sender.sendMessage(plugin.WPConfigs.getMessage("NoPlayerData"));
                         }
                     }
                 } else if (args.length > 2 && args.length < 5) {
@@ -155,12 +157,18 @@ public class WarpPointPlayer {
                     } else {
                         p.sendMessage(plugin.WPConfigs.getColoredMessage("NoPlayerData"));
                     }
+                } else {
+                    if (sender instanceof Player) {
+                        sender.sendMessage(plugin.WPConfigs.getColoredMessage("Help.warpPointPlayer"));
+                    } else {
+                        sender.sendMessage(plugin.WPConfigs.getMessage("Help.warpPointPlayer"));
+                    }
                 }
             } else {
                 if (sender instanceof Player) {
-                    plugin.WPConfigs.getColoredMessage("Help.warpPointPlayer");
+                    sender.sendMessage(plugin.WPConfigs.getColoredMessage("Help.warpPointPlayer"));
                 } else {
-                    plugin.WPConfigs.getMessage("Help.warpPointPlayer");
+                    sender.sendMessage(plugin.WPConfigs.getMessage("Help.warpPointPlayer"));
                 }
             }
         } else {
