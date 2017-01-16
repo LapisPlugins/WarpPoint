@@ -41,7 +41,7 @@ public class WarpPointWarpList {
         if (args.length == 0) {
             String types;
             if (plugin.factions) {
-                types = "private/public/factions";
+                types = "private/public/faction";
             } else {
                 types = "private/public";
             }
@@ -50,27 +50,39 @@ public class WarpPointWarpList {
             String typeString = args[0].toLowerCase();
             switch (typeString) {
                 case "faction":
-                    p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpList.faction"));
                     List<String> warps0 = plugin.WPFactions.getFactionWarps(p.getUniqueId());
-                    String warpsString0 = ChatColor.GOLD + warps0.toString().replace("[", "").replace("]", "");
-                    p.sendMessage(warpsString0);
+                    if (warps0.isEmpty()) {
+                        p.sendMessage(plugin.WPConfigs.getColoredMessage("NoWarpsInList"));
+                    } else {
+                        p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpList.faction"));
+                        String warpsString0 = ChatColor.GOLD + warps0.toString().replace("[", "").replace("]", "");
+                        p.sendMessage(warpsString0);
+                    }
                     break;
                 case "private":
-                    p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpList.private"));
                     List<String> warps1 = plugin.WPWarps.getPrivateWarps(p.getUniqueId());
-                    String warpsString1 = ChatColor.GOLD + warps1.toString().replace("[", "").replace("]", "");
-                    p.sendMessage(warpsString1);
+                    if (warps1.isEmpty()) {
+                        p.sendMessage(plugin.WPConfigs.getColoredMessage("NoWarpsInList"));
+                    } else {
+                        p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpList.private"));
+                        String warpsString1 = ChatColor.GOLD + warps1.toString().replace("[", "").replace("]", "");
+                        p.sendMessage(warpsString1);
+                    }
                     break;
                 case "public":
-                    p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpList.public"));
                     Set<String> warps2 = plugin.WPWarps.getAllPublicWarps();
-                    String warpsString2 = ChatColor.GOLD + warps2.toString().replace("[", "").replace("]", "");
-                    p.sendMessage(warpsString2);
+                    if (warps2.isEmpty()) {
+                        p.sendMessage(plugin.WPConfigs.getColoredMessage("NoWarpsInList"));
+                    } else {
+                        p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpList.public"));
+                        String warpsString2 = ChatColor.GOLD + warps2.toString().replace("[", "").replace("]", "");
+                        p.sendMessage(warpsString2);
+                    }
                     break;
                 default:
                     String types;
                     if (plugin.factions) {
-                        types = "private/public/factions";
+                        types = "private/public/faction";
                     } else {
                         types = "private/public";
                     }

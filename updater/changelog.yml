@@ -15,3 +15,6 @@
   - "Made player data caching dynamic"
   - "Added /warplist [type]"
   - "Added admin ability to delete other players warps"
+1.0.5:
+  - "Factions now works, this includes warp transfer"
+  - "/warppoint player (name) now works offline"

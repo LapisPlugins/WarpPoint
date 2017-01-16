@@ -27,6 +27,7 @@ Update:
   Checking: "&6Checking for updates..."
   Downloading: "&6Update found, downloading it now"
   Installed: "&6The update will be installed on the next server start"
+NoWarpsInList: "&6You have no warps of that type"
 NoPlayerData: "&cThat player doesn't have any player data or the name you entered was incorrect!"
 Teleported: "&6You have been teleported to warp &c%name"
 WarpDoesntExist: "&6That warp name or name and type combination doesn't exist"

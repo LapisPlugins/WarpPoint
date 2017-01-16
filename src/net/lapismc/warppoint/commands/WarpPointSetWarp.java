@@ -108,7 +108,7 @@ public class WarpPointSetWarp {
             } else {
                 String types;
                 if (plugin.factions) {
-                    types = "private/public/factions";
+                    types = "private/public/faction";
                 } else {
                     types = "private/public";
                 }

@@ -19,6 +19,7 @@ package net.lapismc.warppoint.commands;
 import net.lapismc.warppoint.WarpPoint;
 import net.lapismc.warppoint.WarpPointPerms;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -59,7 +60,7 @@ public class WarpPointDelWarp {
             if (warpType == null) {
                 String types;
                 if (plugin.factions) {
-                    types = "private/public/factions";
+                    types = "private/public/faction";
                 } else {
                     types = "private/public";
                 }
@@ -82,37 +83,40 @@ public class WarpPointDelWarp {
             } else {
                 warps = plugin.WPConfigs.getPlayerConfig(p.getUniqueId());
             }
-            if (warps.getStringList("Warps.list").contains(warpName)) {
-                switch (warpType) {
-                    case Faction:
-                        if (plugin.WPFactions.delWarp(p, warpName)) {
-                            p.sendMessage("Removed your faction warp " + warpName);
-                        } else {
-                            p.sendMessage("Failed to remove faction warp " + warpName);
-                        }
-                        break;
-                    case Public:
-                        if (plugin.WPWarps.removePublicWarp(p.getUniqueId(), warpName)) {
-                            p.sendMessage("Removed your public warp " + warpName);
-                        } else {
-                            p.sendMessage("Failed to remove public warp " + warpName);
-                        }
-                        break;
-                    case Private:
-                        if (plugin.WPWarps.removePrivateWarp(p.getUniqueId(), warpName)) {
-                            p.sendMessage("Removed your private warp " + warpName);
-                        } else {
-                            p.sendMessage("Failed to remove private warp " + warpName);
-                        }
-                        break;
-                }
-            } else {
-                p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpDoesntExist"));
+            switch (warpType) {
+                case Faction:
+                    if (plugin.WPFactions.delWarp(p, warpName)) {
+                        p.sendMessage(ChatColor.GOLD + "Removed your faction warp " + ChatColor.RED
+                                + warpName);
+                    } else {
+                        p.sendMessage(ChatColor.RED + "Failed to remove faction warp " + ChatColor.DARK_RED
+                                + warpName);
+                    }
+                    break;
+                case Public:
+                    if (plugin.WPWarps.removePublicWarp(p.getUniqueId(), warpName)) {
+                        p.sendMessage(ChatColor.GOLD + "Removed your public warp " + ChatColor.RED
+                                + warpName);
+                    } else {
+                        p.sendMessage(ChatColor.RED + "Failed to remove public warp " + ChatColor.DARK_RED
+                                + warpName);
+                    }
+                    break;
+                case Private:
+                    if (plugin.WPWarps.removePrivateWarp(p.getUniqueId(), warpName)) {
+                        p.sendMessage(ChatColor.GOLD + "Removed your private warp " + ChatColor.RED
+                                + warpName);
+                    } else {
+                        p.sendMessage(ChatColor.RED + "Failed to remove private warp " + ChatColor.DARK_RED
+                                + warpName);
+                    }
+                    break;
             }
+
         } else {
             String types;
             if (plugin.factions) {
-                types = "private/public/factions";
+                types = "private/public/faction";
             } else {
                 types = "private/public";
             }

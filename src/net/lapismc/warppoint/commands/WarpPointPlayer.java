@@ -19,6 +19,7 @@ package net.lapismc.warppoint.commands;
 import net.lapismc.warppoint.WarpPoint;
 import net.lapismc.warppoint.WarpPointPerms;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -58,31 +59,39 @@ public class WarpPointPlayer {
                                 timeOffline = pt.format(date);
                             }
                         }
-                        sender.sendMessage("--- Stats for " + op.getName() + " ---");
-                        sender.sendMessage("Last Online: " + timeOffline);
-                        if (op.isOnline()) {
-                            sender.sendMessage("Player Permission: " + plugin.WPPerms.getPlayerPermission(op.getUniqueId()).getName());
+                        sender.sendMessage(ChatColor.RED + "--- " + ChatColor.GOLD +
+                                "Stats for " + ChatColor.BLUE + op.getName() + ChatColor.RED + " ---");
+                        sender.sendMessage(ChatColor.RED + "Last Online: " + ChatColor.GOLD + timeOffline);
+                        if (plugin.WPPerms.getPlayerPermission(op.getUniqueId()) != null) {
+                            sender.sendMessage(ChatColor.RED + "Player Permission: "
+                                    + ChatColor.GOLD + plugin.WPPerms.getPlayerPermission(op.getUniqueId()).getName());
                             List<String> publicWarps = plugin.WPWarps.getOwnedPublicWarps(op.getUniqueId());
-                            sender.sendMessage("Public Warps: " + publicWarps.size() + " of "
+                            sender.sendMessage(ChatColor.RED + "Public Warps: " + ChatColor.GOLD + publicWarps.size()
+                                    + ChatColor.RED + " of " + ChatColor.GOLD
                                     + plugin.WPPerms.getPermissionValue(op.getUniqueId(),
-                                    WarpPointPerms.Perm.PublicWarps) + " used");
+                                    WarpPointPerms.Perm.PublicWarps) + ChatColor.RED + " used");
                             if (publicWarps.size() > 0) {
-                                sender.sendMessage(publicWarps.toString().replace("[", "").replace("]", ""));
+                                sender.sendMessage(ChatColor.BLUE +
+                                        publicWarps.toString().replace("[", "").replace("]", ""));
                             }
                             List<String> privateWarps = plugin.WPWarps.getPrivateWarps(op.getUniqueId());
-                            sender.sendMessage("Private Warps: " + privateWarps.size() + " of "
+                            sender.sendMessage(ChatColor.RED + "Private Warps: " + ChatColor.GOLD
+                                    + privateWarps.size() + ChatColor.RED + " of " + ChatColor.GOLD
                                     + plugin.WPPerms.getPermissionValue(op.getUniqueId(),
-                                    WarpPointPerms.Perm.Private) + " used");
+                                    WarpPointPerms.Perm.Private) + ChatColor.RED + " used");
                             if (privateWarps.size() > 0) {
-                                sender.sendMessage(privateWarps.toString().replace("[", "").replace("]", ""));
+                                sender.sendMessage(ChatColor.BLUE +
+                                        privateWarps.toString().replace("[", "").replace("]", ""));
                             }
                             if (plugin.factions) {
                                 List<String> factionWarps = plugin.WPFactions.getOwnedWarps(op.getUniqueId());
-                                sender.sendMessage("Faction Warps: " + factionWarps.size() + " of "
-                                        + plugin.WPPerms.getPermissionValue(op.getUniqueId(),
-                                        WarpPointPerms.Perm.FactionWarps) + " used");
+                                sender.sendMessage(ChatColor.RED + "Faction Warps: " + ChatColor.GOLD
+                                        + factionWarps.size() + ChatColor.RED + " of "
+                                        + ChatColor.GOLD + plugin.WPPerms.getPermissionValue(op.getUniqueId(),
+                                        WarpPointPerms.Perm.FactionWarps) + ChatColor.RED + " used");
                                 if (factionWarps.size() > 0) {
-                                    sender.sendMessage(factionWarps.toString().replace("[", "").replace("]", ""));
+                                    sender.sendMessage(ChatColor.BLUE +
+                                            factionWarps.toString().replace("[", "").replace("]", ""));
                                 }
                             }
                         }

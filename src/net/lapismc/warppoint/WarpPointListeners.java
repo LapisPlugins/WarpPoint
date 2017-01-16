@@ -57,6 +57,7 @@ public class WarpPointListeners implements Listener {
             warps = YamlConfiguration.loadConfiguration(f);
             warps.set("UUID", p.getUniqueId().toString());
             warps.set("UserName", p.getName());
+            warps.set("Permission", "NotYetSet");
             warps.set("OfflineSince", "-");
             List<String> sl = new ArrayList<>();
             warps.set("Warps.list", sl);

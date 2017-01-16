@@ -48,11 +48,10 @@ public final class WarpPoint extends JavaPlugin {
         WPPerms = new WarpPointPerms(this);
         WPPerms.loadPermissions();
         logger.info("WarpPoint v." + getDescription().getVersion() + " has been enabled");
-        try {
-            Class.forName("com.massivecraft.factions");
+        if (Bukkit.getPluginManager().isPluginEnabled("Factions")) {
             factions = true;
             WPFactions = new WarpPointFactions(this);
-        } catch (ClassNotFoundException e) {
+        } else {
             factions = false;
         }
     }

@@ -102,11 +102,7 @@ public class WarpPointConfigurations {
             File f = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "PlayerData"
                     + File.separator + uuid.toString() + ".yml");
             if (!f.exists()) {
-                try {
-                    f.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                return null;
             }
             return YamlConfiguration.loadConfiguration(f);
         }

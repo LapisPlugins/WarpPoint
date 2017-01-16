@@ -16,9 +16,10 @@
 
 package net.lapismc.warppoint;
 
-import com.massivecraft.factions.entity.Faction;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
@@ -101,25 +102,39 @@ public class WarpPointPerms {
 
     public Permission getPlayerPermission(UUID uuid) {
         Permission p = null;
-        Player player = Bukkit.getPlayer(uuid);
-        if (!playerPerms.containsKey(uuid) || playerPerms.get(uuid).equals(null)) {
-            Integer priority = -1;
+        OfflinePlayer op = Bukkit.getOfflinePlayer(uuid);
+        YamlConfiguration warps = plugin.WPConfigs.getPlayerConfig(uuid);
+        if (op.isOnline()) {
+            Player player = op.getPlayer();
+            if (!playerPerms.containsKey(uuid) || playerPerms.get(uuid).equals(null)) {
+                Integer priority = -1;
+                for (Permission perm : pluginPerms.keySet()) {
+                    if (player.hasPermission(perm) &&
+                            (pluginPerms.get(perm).get(Perm.Priority) > priority)) {
+                        p = perm;
+                        priority = pluginPerms.get(perm).get(Perm.Priority);
+                    }
+                }
+                if (p == null) {
+                    return null;
+                } else {
+                    warps.set("Permission", p.getName());
+                    plugin.WPConfigs.reloadPlayerConfig(uuid, warps);
+                    playerPerms.put(uuid, p);
+                }
+            } else {
+                p = playerPerms.get(uuid);
+            }
+            return p;
+        } else {
+            String permName = warps.getString("Permission");
             for (Permission perm : pluginPerms.keySet()) {
-                if (player.hasPermission(perm) &&
-                        (pluginPerms.get(perm).get(Perm.Priority) > priority)) {
-                    p = perm;
-                    priority = pluginPerms.get(perm).get(Perm.Priority);
+                if (perm.getName().equals(permName)) {
+                    return perm;
                 }
             }
-            if (p == null) {
-                return null;
-            } else {
-                playerPerms.put(uuid, p);
-            }
-        } else {
-            p = playerPerms.get(uuid);
+            return null;
         }
-        return p;
     }
 
     public Boolean isPermitted(UUID uuid, Perm perm) {
@@ -133,14 +148,7 @@ public class WarpPointPerms {
         }
         if (perm.equals(Perm.FactionWarps)) {
             if (plugin.factions) {
-                Integer i = 0;
-                Faction f = plugin.WPFactions.getFaction(uuid);
-                HashMap<String, UUID> map = plugin.WPFactions.factionWarps.get(f);
-                for (UUID uuid0 : map.values()) {
-                    if (uuid0.equals(uuid)) {
-                        i++;
-                    }
-                }
+                int i = plugin.WPFactions.getOwnedWarps(uuid).size();
                 return i < permMap.get(perm);
             } else {
                 return false;
@@ -160,6 +168,12 @@ public class WarpPointPerms {
 
     public Integer getPermissionValue(UUID uuid, Perm p) {
         Permission perm = getPlayerPermission(uuid);
+        if (perm == null) {
+            plugin.logger.severe("Perm is null");
+        }
+        if (p == null) {
+            plugin.logger.severe("p is null");
+        }
         return pluginPerms.get(perm).get(p);
     }
 
