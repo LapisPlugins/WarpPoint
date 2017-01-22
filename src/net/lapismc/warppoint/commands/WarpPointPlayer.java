@@ -25,18 +25,20 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.ocpsoft.prettytime.PrettyTime;
+import org.ocpsoft.prettytime.units.JustNow;
+import org.ocpsoft.prettytime.units.Millisecond;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class WarpPointPlayer {
 
     private WarpPoint plugin;
+    private PrettyTime pt = new PrettyTime(Locale.ENGLISH);
 
     public WarpPointPlayer(WarpPoint p) {
         plugin = p;
+        pt.removeUnit(JustNow.class);
+        pt.removeUnit(Millisecond.class);
     }
 
     public void WarpPointPlayer(CommandSender sender, String[] args, Boolean permitted) {
@@ -45,23 +47,30 @@ public class WarpPointPlayer {
                 if (args.length == 2) {
                     OfflinePlayer op = Bukkit.getOfflinePlayer(args[1]);
                     if (op != null && plugin.WPConfigs.getPlayerConfig(op.getUniqueId()) != null) {
-                        PrettyTime pt = new PrettyTime();
                         YamlConfiguration warps = plugin.WPConfigs.getPlayerConfig(op.getUniqueId());
-                        String timeOffline;
+                        sender.sendMessage(ChatColor.RED + "--- " + ChatColor.GOLD +
+                                "Stats for " + ChatColor.BLUE + op.getName() + ChatColor.RED + " ---");
+                        String time;
                         if (op.isOnline()) {
-                            timeOffline = "Now";
+                            Long joinTime = warps.getLong("OnlineSince");
+                            if (joinTime == 0) {
+                                time = "Unknown";
+                                sender.sendMessage(ChatColor.RED + "Online since " + ChatColor.GOLD + time);
+                            } else {
+                                Date date = new Date(joinTime);
+                                time = pt.format(date);
+                                sender.sendMessage(ChatColor.RED + "Online since " + ChatColor.GOLD + time);
+                            }
                         } else {
                             Long quitTime = warps.getLong("OfflineSince");
                             if (quitTime == 0) {
-                                timeOffline = "Unknown";
+                                time = "Unknown";
                             } else {
                                 Date date = new Date(quitTime);
-                                timeOffline = pt.format(date);
+                                time = pt.format(date);
+                                sender.sendMessage(ChatColor.RED + "Offline since " + ChatColor.GOLD + time);
                             }
                         }
-                        sender.sendMessage(ChatColor.RED + "--- " + ChatColor.GOLD +
-                                "Stats for " + ChatColor.BLUE + op.getName() + ChatColor.RED + " ---");
-                        sender.sendMessage(ChatColor.RED + "Last Online: " + ChatColor.GOLD + timeOffline);
                         if (plugin.WPPerms.getPlayerPermission(op.getUniqueId()) != null) {
                             sender.sendMessage(ChatColor.RED + "Player Permission: "
                                     + ChatColor.GOLD + plugin.WPPerms.getPlayerPermission(op.getUniqueId()).getName());

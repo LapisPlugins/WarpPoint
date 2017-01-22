@@ -47,6 +47,7 @@ public class WarpPointPerms {
     }
 
     protected void loadPermissions() {
+        pluginPerms.clear();
         ConfigurationSection permsSection = plugin.getConfig().getConfigurationSection("Permissions");
         Set<String> perms = permsSection.getKeys(false);
         for (String perm : perms) {

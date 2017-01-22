@@ -18,3 +18,6 @@
 1.0.5:
   - "Factions now works, this includes warp transfer"
   - "/warppoint player (name) now works offline"
+1.0.6:
+  - "/warppoint player (name) now shows time online as well as offline"
+  - "Rare permissions error fixed"
