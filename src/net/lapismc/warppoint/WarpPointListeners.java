@@ -45,9 +45,25 @@ public class WarpPointListeners implements Listener {
         File f = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "PlayerData" +
                 File.separator + p.getUniqueId() + ".yml");
         if (!f.exists()) {
-            plugin.WPConfigs.generateNewPlayerData(f, p);
+            try {
+                f.createNewFile();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                return;
+            }
+            warps = YamlConfiguration.loadConfiguration(f);
+            warps.set("UUID", p.getUniqueId().toString());
+            warps.set("UserName", p.getName());
+            warps.set("Permission", "NotYetSet");
+            warps.set("OfflineSince", "-");
+            List<String> sl = new ArrayList<>();
+            warps.set("Warps.list", sl);
+            plugin.WPConfigs.reloadPlayerConfig(p.getUniqueId(), warps);
         }
         warps = YamlConfiguration.loadConfiguration(f);
+        Date date = new Date();
+        warps.set("OnlineSince", date.getTime());
+        plugin.WPConfigs.reloadPlayerConfig(p.getUniqueId(), warps);
         if (!warps.getString("UUID").equals(p.getUniqueId().toString())) {
             warps.set("UUID", p.getUniqueId().toString());
             plugin.WPConfigs.reloadPlayerConfig(p.getUniqueId(), warps);
