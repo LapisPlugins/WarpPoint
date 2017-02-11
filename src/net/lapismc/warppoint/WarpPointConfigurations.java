@@ -100,7 +100,6 @@ public class WarpPointConfigurations {
         OutputStream os = null;
         try {
             is = plugin.getResource("Messages.yml");
-
             int readBytes;
             byte[] buffer = new byte[4096];
             os = new FileOutputStream(plugin.getDataFolder().getAbsolutePath() + File.separator + "Messages.yml");

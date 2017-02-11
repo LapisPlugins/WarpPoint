@@ -28,9 +28,6 @@ import java.util.UUID;
 
 import static java.nio.file.StandardWatchEventKinds.*;
 
-/**
- * Created by benja on 11/02/17.
- */
 public class WarpPointFileWatcher {
 
     private WarpPoint plugin;
