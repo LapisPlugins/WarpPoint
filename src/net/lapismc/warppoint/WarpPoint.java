@@ -39,6 +39,7 @@ public final class WarpPoint extends JavaPlugin {
         update();
         Metrics metrics = new Metrics(this);
         metrics.start();
+        new WarpPointFileWatcher(this);
         WPWarps = new WarpPointWarps(this);
         WPConfigs = new WarpPointConfigurations(this);
         WPConfigs.generateConfigurations();
