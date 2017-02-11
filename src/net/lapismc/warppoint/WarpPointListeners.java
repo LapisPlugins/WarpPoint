@@ -55,6 +55,8 @@ public class WarpPointListeners implements Listener {
             warps.set("UUID", p.getUniqueId().toString());
             warps.set("UserName", p.getName());
             warps.set("Permission", "NotYetSet");
+            Date date = new Date();
+            warps.set("OnlineSince", date.getTime());
             warps.set("OfflineSince", "-");
             List<String> sl = new ArrayList<>();
             warps.set("Warps.list", sl);
