@@ -31,27 +31,33 @@ import static java.nio.file.StandardWatchEventKinds.*;
 /**
  * Created by benja on 11/02/17.
  */
-public class WarpPointFileWatcher implements Runnable {
+public class WarpPointFileWatcher {
 
     private WarpPoint plugin;
 
     public WarpPointFileWatcher(WarpPoint p) {
         plugin = p;
+        start();
     }
 
-    @Override
-    public void run() {
-        try {
-            watcher();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+    public void start() {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    watcher();
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public void watcher() throws IOException, InterruptedException {
         WatchService watcher = FileSystems.getDefault().newWatchService();
         Path dir = Paths.get(plugin.getDataFolder().getAbsolutePath());
         dir.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
+        plugin.logger.info("WarpPoint file watcher started!");
         WatchKey key = watcher.take();
         while (key != null) {
             for (WatchEvent<?> event : key.pollEvents()) {
