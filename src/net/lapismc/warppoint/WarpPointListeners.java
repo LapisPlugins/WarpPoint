@@ -26,11 +26,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.permissions.Permission;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 public class WarpPointListeners implements Listener {
 
@@ -48,20 +45,7 @@ public class WarpPointListeners implements Listener {
         File f = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "PlayerData" +
                 File.separator + p.getUniqueId() + ".yml");
         if (!f.exists()) {
-            try {
-                f.createNewFile();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                return;
-            }
-            warps = YamlConfiguration.loadConfiguration(f);
-            warps.set("UUID", p.getUniqueId().toString());
-            warps.set("UserName", p.getName());
-            warps.set("Permission", "NotYetSet");
-            warps.set("OfflineSince", "-");
-            List<String> sl = new ArrayList<>();
-            warps.set("Warps.list", sl);
-            plugin.WPConfigs.reloadPlayerConfig(p.getUniqueId(), warps);
+            plugin.WPConfigs.generateNewPlayerData(f, p);
         }
         warps = YamlConfiguration.loadConfiguration(f);
         if (!warps.getString("UUID").equals(p.getUniqueId().toString())) {

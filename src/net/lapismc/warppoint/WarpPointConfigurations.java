@@ -20,9 +20,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class WarpPointConfigurations {
@@ -59,12 +62,29 @@ public class WarpPointConfigurations {
         if (!f2.exists()) {
             try {
                 f2.createNewFile();
-                setMessages();
+                generateMessages();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         Messages = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "Messages.yml"));
+    }
+
+    public void generateNewPlayerData(File f, Player p) {
+        try {
+            f.createNewFile();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return;
+        }
+        YamlConfiguration warps = YamlConfiguration.loadConfiguration(f);
+        warps.set("UUID", p.getUniqueId().toString());
+        warps.set("UserName", p.getName());
+        warps.set("Permission", "NotYetSet");
+        warps.set("OfflineSince", "-");
+        List<String> sl = new ArrayList<>();
+        warps.set("Warps.list", sl);
+        plugin.WPConfigs.reloadPlayerConfig(p.getUniqueId(), warps);
     }
 
     public String getColoredMessage(String path) {
@@ -75,7 +95,7 @@ public class WarpPointConfigurations {
         return ChatColor.stripColor(getColoredMessage(path));
     }
 
-    private void setMessages() throws IOException {
+    protected void generateMessages() throws IOException {
         InputStream is = null;
         OutputStream os = null;
         try {
@@ -93,6 +113,10 @@ public class WarpPointConfigurations {
             is.close();
             os.close();
         }
+    }
+
+    protected void reloadMessages(File f) {
+        Messages = YamlConfiguration.loadConfiguration(f);
     }
 
     public YamlConfiguration getPlayerConfig(UUID uuid) {
