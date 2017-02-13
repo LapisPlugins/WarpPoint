@@ -17,6 +17,7 @@
 package net.lapismc.warppoint.commands;
 
 import net.lapismc.warppoint.WarpPoint;
+import net.lapismc.warppoint.playerdata.Warp;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -50,17 +51,21 @@ public class WarpPointWarpList {
             String typeString = args[0].toLowerCase();
             switch (typeString) {
                 case "faction":
-                    List<String> warps0 = plugin.WPFactions.getFactionWarps(p.getUniqueId());
-                    if (warps0.isEmpty()) {
-                        p.sendMessage(plugin.WPConfigs.getColoredMessage("NoWarpsInList"));
+                    if (plugin.factions) {
+                        List<Warp> warps0 = plugin.WPFactions.getFactionWarps(p.getUniqueId());
+                        if (warps0.isEmpty()) {
+                            p.sendMessage(plugin.WPConfigs.getColoredMessage("NoWarpsInList"));
+                        } else {
+                            p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpList.faction"));
+                            String warpsString0 = ChatColor.GOLD + warps0.toString().replace("[", "").replace("]", "");
+                            p.sendMessage(warpsString0);
+                        }
                     } else {
-                        p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpList.faction"));
-                        String warpsString0 = ChatColor.GOLD + warps0.toString().replace("[", "").replace("]", "");
-                        p.sendMessage(warpsString0);
+                        p.sendMessage(plugin.WPConfigs.getColoredMessage("FactionsDisabled"));
                     }
                     break;
                 case "private":
-                    List<String> warps1 = plugin.WPWarps.getPrivateWarps(p.getUniqueId());
+                    List<Warp> warps1 = plugin.WPWarps.getPrivateWarps(p.getUniqueId());
                     if (warps1.isEmpty()) {
                         p.sendMessage(plugin.WPConfigs.getColoredMessage("NoWarpsInList"));
                     } else {
@@ -70,7 +75,7 @@ public class WarpPointWarpList {
                     }
                     break;
                 case "public":
-                    Set<String> warps2 = plugin.WPWarps.getAllPublicWarps();
+                    Set<Warp> warps2 = plugin.WPWarps.getAllPublicWarps();
                     if (warps2.isEmpty()) {
                         p.sendMessage(plugin.WPConfigs.getColoredMessage("NoWarpsInList"));
                     } else {

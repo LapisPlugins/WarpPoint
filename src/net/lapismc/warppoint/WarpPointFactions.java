@@ -20,9 +20,11 @@ import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.FactionColl;
 import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.factions.event.EventFactionsMembershipChange;
+import net.lapismc.warppoint.playerdata.Warp;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -35,7 +37,7 @@ import java.util.UUID;
 
 public class WarpPointFactions implements Listener {
 
-    public HashMap<Faction, HashMap<String, UUID>> factionWarps = new HashMap<>();
+    public HashMap<Faction, HashMap<Warp, UUID>> factionWarps = new HashMap<>();
     WarpPoint plugin;
 
     protected WarpPointFactions(WarpPoint p) {
@@ -43,54 +45,43 @@ public class WarpPointFactions implements Listener {
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
-    public boolean isWarp(String warpName, Player p) {
-        Faction f = getFaction(p);
-        HashMap<String, UUID> map = factionWarps.get(f);
+    public boolean isWarp(Warp warp) {
+        OfflinePlayer op = warp.getOwner();
+        Faction f = getFaction(op.getUniqueId());
+        HashMap<Warp, UUID> map = factionWarps.get(f);
         if (map == null) {
             return false;
         }
-        return map.containsKey(warpName);
+        return map.containsKey(warp);
     }
 
-    public void setWarp(Player p, String warpName) {
-        Faction f = getFaction(p);
-        UUID uuid = p.getUniqueId();
-        HashMap<String, UUID> fw = factionWarps.get(f);
+    public void setWarp(Warp warp) {
+        Faction f = getFaction(warp);
+        UUID uuid = warp.getOwner().getUniqueId();
+        HashMap<Warp, UUID> fw = factionWarps.get(f);
         if (fw == null) {
             fw = new HashMap<>();
         }
-        fw.put(warpName, uuid);
+        fw.put(warp, uuid);
         factionWarps.put(f, fw);
     }
 
-    public void setWarp(UUID uuid, String warpName) {
-        MPlayer fp = MPlayer.get(uuid);
-        Faction f = fp.getFaction();
-        HashMap<String, UUID> fw;
-        if (factionWarps.containsKey(f)) {
-            fw = factionWarps.get(f);
-        } else {
-            fw = new HashMap<>();
-        }
-        fw.put(warpName, uuid);
-        factionWarps.put(f, fw);
-    }
-
-    public boolean delWarp(Player p, String warpName) {
-        if (isWarp(warpName, p)) {
-            Faction f = getFaction(p);
-            HashMap<String, UUID> map = factionWarps.get(f);
+    public boolean deleteWarp(Warp warp) {
+        if (isWarp(warp)) {
+            OfflinePlayer op = warp.getOwner();
+            Faction f = getFaction(warp);
+            HashMap<Warp, UUID> map = factionWarps.get(f);
             if (map == null) {
                 return false;
             }
-            map.remove(warpName);
+            map.remove(warp);
             factionWarps.put(f, map);
-            YamlConfiguration warps = plugin.WPConfigs.getPlayerConfig(p.getUniqueId());
+            YamlConfiguration warps = plugin.WPConfigs.getPlayerConfig(op.getUniqueId());
             List<String> warpsList = warps.getStringList("Warps.list");
-            warpsList.remove(warpName + "_faction");
+            warpsList.remove(warp.getName() + "_faction");
             warps.set("Warps.list", warpsList);
-            warps.set("Warps." + warpName + "_" + WarpPoint.WarpType.Faction.toString(), null);
-            plugin.WPConfigs.reloadPlayerConfig(p.getUniqueId(), warps);
+            warps.set("Warps." + warp.getName() + "_" + WarpPoint.WarpType.Faction.toString(), null);
+            plugin.WPConfigs.reloadPlayerConfig(op.getUniqueId(), warps);
             return true;
         } else {
             return false;
@@ -99,43 +90,42 @@ public class WarpPointFactions implements Listener {
 
     public Location getWarp(String s, UUID uuid) {
         Faction f = getFaction(uuid);
-        HashMap<String, UUID> map = factionWarps.get(f);
+        HashMap<Warp, UUID> map = factionWarps.get(f);
         UUID uuid0 = map.get(s);
         Location loc = (Location) plugin.WPConfigs.getPlayerConfig(uuid0).get("Warps." + s + "_faction.location");
         return loc;
     }
 
-    public List<String> getOwnedWarps(UUID uuid) {
-        List<String> list = new ArrayList<>();
+    public List<Warp> getOwnedWarps(UUID uuid) {
+        List<Warp> list = new ArrayList<>();
         Faction f = getFaction(uuid);
-        HashMap<String, UUID> fw = factionWarps.get(f);
+        HashMap<Warp, UUID> fw = factionWarps.get(f);
         if (fw == null) {
             return list;
         }
-        for (String s : fw.keySet()) {
-            if (fw.get(s) == uuid) {
-                list.add(s);
+        for (Warp warp : fw.keySet()) {
+            if (fw.get(warp) == uuid) {
+                list.add(warp);
             }
         }
         return list;
     }
 
-    public List<String> getFactionWarps(UUID uuid) {
+    public List<Warp> getFactionWarps(UUID uuid) {
         Faction f = getFaction(uuid);
-        HashMap<String, UUID> fw = factionWarps.get(f);
-        List<String> warps = new ArrayList<>();
+        HashMap<Warp, UUID> fw = factionWarps.get(f);
+        List<Warp> warps = new ArrayList<>();
         if (fw == null) {
             return warps;
         }
-        for (String s : fw.keySet()) {
-            warps.add(s);
+        for (Warp warp : fw.keySet()) {
+            warps.add(warp);
         }
         return warps;
     }
 
-    protected Faction getFaction(Player p) {
-        MPlayer fp = MPlayer.get(p);
-        return fp.getFaction();
+    protected Faction getFaction(Warp warp) {
+        return getFaction(warp.getOwner().getUniqueId());
     }
 
     protected Faction getFaction(UUID uuid) {
@@ -161,38 +151,40 @@ public class WarpPointFactions implements Listener {
         if (!factionWarps.containsKey(currentFac) || !factionWarps.get(currentFac).containsValue(e.getMPlayer().getUuid())) {
             return;
         }
-        HashMap<String, UUID> oldmap = factionWarps.get(currentFac);
-        HashMap<String, UUID> newmap;
+        HashMap<Warp, UUID> oldmap = factionWarps.get(currentFac);
+        HashMap<Warp, UUID> newmap;
         if (factionWarps.containsKey(newFac)) {
             newmap = factionWarps.get(newFac);
         } else {
             newmap = new HashMap<>();
         }
-        for (String s : oldmap.keySet()) {
-            if (oldmap.get(s).equals(e.getMPlayer().getUuid())) {
-                if (newmap.containsKey(s)) {
+        for (Warp warp : oldmap.keySet()) {
+            if (oldmap.get(warp).equals(e.getMPlayer().getUuid())) {
+                if (newmap.containsKey(warp)) {
                     if (online) {
-                        p.sendMessage(ChatColor.GOLD + "Your factions warp " + ChatColor.RED + s
-                                + ChatColor.GOLD + " was renamed to " + ChatColor.BLUE + p.getName() + s +
+                        p.sendMessage(ChatColor.GOLD + "Your factions warp " + ChatColor.RED + warp.getName()
+                                + ChatColor.GOLD + " was renamed to " + ChatColor.BLUE + p.getName() + warp.getName() +
                                 ChatColor.GOLD + " because your new faction already has a faction warp named "
-                                + ChatColor.RED + s);
+                                + ChatColor.RED + warp.getName());
                     }
-                    newmap.put(p.getName() + s, e.getMPlayer().getUuid());
-                    oldmap.remove(s);
                     YamlConfiguration warps = plugin.WPConfigs.getPlayerConfig(e.getMPlayer().getUuid());
-                    Location loc = (Location) warps.get("Warps." + s + "_faction.location");
-                    warps.set("Warps." + p.getName() + s + "_faction.location", loc);
-                    warps.set("Warps." + s + "_faction", null);
+                    Location loc = (Location) warps.get("Warps." + warp.getName() + "_faction.location");
+                    warps.set("Warps." + p.getName() + warp.getName() + "_faction.location", loc);
+                    warps.set("Warps." + warp.getName() + "_faction", null);
                     List<String> list = warps.getStringList("Warps.list");
-                    list.remove(s + "_faction");
-                    list.add(p.getName() + s + "_faction");
+                    list.remove(warp.getName() + "_faction");
+                    list.add(p.getName() + warp.getName() + "_faction");
                     warps.set("Warps.list", list);
                     plugin.WPConfigs.reloadPlayerConfig(p.getUniqueId(), warps);
+                    warp.setName(e.getMPlayer().getName() + warp.getName());
+                    newmap.put(warp, e.getMPlayer().getUuid());
+                    oldmap.remove(warp);
+
                 }
-                newmap.put(s, e.getMPlayer().getUuid());
-                oldmap.remove(s);
+                newmap.put(warp, e.getMPlayer().getUuid());
+                oldmap.remove(warp);
                 if (online) {
-                    p.sendMessage(ChatColor.GOLD + "Your warp " + ChatColor.BLUE + s + ChatColor.GOLD
+                    p.sendMessage(ChatColor.GOLD + "Your warp " + ChatColor.BLUE + warp.getName() + ChatColor.GOLD
                             + " was moved to your new faction");
                 }
             }

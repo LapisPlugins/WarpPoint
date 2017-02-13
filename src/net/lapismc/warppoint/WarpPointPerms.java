@@ -16,6 +16,7 @@
 
 package net.lapismc.warppoint;
 
+import net.lapismc.warppoint.playerdata.Warp;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
@@ -155,11 +156,11 @@ public class WarpPointPerms {
                 return false;
             }
         } else if (perm.equals(Perm.PublicWarps)) {
-            List<String> publicWarps = plugin.WPWarps.getOwnedPublicWarps(uuid);
+            List<Warp> publicWarps = plugin.WPWarps.getOwnedPublicWarps(uuid);
             Integer i = publicWarps.size();
             return i < permMap.get(perm);
         } else if (perm.equals(Perm.Private)) {
-            List<String> list = plugin.WPWarps.getPrivateWarps(uuid);
+            List<Warp> list = plugin.WPWarps.getPrivateWarps(uuid);
             Integer i = list.size();
             return i < permMap.get(perm);
         } else {

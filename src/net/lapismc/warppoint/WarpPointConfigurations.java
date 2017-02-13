@@ -16,8 +16,11 @@
 
 package net.lapismc.warppoint;
 
+import net.lapismc.warppoint.playerdata.Warp;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -175,27 +178,20 @@ public class WarpPointConfigurations {
             for (String key : cs.getKeys(false)) {
                 if (!key.endsWith("list")) {
                     String name = key.replace("Warps.", "");
+                    Location loc = (Location) yaml.get(key);
+                    OfflinePlayer op = Bukkit.getOfflinePlayer(uuid);
                     if (key.endsWith("_public")) {
-                        plugin.WPWarps.addPublicWarp(name.replace("_public", ""), uuid);
+                        Warp warp = new Warp(plugin, WarpPoint.WarpType.Public, loc, op, name.replace("_public", ""));
+                        plugin.WPWarps.addPublicWarp(warp);
                     }
                     if (key.endsWith("_private")) {
-                        if (plugin == null) {
-                            System.out.println("Plugin is null");
-                            return;
-                        }
-                        if (plugin.WPWarps == null) {
-                            System.out.println("Warps is null");
-                            return;
-                        }
-                        if (name == null) {
-                            System.out.println("name is null");
-                            return;
-                        }
-                        plugin.WPWarps.addPrivateWarp(name.replace("_private", ""), uuid);
+                        Warp warp = new Warp(plugin, WarpPoint.WarpType.Private, loc, op, name.replace("_private", ""));
+                        plugin.WPWarps.addPrivateWarp(warp);
                     }
                     if (key.endsWith("_faction")) {
                         if (plugin.factions) {
-                            plugin.WPFactions.setWarp(uuid, name.replace("_faction", ""));
+                            Warp warp = new Warp(plugin, WarpPoint.WarpType.Faction, loc, op, name.replace("_faction", ""));
+                            plugin.WPFactions.setWarp(warp);
                         }
                     }
                 }
