@@ -38,7 +38,6 @@ public final class WarpPoint extends JavaPlugin {
         lapisUpdater = new LapisUpdater(this, "WarpPoint", "Dart2112", "WarpPoint", "master");
         update();
         Metrics metrics = new Metrics(this);
-        metrics.start();
         new WarpPointFileWatcher(this);
         WPWarps = new WarpPointWarps(this);
         WPConfigs = new WarpPointConfigurations(this);
