@@ -23,8 +23,8 @@ import org.bukkit.entity.Player;
 
 public class WarpPoint {
 
-    net.lapismc.warppoint.WarpPoint plugin;
-    WarpPointPlayer WPPlayer;
+    private net.lapismc.warppoint.WarpPoint plugin;
+    private WarpPointPlayer WPPlayer;
 
     public WarpPoint(net.lapismc.warppoint.WarpPoint plugin) {
         this.plugin = plugin;
@@ -32,7 +32,7 @@ public class WarpPoint {
     }
 
     public void warpPoint(CommandSender sender, String[] args) {
-        boolean permitted = false;
+        boolean permitted;
         if (sender instanceof Player) {
             Player p = (Player) sender;
             permitted = plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perm.Admin);
@@ -47,9 +47,9 @@ public class WarpPoint {
             if (args[0].equalsIgnoreCase("update")) {
                 if (permitted) {
                     sender.sendMessage(plugin.WPConfigs.getColoredMessage("Update.Checking"));
-                    if (plugin.lapisUpdater.checkUpdate("WarpPoint")) {
+                    if (plugin.lapisUpdater.checkUpdate()) {
                         sender.sendMessage(plugin.WPConfigs.getColoredMessage("Update.Downloading"));
-                        plugin.lapisUpdater.downloadUpdate("WarpPoint");
+                        plugin.lapisUpdater.downloadUpdate();
                         sender.sendMessage(plugin.WPConfigs.getColoredMessage("Update.Installed"));
                     } else {
                         sender.sendMessage(plugin.WPConfigs.getColoredMessage("Update.NoUpdate"));
@@ -62,7 +62,6 @@ public class WarpPoint {
                 help(sender);
 
             } else if (args[0].equalsIgnoreCase("reload")) {
-                permitted = false;
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
                     permitted = plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perm.Admin);
@@ -77,8 +76,7 @@ public class WarpPoint {
                     sender.sendMessage(plugin.WPConfigs.getColoredMessage("NoPermission"));
                 }
             } else if (args[0].equalsIgnoreCase("player")) {
-                WPPlayer.WarpPointPlayer(sender, args, permitted);
-                return;
+                WPPlayer.Player(sender, args, permitted);
             } else {
                 if (permitted) {
                     sender.sendMessage(plugin.WPConfigs.getColoredMessage("Help.warpPointAdmin"));
@@ -90,8 +88,8 @@ public class WarpPoint {
     }
 
     private void help(CommandSender sender) {
-        boolean admin = false;
-        Player p = null;
+        boolean admin;
+        Player p;
         if (sender instanceof Player) {
             p = (Player) sender;
             admin = plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perm.Admin);

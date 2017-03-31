@@ -18,6 +18,8 @@ package net.lapismc.warppoint.commands;
 
 import net.lapismc.warppoint.WarpPoint;
 import net.lapismc.warppoint.WarpPointPerms;
+import net.lapismc.warppoint.playerdata.Warp;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -26,7 +28,7 @@ import java.util.List;
 
 public class WarpPointSetWarp {
 
-    WarpPoint plugin;
+    private WarpPoint plugin;
 
     public WarpPointSetWarp(WarpPoint plugin) {
         this.plugin = plugin;
@@ -80,7 +82,9 @@ public class WarpPointSetWarp {
                 if (warpName.equalsIgnoreCase("list")) {
                     p.sendMessage(plugin.WPConfigs.getColoredMessage("Set.notAvail"));
                 }
-                if (warpExits(warpName, warpType, p)) {
+                Warp warp = new Warp(plugin, warpType, p.getLocation(),
+                        Bukkit.getOfflinePlayer(p.getUniqueId()), warpName);
+                if (warpExits(warp)) {
                     if (!setMove[1]) {
                         p.sendMessage(plugin.WPConfigs.getColoredMessage("Set.noMovePerm"));
                         return;
@@ -95,13 +99,13 @@ public class WarpPointSetWarp {
                 plugin.WPConfigs.reloadPlayerConfig(p.getUniqueId(), warps);
                 switch (warpType) {
                     case Public:
-                        plugin.WPWarps.addPublicWarp(warpName, p.getUniqueId());
+                        plugin.WPWarps.addPublicWarp(warp);
                         break;
                     case Private:
-                        plugin.WPWarps.addPrivateWarp(warpName, p.getUniqueId());
+                        plugin.WPWarps.addPrivateWarp(warp);
                         break;
                     case Faction:
-                        plugin.WPFactions.setWarp(p, warpName);
+                        plugin.WPFactions.setWarp(warp);
                         break;
                 }
                 p.sendMessage(plugin.WPConfigs.getColoredMessage("Set." + warpType.toString()).replace("%name", warpName));
@@ -119,14 +123,14 @@ public class WarpPointSetWarp {
         }
     }
 
-    private boolean warpExits(String s, WarpPoint.WarpType type, Player p) {
-        switch (type) {
+    private boolean warpExits(Warp warp) {
+        switch (warp.getType()) {
             case Public:
-                return plugin.WPWarps.getOwnedPublicWarps(p.getUniqueId()).contains(s);
+                return plugin.WPWarps.getOwnedPublicWarps(warp.getOwner().getUniqueId()).contains(warp);
             case Private:
                 return false;
             case Faction:
-                return plugin.WPFactions.isWarp(s, p);
+                return plugin.WPFactions.isWarp(warp);
             default:
                 return true;
         }

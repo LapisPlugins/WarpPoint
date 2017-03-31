@@ -21,3 +21,5 @@
 1.0.6:
   - "/warppoint player (name) now shows time online as well as offline"
   - "Rare permissions error fixed"
+1.0.7:
+  - "Added auto reloading of config files"

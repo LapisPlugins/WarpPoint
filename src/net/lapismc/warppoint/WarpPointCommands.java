@@ -27,13 +27,13 @@ import org.bukkit.command.CommandSender;
 public class WarpPointCommands implements CommandExecutor {
 
     WarpPoint plugin;
-    WarpPointWarp warp;
-    WarpPointSetWarp setWarp;
-    WarpPointDelWarp delWarp;
-    WarpPointWarpList warpList;
-    net.lapismc.warppoint.commands.WarpPoint warpPoint;
+    private WarpPointWarp warp;
+    private WarpPointSetWarp setWarp;
+    private WarpPointDelWarp delWarp;
+    private WarpPointWarpList warpList;
+    private net.lapismc.warppoint.commands.WarpPoint warpPoint;
 
-    protected WarpPointCommands(WarpPoint p) {
+    WarpPointCommands(WarpPoint p) {
         plugin = p;
         warp = new WarpPointWarp(plugin);
         setWarp = new WarpPointSetWarp(plugin);

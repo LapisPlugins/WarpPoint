@@ -16,13 +16,19 @@
 
 package net.lapismc.warppoint;
 
+import net.lapismc.warppoint.playerdata.Warp;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class WarpPointConfigurations {
@@ -31,40 +37,60 @@ public class WarpPointConfigurations {
     private HashMap<UUID, YamlConfiguration> playerWarps = new HashMap<>();
     private YamlConfiguration Messages;
 
-    protected WarpPointConfigurations(WarpPoint plugin) {
+    WarpPointConfigurations(WarpPoint plugin) {
         this.plugin = plugin;
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-            @Override
-            public void run() {
-                playerWarps = new HashMap<>();
-            }
-        }, 20 * 60 * 5, 20 * 60 * 5);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> playerWarps = new HashMap<>(), 20 * 60 * 5, 20 * 60 * 5);
     }
 
-    protected void generateConfigurations() {
+    void generateConfigurations() {
         plugin.saveDefaultConfig();
         if (plugin.getConfig().getInt("ConfigurationVersion") != 1) {
             File f = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "config_old.yml");
             File f1 = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "config.yml");
-            f1.renameTo(f);
+            if (!f1.renameTo(f)) {
+                plugin.logger.info(plugin.getName() + " failed to update the config.yml");
+            }
             plugin.saveDefaultConfig();
-            plugin.logger.info("New Configuration Generated," +
+            plugin.logger.info("New Configuration Generated for " + plugin.getName() + "," +
                     " Please Transfer Values From config_old.yml");
         }
         File playerData = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "PlayerData");
         if (!playerData.exists()) {
-            playerData.mkdir();
+            if (!playerData.mkdir()) {
+                plugin.logger.info("WarpPoint failed to generate PlayerData folder");
+            }
         }
         File f2 = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "Messages.yml");
         if (!f2.exists()) {
             try {
-                f2.createNewFile();
-                setMessages();
+                if (!f2.createNewFile()) {
+                    plugin.logger.info("WarpPoint failed to generate Messages.yml");
+                }
+                generateMessages();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         Messages = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "Messages.yml"));
+    }
+
+    void generateNewPlayerData(File f, Player p) {
+        try {
+            if (!f.createNewFile()) {
+                plugin.logger.info("Failed to generate player data for " + p.getName());
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return;
+        }
+        YamlConfiguration warps = YamlConfiguration.loadConfiguration(f);
+        warps.set("UUID", p.getUniqueId().toString());
+        warps.set("UserName", p.getName());
+        warps.set("Permission", "NotYetSet");
+        warps.set("OfflineSince", "-");
+        List<String> sl = new ArrayList<>();
+        warps.set("Warps.list", sl);
+        plugin.WPConfigs.reloadPlayerConfig(p.getUniqueId(), warps);
     }
 
     public String getColoredMessage(String path) {
@@ -75,24 +101,21 @@ public class WarpPointConfigurations {
         return ChatColor.stripColor(getColoredMessage(path));
     }
 
-    private void setMessages() throws IOException {
-        InputStream is = null;
-        OutputStream os = null;
-        try {
-            is = plugin.getResource("Messages.yml");
-
+    void generateMessages() throws IOException {
+        try (InputStream is = plugin.getResource("Messages.yml");
+             OutputStream os = new FileOutputStream(plugin.getDataFolder().getAbsolutePath() + File.separator + "Messages.yml")) {
             int readBytes;
             byte[] buffer = new byte[4096];
-            os = new FileOutputStream(plugin.getDataFolder().getAbsolutePath() + File.separator + "Messages.yml");
             while ((readBytes = is.read(buffer)) > 0) {
                 os.write(buffer, 0, readBytes);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-        } finally {
-            is.close();
-            os.close();
         }
+    }
+
+    void reloadMessages(File f) {
+        Messages = YamlConfiguration.loadConfiguration(f);
     }
 
     public YamlConfiguration getPlayerConfig(UUID uuid) {
@@ -125,7 +148,7 @@ public class WarpPointConfigurations {
         }
     }
 
-    protected void unloadPlayerData(UUID uuid) {
+    void unloadPlayerData(UUID uuid) {
         if (playerWarps.containsKey(uuid)) {
             YamlConfiguration warps = playerWarps.get(uuid);
             File f = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "PlayerData"
@@ -139,12 +162,13 @@ public class WarpPointConfigurations {
         }
     }
 
-    protected void loadConfigurations() {
+    void loadConfigurations() {
         if (!playerWarps.isEmpty()) {
             saveConfigurations();
         }
         File playerData = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "PlayerData");
         File[] files = playerData.listFiles();
+        assert files != null;
         for (File pd : files) {
             YamlConfiguration yaml = YamlConfiguration.loadConfiguration(pd);
             UUID uuid = UUID.fromString(yaml.getString("UUID"));
@@ -152,27 +176,20 @@ public class WarpPointConfigurations {
             for (String key : cs.getKeys(false)) {
                 if (!key.endsWith("list")) {
                     String name = key.replace("Warps.", "");
+                    Location loc = (Location) yaml.get(key);
+                    OfflinePlayer op = Bukkit.getOfflinePlayer(uuid);
                     if (key.endsWith("_public")) {
-                        plugin.WPWarps.addPublicWarp(name.replace("_public", ""), uuid);
+                        Warp warp = new Warp(plugin, WarpPoint.WarpType.Public, loc, op, name.replace("_public", ""));
+                        plugin.WPWarps.addPublicWarp(warp);
                     }
                     if (key.endsWith("_private")) {
-                        if (plugin == null) {
-                            System.out.println("Plugin is null");
-                            return;
-                        }
-                        if (plugin.WPWarps == null) {
-                            System.out.println("Warps is null");
-                            return;
-                        }
-                        if (name == null) {
-                            System.out.println("name is null");
-                            return;
-                        }
-                        plugin.WPWarps.addPrivateWarp(name.replace("_private", ""), uuid);
+                        Warp warp = new Warp(plugin, WarpPoint.WarpType.Private, loc, op, name.replace("_private", ""));
+                        plugin.WPWarps.addPrivateWarp(warp);
                     }
                     if (key.endsWith("_faction")) {
                         if (plugin.factions) {
-                            plugin.WPFactions.setWarp(uuid, name.replace("_faction", ""));
+                            Warp warp = new Warp(plugin, WarpPoint.WarpType.Faction, loc, op, name.replace("_faction", ""));
+                            plugin.WPFactions.setWarp(warp);
                         }
                     }
                 }
@@ -180,7 +197,7 @@ public class WarpPointConfigurations {
         }
     }
 
-    protected void saveConfigurations() {
+    void saveConfigurations() {
         File playerData = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "PlayerData");
         for (UUID uuid : playerWarps.keySet()) {
             YamlConfiguration yaml = playerWarps.get(uuid);

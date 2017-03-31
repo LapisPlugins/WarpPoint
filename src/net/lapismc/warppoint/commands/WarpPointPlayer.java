@@ -18,33 +18,37 @@ package net.lapismc.warppoint.commands;
 
 import net.lapismc.warppoint.WarpPoint;
 import net.lapismc.warppoint.WarpPointPerms;
+import net.lapismc.warppoint.playerdata.Warp;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.ocpsoft.prettytime.Duration;
 import org.ocpsoft.prettytime.PrettyTime;
 import org.ocpsoft.prettytime.units.JustNow;
 import org.ocpsoft.prettytime.units.Millisecond;
 
 import java.util.*;
 
-public class WarpPointPlayer {
+class WarpPointPlayer {
 
     private WarpPoint plugin;
     private PrettyTime pt = new PrettyTime(Locale.ENGLISH);
 
-    public WarpPointPlayer(WarpPoint p) {
+    WarpPointPlayer(WarpPoint p) {
         plugin = p;
         pt.removeUnit(JustNow.class);
         pt.removeUnit(Millisecond.class);
     }
 
-    public void WarpPointPlayer(CommandSender sender, String[] args, Boolean permitted) {
+    @SuppressWarnings("SuspiciousMethodCalls")
+    void Player(CommandSender sender, String[] args, Boolean permitted) {
         if (permitted) {
             if (args.length > 1) {
                 if (args.length == 2) {
+                    //noinspection deprecation
                     OfflinePlayer op = Bukkit.getOfflinePlayer(args[1]);
                     if (op != null && plugin.WPConfigs.getPlayerConfig(op.getUniqueId()) != null) {
                         YamlConfiguration warps = plugin.WPConfigs.getPlayerConfig(op.getUniqueId());
@@ -63,18 +67,15 @@ public class WarpPointPlayer {
                             }
                         } else {
                             Long quitTime = warps.getLong("OfflineSince");
-                            if (quitTime == 0) {
-                                time = "Unknown";
-                            } else {
-                                Date date = new Date(quitTime);
-                                time = pt.format(date);
-                                sender.sendMessage(ChatColor.RED + "Offline since " + ChatColor.GOLD + time);
-                            }
+                            Date date = new Date(quitTime);
+                            List<Duration> durationList = pt.calculatePreciseDuration(date);
+                            time = pt.format(durationList);
+                            sender.sendMessage(ChatColor.RED + "Offline since " + ChatColor.GOLD + time);
                         }
                         if (plugin.WPPerms.getPlayerPermission(op.getUniqueId()) != null) {
                             sender.sendMessage(ChatColor.RED + "Player Permission: "
                                     + ChatColor.GOLD + plugin.WPPerms.getPlayerPermission(op.getUniqueId()).getName());
-                            List<String> publicWarps = plugin.WPWarps.getOwnedPublicWarps(op.getUniqueId());
+                            List<Warp> publicWarps = plugin.WPWarps.getOwnedPublicWarps(op.getUniqueId());
                             sender.sendMessage(ChatColor.RED + "Public Warps: " + ChatColor.GOLD + publicWarps.size()
                                     + ChatColor.RED + " of " + ChatColor.GOLD
                                     + plugin.WPPerms.getPermissionValue(op.getUniqueId(),
@@ -83,7 +84,7 @@ public class WarpPointPlayer {
                                 sender.sendMessage(ChatColor.BLUE +
                                         publicWarps.toString().replace("[", "").replace("]", ""));
                             }
-                            List<String> privateWarps = plugin.WPWarps.getPrivateWarps(op.getUniqueId());
+                            List<Warp> privateWarps = plugin.WPWarps.getPrivateWarps(op.getUniqueId());
                             sender.sendMessage(ChatColor.RED + "Private Warps: " + ChatColor.GOLD
                                     + privateWarps.size() + ChatColor.RED + " of " + ChatColor.GOLD
                                     + plugin.WPPerms.getPermissionValue(op.getUniqueId(),
@@ -93,7 +94,7 @@ public class WarpPointPlayer {
                                         privateWarps.toString().replace("[", "").replace("]", ""));
                             }
                             if (plugin.factions) {
-                                List<String> factionWarps = plugin.WPFactions.getOwnedWarps(op.getUniqueId());
+                                List<Warp> factionWarps = plugin.WPFactions.getOwnedWarps(op.getUniqueId());
                                 sender.sendMessage(ChatColor.RED + "Faction Warps: " + ChatColor.GOLD
                                         + factionWarps.size() + ChatColor.RED + " of "
                                         + ChatColor.GOLD + plugin.WPPerms.getPermissionValue(op.getUniqueId(),
@@ -117,9 +118,9 @@ public class WarpPointPlayer {
                         return;
                     }
                     Player p = (Player) sender;
+                    //noinspection deprecation
                     OfflinePlayer op = Bukkit.getOfflinePlayer(args[1]);
                     if (op != null && plugin.WPConfigs.getPlayerConfig(op.getUniqueId()) != null) {
-                        YamlConfiguration warps = plugin.WPConfigs.getPlayerConfig(op.getUniqueId());
                         String warpName = args[2];
                         ArrayList<WarpPoint.WarpType> types = new ArrayList<>();
                         UUID uuid = op.getUniqueId();
@@ -141,16 +142,20 @@ public class WarpPointPlayer {
                             if (args.length == 4) {
                                 switch (args[3].toLowerCase()) {
                                     case "public":
-                                        p.teleport(plugin.WPWarps.getPublicWarp(warpName));
+                                        p.teleport(plugin.WPWarps.getWarp(warpName, WarpPoint.WarpType.Public, op.getUniqueId()).getLocation());
                                         p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
                                         break;
                                     case "private":
-                                        p.teleport(plugin.WPWarps.getPrivateWarp(warpName, op.getUniqueId()));
+                                        p.teleport(plugin.WPWarps.getWarp(warpName, WarpPoint.WarpType.Private, op.getUniqueId()).getLocation());
                                         p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
                                         break;
                                     case "faction":
-                                        p.teleport(plugin.WPFactions.getWarp(warpName, op.getUniqueId()));
-                                        p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
+                                        if (plugin.factions) {
+                                            p.teleport(plugin.WPWarps.getWarp(warpName, WarpPoint.WarpType.Faction, op.getUniqueId()).getLocation());
+                                            p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
+                                        } else {
+                                            p.sendMessage(plugin.WPConfigs.getColoredMessage("FactionsDisabled"));
+                                        }
                                         break;
                                     default:
                                         p.sendMessage(plugin.WPConfigs.getColoredMessage("InvalidType"));
@@ -158,15 +163,15 @@ public class WarpPointPlayer {
                             } else {
                                 switch (types.get(0)) {
                                     case Public:
-                                        p.teleport(plugin.WPWarps.getPublicWarp(warpName));
+                                        p.teleport(plugin.WPWarps.getWarp(warpName, types.get(0), op.getUniqueId()).getLocation());
                                         p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
                                         break;
                                     case Private:
-                                        p.teleport(plugin.WPWarps.getPrivateWarp(warpName, op.getUniqueId()));
+                                        p.teleport(plugin.WPWarps.getWarp(warpName, types.get(0), op.getUniqueId()).getLocation());
                                         p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
                                         break;
                                     case Faction:
-                                        p.teleport(plugin.WPFactions.getWarp(warpName, op.getUniqueId()));
+                                        p.teleport(plugin.WPWarps.getWarp(warpName, types.get(0), op.getUniqueId()).getLocation());
                                         p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
                                         break;
                                 }

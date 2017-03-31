@@ -16,6 +16,7 @@
 
 package net.lapismc.warppoint;
 
+import net.lapismc.warppoint.playerdata.Warp;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
@@ -32,21 +33,16 @@ import java.util.UUID;
 
 public class WarpPointPerms {
 
-    protected HashMap<Permission, HashMap<Perm, Integer>> pluginPerms = new HashMap<>();
+    HashMap<Permission, HashMap<Perm, Integer>> pluginPerms = new HashMap<>();
     private WarpPoint plugin;
     private HashMap<UUID, Permission> playerPerms = new HashMap<>();
 
-    protected WarpPointPerms(WarpPoint p) {
+    WarpPointPerms(WarpPoint p) {
         plugin = p;
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-            @Override
-            public void run() {
-                playerPerms = new HashMap<>();
-            }
-        }, 20 * 60 * 5, 20 * 60 * 5);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> playerPerms = new HashMap<>(), 20 * 60 * 5, 20 * 60 * 5);
     }
 
-    protected void loadPermissions() {
+    void loadPermissions() {
         pluginPerms.clear();
         ConfigurationSection permsSection = plugin.getConfig().getConfigurationSection("Permissions");
         Set<String> perms = permsSection.getKeys(false);
@@ -97,7 +93,7 @@ public class WarpPointPerms {
         }
     }
 
-    public void setPerms(UUID uuid, Permission p) {
+    void setPerms(UUID uuid, Permission p) {
         playerPerms.put(uuid, p);
     }
 
@@ -107,7 +103,7 @@ public class WarpPointPerms {
         YamlConfiguration warps = plugin.WPConfigs.getPlayerConfig(uuid);
         if (op.isOnline()) {
             Player player = op.getPlayer();
-            if (!playerPerms.containsKey(uuid) || playerPerms.get(uuid).equals(null)) {
+            if (!playerPerms.containsKey(uuid) || playerPerms.get(uuid) == null) {
                 Integer priority = -1;
                 for (Permission perm : pluginPerms.keySet()) {
                     if (player.hasPermission(perm) &&
@@ -141,7 +137,7 @@ public class WarpPointPerms {
     public Boolean isPermitted(UUID uuid, Perm perm) {
         HashMap<Perm, Integer> permMap;
         Permission p = getPlayerPermission(uuid);
-        if (!pluginPerms.containsKey(p) || pluginPerms.get(p).equals(null)) {
+        if (!pluginPerms.containsKey(p) || pluginPerms.get(p) == null) {
             loadPermissions();
             permMap = pluginPerms.get(p);
         } else {
@@ -155,11 +151,11 @@ public class WarpPointPerms {
                 return false;
             }
         } else if (perm.equals(Perm.PublicWarps)) {
-            List<String> publicWarps = plugin.WPWarps.getOwnedPublicWarps(uuid);
+            List<Warp> publicWarps = plugin.WPWarps.getOwnedPublicWarps(uuid);
             Integer i = publicWarps.size();
             return i < permMap.get(perm);
         } else if (perm.equals(Perm.Private)) {
-            List<String> list = plugin.WPWarps.getPrivateWarps(uuid);
+            List<Warp> list = plugin.WPWarps.getPrivateWarps(uuid);
             Integer i = list.size();
             return i < permMap.get(perm);
         } else {

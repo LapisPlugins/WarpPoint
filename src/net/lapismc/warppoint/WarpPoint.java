@@ -23,8 +23,6 @@ import java.util.logging.Logger;
 
 public final class WarpPoint extends JavaPlugin {
 
-    public WarpPointCommands WPCommands;
-    public WarpPointListeners WPListeners;
     public WarpPointConfigurations WPConfigs;
     public WarpPointWarps WPWarps;
     public WarpPointFactions WPFactions;
@@ -37,14 +35,14 @@ public final class WarpPoint extends JavaPlugin {
     public void onEnable() {
         lapisUpdater = new LapisUpdater(this, "WarpPoint", "Dart2112", "WarpPoint", "master");
         update();
-        Metrics metrics = new Metrics(this);
-        metrics.start();
+        new Metrics(this);
+        new WarpPointFileWatcher(this);
         WPWarps = new WarpPointWarps(this);
         WPConfigs = new WarpPointConfigurations(this);
         WPConfigs.generateConfigurations();
         WPConfigs.loadConfigurations();
-        WPCommands = new WarpPointCommands(this);
-        WPListeners = new WarpPointListeners(this);
+        new WarpPointCommands(this);
+        new WarpPointListeners(this);
         WPPerms = new WarpPointPerms(this);
         WPPerms.loadPermissions();
         logger.info("WarpPoint v." + getDescription().getVersion() + " has been enabled");
@@ -62,18 +60,15 @@ public final class WarpPoint extends JavaPlugin {
         logger.info("WarpPoint Disabled");
     }
 
-    public void update() {
-        Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
-            @Override
-            public void run() {
-                if (getConfig().getBoolean("DownloadUpdates")) {
-                    lapisUpdater.downloadUpdate("WarpPoint");
+    private void update() {
+        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+            if (getConfig().getBoolean("DownloadUpdates")) {
+                lapisUpdater.downloadUpdate();
+            } else {
+                if (lapisUpdater.checkUpdate()) {
+                    logger.info("Update for WarpPoint available, you can install it with /warppoint update");
                 } else {
-                    if (lapisUpdater.checkUpdate("WarpPoint")) {
-                        logger.info("Update for WarpPoint available, you can install it with /warppoint update");
-                    } else {
-                        logger.info("No updates found for WarpPoint");
-                    }
+                    logger.info("No updates found for WarpPoint");
                 }
             }
         });

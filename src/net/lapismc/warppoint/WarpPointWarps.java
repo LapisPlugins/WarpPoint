@@ -16,7 +16,7 @@
 
 package net.lapismc.warppoint;
 
-import org.bukkit.Location;
+import net.lapismc.warppoint.playerdata.Warp;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.util.*;
@@ -24,93 +24,105 @@ import java.util.*;
 public class WarpPointWarps {
 
     WarpPoint plugin;
-    private HashMap<String, UUID> publicWarps = new HashMap<>();
-    private ArrayList<String> privateWarps = new ArrayList<>();
+    private HashMap<Warp, UUID> publicWarps = new HashMap<>();
+    private HashMap<UUID, List<Warp>> privateWarps = new HashMap<>();
 
-    protected WarpPointWarps(WarpPoint p) {
+    WarpPointWarps(WarpPoint p) {
         plugin = p;
     }
 
-    public void addPublicWarp(String name, UUID uuid) {
-        publicWarps.put(name, uuid);
+    public Warp getWarp(String name, WarpPoint.WarpType type, UUID uuid) {
+        switch (type) {
+            case Public:
+                for (Warp w : publicWarps.keySet()) {
+                    if (w.getOwner().getUniqueId().equals(uuid)
+                            && w.getName().equalsIgnoreCase(name)) {
+                        return w;
+                    }
+                }
+                break;
+            case Private:
+                for (Warp w : privateWarps.get(uuid)) {
+                    if (w.getOwner().getUniqueId().equals(uuid)
+                            && w.getName().equalsIgnoreCase(name)) {
+                        return w;
+                    }
+                }
+                break;
+            case Faction:
+                if (plugin.factions) {
+                    for (Warp w : plugin.WPFactions.getFactionWarps(uuid)) {
+                        if (w.getOwner().getUniqueId().equals(uuid)
+                                && w.getName().equalsIgnoreCase(name)) {
+                            return w;
+                        }
+                    }
+                }
+                break;
+        }
+        return null;
     }
 
-    public void addPrivateWarp(String name, UUID uuid) {
-        privateWarps.add(name + ":" + uuid.toString());
+    public void addPublicWarp(Warp warp) {
+        publicWarps.put(warp, warp.getOwner().getUniqueId());
     }
 
-    public Location getPrivateWarp(String s, UUID uuid) {
-        if (privateWarps.contains(s + ":" + uuid)) {
-            YamlConfiguration yaml = plugin.WPConfigs.getPlayerConfig(uuid);
-            Location loc = (Location) yaml.get("Warps." + s + "_" + WarpPoint.WarpType.Private.toString() + ".location");
-            return loc;
+    public void addPrivateWarp(Warp warp) {
+        List<Warp> warps;
+        UUID uuid = warp.getOwner().getUniqueId();
+        if (privateWarps.containsKey(uuid)) {
+            warps = privateWarps.get(uuid);
         } else {
-            return null;
+            warps = new ArrayList<>();
         }
+        warps.add(warp);
+        privateWarps.put(uuid, warps);
     }
 
-    public List<String> getPrivateWarps(UUID uuid) {
-        List<String> list = new ArrayList<>();
-        for (String s : privateWarps) {
-            if (s.contains(uuid.toString())) {
-                list.add(s.replace(":" + uuid.toString(), ""));
-            }
+    public List<Warp> getPrivateWarps(UUID uuid) {
+        List<Warp> warpList = new ArrayList<>();
+        if (privateWarps.containsKey(uuid)) {
+            warpList = privateWarps.get(uuid);
         }
-        return list;
+        return warpList;
     }
 
-    public Set<String> getAllPublicWarps() {
+    public Set<Warp> getAllPublicWarps() {
         return publicWarps.keySet();
     }
 
-    public List<String> getOwnedPublicWarps(UUID uuid) {
-        List<String> list = new ArrayList<>();
-        for (String s : publicWarps.keySet()) {
-            if (publicWarps.get(s).equals(uuid)) {
-                list.add(s);
+    public List<Warp> getOwnedPublicWarps(UUID uuid) {
+        List<Warp> warpList = new ArrayList<>();
+        for (Warp warp : publicWarps.keySet()) {
+            if (publicWarps.get(warp).equals(uuid)) {
+                warpList.add(warp);
             }
         }
-        return list;
+        return warpList;
     }
 
-    public boolean removePrivateWarp(UUID uuid, String warpName) {
-        if (privateWarps.contains(warpName + ":" + uuid)) {
-            privateWarps.remove(warpName + ":" + uuid);
+    public void removePrivateWarp(Warp warp) {
+        UUID uuid = warp.getOwner().getUniqueId();
+        if (privateWarps.containsKey(uuid)) {
+            privateWarps.remove(uuid);
             YamlConfiguration warps = plugin.WPConfigs.getPlayerConfig(uuid);
             List<String> warpsList = warps.getStringList("Warps.list");
-            warpsList.remove(warpName + "_" + WarpPoint.WarpType.Private.toString());
+            warpsList.remove(warp.getName() + "_" + WarpPoint.WarpType.Private.toString());
             warps.set("Warps.list", warpsList);
-            warps.set("Warps." + warpName + "_" + WarpPoint.WarpType.Private.toString(), null);
+            warps.set("Warps." + warp.getName() + "_" + WarpPoint.WarpType.Private.toString(), null);
             plugin.WPConfigs.reloadPlayerConfig(uuid, warps);
-            return true;
-        } else {
-            return false;
         }
     }
 
-    public Location getPublicWarp(String s) {
-        if (publicWarps.containsKey(s)) {
-            UUID uuid = publicWarps.get(s);
-            YamlConfiguration yaml = plugin.WPConfigs.getPlayerConfig(uuid);
-            Location loc = (Location) yaml.get("Warps." + s + "_" + WarpPoint.WarpType.Public.toString() + ".location");
-            return loc;
-        } else {
-            return null;
-        }
-    }
-
-    public boolean removePublicWarp(UUID uuid, String warpName) {
-        if (publicWarps.get(warpName) != null && publicWarps.get(warpName).equals(uuid)) {
-            publicWarps.remove(warpName);
-            YamlConfiguration warps = plugin.WPConfigs.getPlayerConfig(uuid);
+    public void removePublicWarp(Warp warp) {
+        if (publicWarps.containsKey(warp)) {
+            publicWarps.remove(warp);
+            YamlConfiguration warps = plugin.WPConfigs.getPlayerConfig(warp.getOwner().getUniqueId());
             List<String> warpsList = warps.getStringList("Warps.list");
-            warpsList.remove(warpName + "_" + WarpPoint.WarpType.Private.toString());
+            warpsList.remove(warp.getName() + "_" + WarpPoint.WarpType.Private.toString());
             warps.set("Warps.list", warpsList);
-            warps.set("Warps." + warpName + "_" + WarpPoint.WarpType.Public.toString(), null);
-            plugin.WPConfigs.reloadPlayerConfig(uuid, warps);
-            return true;
-        } else {
-            return false;
+            warps.set("Warps." + warp.getName() + "_" + WarpPoint.WarpType.Public.toString(), null);
+            plugin.WPConfigs.reloadPlayerConfig(warp.getOwner().getUniqueId(), warps);
         }
     }
 

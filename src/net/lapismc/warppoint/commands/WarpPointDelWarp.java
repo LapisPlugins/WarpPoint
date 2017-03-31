@@ -18,6 +18,8 @@ package net.lapismc.warppoint.commands;
 
 import net.lapismc.warppoint.WarpPoint;
 import net.lapismc.warppoint.WarpPointPerms;
+import net.lapismc.warppoint.playerdata.Warp;
+import net.lapismc.warppoint.playerdata.WarpPointPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -39,7 +41,8 @@ public class WarpPointDelWarp {
             sender.sendMessage(plugin.WPConfigs.getMessage("NotAPlayer"));
             return;
         }
-        Player p = (Player) sender;
+        Player player = (Player) sender;
+        net.lapismc.warppoint.playerdata.WarpPointPlayer p = new net.lapismc.warppoint.playerdata.WarpPointPlayer(plugin, player);
         if (args.length >= 2) {
             String warpTypeString = args[1];
             String warpName = args[0];
@@ -69,23 +72,25 @@ public class WarpPointDelWarp {
             }
             YamlConfiguration warps;
             if (args.length == 3) {
-                if (!plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perm.Admin)) {
+                if (!p.isPermitted(WarpPointPerms.Perm.Admin)) {
                     p.sendMessage(plugin.WPConfigs.getColoredMessage("NoPermission"));
                     return;
                 }
                 String pName = args[2];
+                //noinspection deprecation
                 OfflinePlayer p0 = Bukkit.getOfflinePlayer(pName);
-                warps = plugin.WPConfigs.getPlayerConfig(p0.getUniqueId());
+                WarpPointPlayer WPPlayer = new WarpPointPlayer(plugin, p0.getUniqueId());
+                warps = WPPlayer.getConfig();
                 if (warps == null) {
                     p.sendMessage(plugin.WPConfigs.getColoredMessage("NoPlayerData"));
                     return;
                 }
-            } else {
-                warps = plugin.WPConfigs.getPlayerConfig(p.getUniqueId());
             }
+            Warp warp = plugin.WPWarps.getWarp(warpName, warpType, p.getUniqueId());
             switch (warpType) {
                 case Faction:
-                    if (plugin.WPFactions.delWarp(p, warpName)) {
+                    if (warp != null) {
+                        warp.deleteWarp();
                         p.sendMessage(ChatColor.GOLD + "Removed your faction warp " + ChatColor.RED
                                 + warpName);
                     } else {
@@ -94,7 +99,8 @@ public class WarpPointDelWarp {
                     }
                     break;
                 case Public:
-                    if (plugin.WPWarps.removePublicWarp(p.getUniqueId(), warpName)) {
+                    if (warp != null) {
+                        warp.deleteWarp();
                         p.sendMessage(ChatColor.GOLD + "Removed your public warp " + ChatColor.RED
                                 + warpName);
                     } else {
@@ -103,7 +109,8 @@ public class WarpPointDelWarp {
                     }
                     break;
                 case Private:
-                    if (plugin.WPWarps.removePrivateWarp(p.getUniqueId(), warpName)) {
+                    if (warp != null) {
+                        warp.deleteWarp();
                         p.sendMessage(ChatColor.GOLD + "Removed your private warp " + ChatColor.RED
                                 + warpName);
                     } else {

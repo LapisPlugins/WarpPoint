@@ -26,17 +26,14 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.permissions.Permission;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 public class WarpPointListeners implements Listener {
 
     WarpPoint plugin;
 
-    protected WarpPointListeners(WarpPoint plugin) {
+    WarpPointListeners(WarpPoint plugin) {
         this.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
@@ -48,24 +45,9 @@ public class WarpPointListeners implements Listener {
         File f = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "PlayerData" +
                 File.separator + p.getUniqueId() + ".yml");
         if (!f.exists()) {
-            try {
-                f.createNewFile();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                return;
-            }
-            warps = YamlConfiguration.loadConfiguration(f);
-            warps.set("UUID", p.getUniqueId().toString());
-            warps.set("UserName", p.getName());
-            warps.set("Permission", "NotYetSet");
-            Date date = new Date();
-            warps.set("OnlineSince", date.getTime());
-            warps.set("OfflineSince", "-");
-            List<String> sl = new ArrayList<>();
-            warps.set("Warps.list", sl);
-            plugin.WPConfigs.reloadPlayerConfig(p.getUniqueId(), warps);
+            plugin.WPConfigs.generateNewPlayerData(f, p);
         }
-        warps = YamlConfiguration.loadConfiguration(f);
+        warps = plugin.WPConfigs.getPlayerConfig(p.getUniqueId());
         Date date = new Date();
         warps.set("OnlineSince", date.getTime());
         plugin.WPConfigs.reloadPlayerConfig(p.getUniqueId(), warps);
@@ -99,18 +81,16 @@ public class WarpPointListeners implements Listener {
             plugin.logger.info("Player " + p.getName() + " has been assigned permission " + currentPerm.getName());
             plugin.WPPerms.setPerms(p.getUniqueId(), currentPerm);
         } else {
+            assert lowestPermission != null;
             plugin.logger.info("Player " + p.getName() + " has no permissions so they have been given "
                     + lowestPermission.getName() + " by default");
             plugin.WPPerms.setPerms(p.getUniqueId(), lowestPermission);
         }
         if (plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perm.Admin)) {
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-                @Override
-                public void run() {
-                    if (plugin.lapisUpdater.checkUpdate("WarpPoint")) {
-                        if (!plugin.getConfig().getBoolean("DownloadUpdates")) {
-                            p.sendMessage(plugin.WPConfigs.getColoredMessage("Update.Available"));
-                        }
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                if (plugin.lapisUpdater.checkUpdate()) {
+                    if (!plugin.getConfig().getBoolean("DownloadUpdates")) {
+                        p.sendMessage(plugin.WPConfigs.getColoredMessage("Update.Available"));
                     }
                 }
             });
