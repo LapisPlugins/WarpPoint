@@ -176,7 +176,7 @@ public class WarpPointConfigurations {
             for (String key : cs.getKeys(false)) {
                 if (!key.endsWith("list")) {
                     String name = key.replace("Warps.", "");
-                    Location loc = (Location) yaml.get(key);
+                    Location loc = (Location) yaml.get(key + ".location");
                     OfflinePlayer op = Bukkit.getOfflinePlayer(uuid);
                     if (key.endsWith("_public")) {
                         Warp warp = new Warp(plugin, WarpPoint.WarpType.Public, loc, op, name.replace("_public", ""));

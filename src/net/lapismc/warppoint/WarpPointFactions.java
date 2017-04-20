@@ -53,8 +53,8 @@ public class WarpPointFactions implements Listener {
     }
 
     public void setWarp(Warp warp) {
-        Faction f = getFaction(warp);
         UUID uuid = warp.getOwner().getUniqueId();
+        Faction f = getFaction(uuid);
         HashMap<Warp, UUID> fw = factionWarps.get(f);
         if (fw == null) {
             fw = new HashMap<>();

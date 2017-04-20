@@ -19,6 +19,7 @@ package net.lapismc.warppoint.playerdata;
 import net.lapismc.warppoint.WarpPoint;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 public class Warp {
@@ -35,6 +36,11 @@ public class Warp {
         this.l = l;
         this.op = op;
         this.name = name;
+        YamlConfiguration warps = plugin.WPConfigs.getPlayerConfig(op.getUniqueId());
+        if (!warps.contains("Warps." + name + "_" + type.toString())) {
+            warps.set("Warps." + name + "_" + type.toString() + ".location", l);
+            plugin.WPConfigs.reloadPlayerConfig(op.getUniqueId(), warps);
+        }
     }
 
     //Methods
@@ -56,7 +62,10 @@ public class Warp {
     }
 
     public void teleportPlayer(Player p) {
-        p.teleport(this.getLocation());
+        if (l == null) {
+            l = (Location) plugin.WPConfigs.getPlayerConfig(op.getUniqueId()).get("Warps." + name + "_" + type.toString() + ".location");
+        }
+        p.teleport(l);
     }
 
 

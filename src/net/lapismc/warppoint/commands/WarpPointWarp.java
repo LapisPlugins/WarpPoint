@@ -61,18 +61,15 @@ public class WarpPointWarp {
                                 p.sendMessage(plugin.WPConfigs.getColoredMessage("NoPermission"));
                             }
                             Warp warp = plugin.WPWarps.getWarp(warpName, WarpPoint.WarpType.Public, p.getUniqueId());
-                            Location loc = warp.getLocation();
-                            p.teleport(loc);
+                            warp.teleportPlayer(p);
                             p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
                             break;
                         case Private:
                             if (!plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perm.Private)) {
                                 p.sendMessage(plugin.WPConfigs.getColoredMessage("NoPermission"));
                             }
-
                             Warp warp0 = plugin.WPWarps.getWarp(warpName, WarpPoint.WarpType.Private, p.getUniqueId());
-                            Location loc0 = warp0.getLocation();
-                            p.teleport(loc0);
+                            warp0.teleportPlayer(p);
                             p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
                             break;
                         case Faction:
@@ -83,8 +80,7 @@ public class WarpPointWarp {
                                 p.sendMessage(plugin.WPConfigs.getColoredMessage("NoPermission"));
                             }
                             Warp warp1 = plugin.WPWarps.getWarp(warpName, WarpPoint.WarpType.Faction, p.getUniqueId());
-                            Location loc1 = warp1.getLocation();
-                            p.teleport(loc1);
+                            warp1.teleportPlayer(p);
                             p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
                             break;
                     }
