@@ -33,6 +33,12 @@ public final class WarpPoint extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        if (Bukkit.getPluginManager().isPluginEnabled("Factions")) {
+            factions = true;
+            WPFactions = new WarpPointFactions(this);
+        } else {
+            factions = false;
+        }
         lapisUpdater = new LapisUpdater(this, "WarpPoint", "Dart2112", "WarpPoint", "master");
         update();
         new Metrics(this);
@@ -46,12 +52,6 @@ public final class WarpPoint extends JavaPlugin {
         WPPerms = new WarpPointPerms(this);
         WPPerms.loadPermissions();
         logger.info("WarpPoint v." + getDescription().getVersion() + " has been enabled");
-        if (Bukkit.getPluginManager().isPluginEnabled("Factions")) {
-            factions = true;
-            WPFactions = new WarpPointFactions(this);
-        } else {
-            factions = false;
-        }
     }
 
     @Override

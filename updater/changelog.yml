@@ -23,3 +23,6 @@
   - "Rare permissions error fixed"
 1.0.7:
   - "Added auto reloading of config files"
+1.0.8:
+  - "Faction warp loading fixed, other minor fixes"
+  - "Rework of how warps are stored, a lot more efficient and easier to work with"
