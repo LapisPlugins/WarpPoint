@@ -40,13 +40,36 @@ public class WarpPointWarpList {
         }
         Player p = (Player) sender;
         if (args.length == 0) {
-            String types;
-            if (plugin.factions) {
-                types = "private/public/faction";
+            //Send List of all warps
+            //public
+            Set<Warp> warps2 = plugin.WPWarps.getAllPublicWarps();
+            p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpList.public"));
+            if (warps2.isEmpty()) {
+                p.sendMessage(plugin.WPConfigs.getColoredMessage("NoWarpsInList"));
             } else {
-                types = "private/public";
+                String warpsString2 = ChatColor.RED + warps2.toString().replace("[", "").replace("]", "");
+                p.sendMessage(warpsString2);
             }
-            p.sendMessage(plugin.WPConfigs.getColoredMessage("Help.warpList").replace("%types", types));
+            //private
+            List<Warp> warps1 = plugin.WPWarps.getPrivateWarps(p.getUniqueId());
+            p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpList.private"));
+            if (warps1.isEmpty()) {
+                p.sendMessage(plugin.WPConfigs.getColoredMessage("NoWarpsInList"));
+            } else {
+                String warpsString1 = ChatColor.RED + warps1.toString().replace("[", "").replace("]", "");
+                p.sendMessage(warpsString1);
+            }
+            //faction
+            if (plugin.factions) {
+                List<Warp> warps0 = plugin.WPFactions.getFactionWarps(p.getUniqueId());
+                p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpList.faction"));
+                if (warps0.isEmpty()) {
+                    p.sendMessage(plugin.WPConfigs.getColoredMessage("NoWarpsInList"));
+                } else {
+                    String warpsString0 = ChatColor.RED + warps0.toString().replace("[", "").replace("]", "");
+                    p.sendMessage(warpsString0);
+                }
+            }
         } else {
             String typeString = args[0].toLowerCase();
             switch (typeString) {

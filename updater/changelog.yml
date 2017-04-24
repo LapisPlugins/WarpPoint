@@ -26,3 +26,7 @@
 1.0.8:
   - "Faction warp loading fixed, other minor fixes"
   - "Rework of how warps are stored, a lot more efficient and easier to work with"
+1.0.9:
+  - "/warplist now shows all warps if you don't specify"
+  - "other minor changes"
+  - "Horses are now teleported with you if you are riding them"

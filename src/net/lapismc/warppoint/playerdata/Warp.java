@@ -20,6 +20,7 @@ import net.lapismc.warppoint.WarpPoint;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 
 public class Warp {
@@ -65,7 +66,17 @@ public class Warp {
         if (l == null) {
             l = (Location) plugin.WPConfigs.getPlayerConfig(op.getUniqueId()).get("Warps." + name + "_" + type.toString() + ".location");
         }
-        p.teleport(l);
+        if (p.isInsideVehicle()) {
+            if (p.getVehicle() instanceof Horse) {
+                Horse horse = (Horse) p.getVehicle();
+                horse.eject();
+                horse.teleport(l);
+                p.teleport(l);
+                horse.setPassenger(p);
+            }
+        } else {
+            p.teleport(l);
+        }
     }
 
 
