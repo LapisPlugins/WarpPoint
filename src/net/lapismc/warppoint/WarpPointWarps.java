@@ -34,6 +34,9 @@ public class WarpPointWarps {
     public Warp getWarp(String name, WarpPoint.WarpType type, UUID uuid) {
         switch (type) {
             case Public:
+                if (publicWarps.size() == 0) {
+                    return null;
+                }
                 for (Warp w : publicWarps.keySet()) {
                     if (w.getOwner().getUniqueId().equals(uuid)
                             && w.getName().equalsIgnoreCase(name)) {
@@ -42,6 +45,9 @@ public class WarpPointWarps {
                 }
                 break;
             case Private:
+                if (!privateWarps.containsKey(uuid)) {
+                    return null;
+                }
                 for (Warp w : privateWarps.get(uuid)) {
                     if (w.getOwner().getUniqueId().equals(uuid)
                             && w.getName().equalsIgnoreCase(name)) {
@@ -51,6 +57,9 @@ public class WarpPointWarps {
                 break;
             case Faction:
                 if (plugin.factions) {
+                    if (plugin.WPFactions.getFactionWarps(uuid) == null) {
+                        return null;
+                    }
                     for (Warp w : plugin.WPFactions.getFactionWarps(uuid)) {
                         if (w.getOwner().getUniqueId().equals(uuid)
                                 && w.getName().equalsIgnoreCase(name)) {

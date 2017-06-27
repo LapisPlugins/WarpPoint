@@ -30,3 +30,5 @@
   - "/warplist now shows all warps if you don't specify"
   - "other minor changes"
   - "Horses are now teleported with you if you are riding them"
+1.1.0:
+  - "Fixed nulls for players without types of warps"
