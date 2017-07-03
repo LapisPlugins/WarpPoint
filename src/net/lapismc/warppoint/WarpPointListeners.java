@@ -85,8 +85,9 @@ public class WarpPointListeners implements Listener {
             plugin.logger.info("Player " + p.getName() + " has no permissions so they have been given "
                     + lowestPermission.getName() + " by default");
             plugin.WPPerms.setPerms(p.getUniqueId(), lowestPermission);
+            currentPerm = lowestPermission;
         }
-        if (plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perm.Admin)) {
+        if (plugin.WPPerms.pluginPerms.get(currentPerm).get(WarpPointPerms.Perm.Admin) == 1) {
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
                 if (plugin.lapisUpdater.checkUpdate()) {
                     if (!plugin.getConfig().getBoolean("DownloadUpdates")) {

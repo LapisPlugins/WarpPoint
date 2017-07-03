@@ -31,6 +31,23 @@ public class WarpPointWarps {
         plugin = p;
     }
 
+
+    public Warp getWarp(String name, WarpPoint.WarpType type) {
+        switch (type) {
+            case Public:
+                if (publicWarps.size() == 0) {
+                    return null;
+                }
+                for (Warp w : publicWarps.keySet()) {
+                    if (w.getName().equalsIgnoreCase(name)) {
+                        return w;
+                    }
+                }
+                break;
+        }
+        return null;
+    }
+
     public Warp getWarp(String name, WarpPoint.WarpType type, UUID uuid) {
         switch (type) {
             case Public:

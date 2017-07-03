@@ -89,6 +89,11 @@ public class WarpPointSetWarp {
                         p.sendMessage(plugin.WPConfigs.getColoredMessage("Set.noMovePerm"));
                         return;
                     }
+                    if (warpType == WarpPoint.WarpType.Public) {
+                        warp = plugin.WPWarps.getWarp(warpName, warpType);
+                    } else {
+                        warp = plugin.WPWarps.getWarp(warpName, warpType, p.getUniqueId());
+                    }
                 }
                 List<String> warpList = warps.getStringList("Warps.list");
                 if (!warpList.contains(warpName + "_" + warpType.toString())) {

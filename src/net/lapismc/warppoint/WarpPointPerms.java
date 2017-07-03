@@ -159,7 +159,7 @@ public class WarpPointPerms {
             Integer i = list.size();
             return i < permMap.get(perm);
         } else {
-            return permMap.get(perm) == 1;
+            return permMap.get(perm) != null && permMap.get(perm) == 1;
         }
     }
 
