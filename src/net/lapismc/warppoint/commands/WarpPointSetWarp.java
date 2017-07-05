@@ -78,6 +78,7 @@ public class WarpPointSetWarp {
                 }
                 if (!setMove[0]) {
                     p.sendMessage(plugin.WPConfigs.getColoredMessage("NoPermission"));
+                    return;
                 }
                 if (warpName.equalsIgnoreCase("list")) {
                     p.sendMessage(plugin.WPConfigs.getColoredMessage("Set.notAvail"));
