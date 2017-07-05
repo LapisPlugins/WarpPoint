@@ -32,7 +32,7 @@ public class WarpPointWarps {
     }
 
 
-    public Warp getWarp(String name, WarpPoint.WarpType type) {
+    public Warp getWarp(String name, WarpPoint.WarpType type, UUID uuid) {
         switch (type) {
             case Public:
                 if (publicWarps.size() == 0) {
@@ -44,11 +44,23 @@ public class WarpPointWarps {
                     }
                 }
                 break;
+            case Faction:
+                if (plugin.factions) {
+                    if (plugin.WPFactions.getFactionWarps(uuid) == null) {
+                        return null;
+                    }
+                    for (Warp w : plugin.WPFactions.getFactionWarps(uuid)) {
+                        if (w.getName().equalsIgnoreCase(name)) {
+                            return w;
+                        }
+                    }
+                }
+                break;
         }
         return null;
     }
 
-    public Warp getWarp(String name, WarpPoint.WarpType type, UUID uuid) {
+    public Warp getOwnedWarp(String name, WarpPoint.WarpType type, UUID uuid) {
         switch (type) {
             case Public:
                 if (publicWarps.size() == 0) {

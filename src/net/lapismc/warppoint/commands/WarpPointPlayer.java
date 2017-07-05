@@ -32,6 +32,8 @@ import org.ocpsoft.prettytime.units.Millisecond;
 
 import java.util.*;
 
+import static net.lapismc.warppoint.WarpPoint.WarpType.*;
+
 class WarpPointPlayer {
 
     private WarpPoint plugin;
@@ -128,11 +130,11 @@ class WarpPointPlayer {
                             types.add(WarpPoint.WarpType.Private);
                         }
                         if (plugin.WPWarps.getOwnedPublicWarps(uuid).contains(warpName)) {
-                            types.add(WarpPoint.WarpType.Public);
+                            types.add(Public);
                         }
                         if (plugin.factions) {
                             if (plugin.WPFactions.getFactionWarps(op.getUniqueId()).contains(warpName)) {
-                                types.add(WarpPoint.WarpType.Faction);
+                                types.add(Faction);
                             }
                         }
                         if (types.size() > 1 && args.length == 3) {
@@ -142,16 +144,16 @@ class WarpPointPlayer {
                             if (args.length == 4) {
                                 switch (args[3].toLowerCase()) {
                                     case "public":
-                                        p.teleport(plugin.WPWarps.getWarp(warpName, WarpPoint.WarpType.Public, op.getUniqueId()).getLocation());
+                                        p.teleport(plugin.WPWarps.getOwnedWarp(warpName, Public, op.getUniqueId()).getLocation());
                                         p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
                                         break;
                                     case "private":
-                                        p.teleport(plugin.WPWarps.getWarp(warpName, WarpPoint.WarpType.Private, op.getUniqueId()).getLocation());
+                                        p.teleport(plugin.WPWarps.getOwnedWarp(warpName, WarpPoint.WarpType.Private, op.getUniqueId()).getLocation());
                                         p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
                                         break;
                                     case "faction":
                                         if (plugin.factions) {
-                                            p.teleport(plugin.WPWarps.getWarp(warpName, WarpPoint.WarpType.Faction, op.getUniqueId()).getLocation());
+                                            p.teleport(plugin.WPWarps.getOwnedWarp(warpName, Faction, op.getUniqueId()).getLocation());
                                             p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
                                         } else {
                                             p.sendMessage(plugin.WPConfigs.getColoredMessage("FactionsDisabled"));
@@ -163,15 +165,15 @@ class WarpPointPlayer {
                             } else {
                                 switch (types.get(0)) {
                                     case Public:
-                                        p.teleport(plugin.WPWarps.getWarp(warpName, types.get(0), op.getUniqueId()).getLocation());
+                                        p.teleport(plugin.WPWarps.getOwnedWarp(warpName, Public, op.getUniqueId()).getLocation());
                                         p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
                                         break;
                                     case Private:
-                                        p.teleport(plugin.WPWarps.getWarp(warpName, types.get(0), op.getUniqueId()).getLocation());
+                                        p.teleport(plugin.WPWarps.getOwnedWarp(warpName, Private, op.getUniqueId()).getLocation());
                                         p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
                                         break;
                                     case Faction:
-                                        p.teleport(plugin.WPWarps.getWarp(warpName, types.get(0), op.getUniqueId()).getLocation());
+                                        p.teleport(plugin.WPWarps.getOwnedWarp(warpName, Faction, op.getUniqueId()).getLocation());
                                         p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
                                         break;
                                 }

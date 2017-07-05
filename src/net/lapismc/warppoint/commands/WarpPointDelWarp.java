@@ -86,7 +86,7 @@ public class WarpPointDelWarp {
                     return;
                 }
             }
-            Warp warp = plugin.WPWarps.getWarp(warpName, warpType, p.getUniqueId());
+            Warp warp = plugin.WPWarps.getOwnedWarp(warpName, warpType, p.getUniqueId());
             switch (warpType) {
                 case Faction:
                     if (warp != null) {
