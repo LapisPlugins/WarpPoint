@@ -32,3 +32,6 @@
   - "Horses are now teleported with you if you are riding them"
 1.1.0:
   - "Fixed nulls for players without types of warps"
+  - "Fixed permission loop hole"
+  - "Defined the difference between owned and accessible warps"
+  - "Fixed public warps"
