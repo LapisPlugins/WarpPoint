@@ -23,13 +23,15 @@ import java.util.logging.Logger;
 
 public final class WarpPoint extends JavaPlugin {
 
+    final Logger logger = getLogger();
     public WarpPointConfigurations WPConfigs;
     public WarpPointWarps WPWarps;
     public WarpPointFactions WPFactions;
     public WarpPointPerms WPPerms;
     public boolean factions;
     public LapisUpdater lapisUpdater;
-    Logger logger = Bukkit.getLogger();
+    public String PrimaryColor = "&6";
+    public String SecondaryColor = "&c";
 
     @Override
     public void onEnable() {

@@ -72,13 +72,14 @@ class WarpPointFileWatcher {
                         if (op.isOnline()) {
                             Player p = op.getPlayer();
                             plugin.WPConfigs.generateNewPlayerData(f, p);
-                            p.sendMessage("Your player data file has been deleted, a new one has been generated");
+                            p.sendMessage("Your WarpPoint player data file has been deleted, a new one has been generated");
                         }
                     } else if (f.getName().endsWith(".yml")) {
                         String name = f.getName().replace(".yml", "");
                         switch (name) {
                             case "config":
                                 plugin.saveDefaultConfig();
+                                plugin.reloadConfig();
                                 break;
                             case "Messages":
                                 if (!f.createNewFile()) {

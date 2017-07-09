@@ -165,12 +165,6 @@ public class WarpPointPerms {
 
     public Integer getPermissionValue(UUID uuid, Perm p) {
         Permission perm = getPlayerPermission(uuid);
-        if (perm == null) {
-            plugin.logger.severe("Perm is null");
-        }
-        if (p == null) {
-            plugin.logger.severe("p is null");
-        }
         return pluginPerms.get(perm).get(p);
     }
 

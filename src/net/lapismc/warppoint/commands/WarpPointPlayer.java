@@ -20,7 +20,6 @@ import net.lapismc.warppoint.WarpPoint;
 import net.lapismc.warppoint.WarpPointPerms;
 import net.lapismc.warppoint.playerdata.Warp;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -54,55 +53,55 @@ class WarpPointPlayer {
                     OfflinePlayer op = Bukkit.getOfflinePlayer(args[1]);
                     if (op != null && plugin.WPConfigs.getPlayerConfig(op.getUniqueId()) != null) {
                         YamlConfiguration warps = plugin.WPConfigs.getPlayerConfig(op.getUniqueId());
-                        sender.sendMessage(ChatColor.RED + "--- " + ChatColor.GOLD +
-                                "Stats for " + ChatColor.BLUE + op.getName() + ChatColor.RED + " ---");
+                        sender.sendMessage(plugin.SecondaryColor + "--- " + plugin.PrimaryColor +
+                                "Stats for " + plugin.SecondaryColor + op.getName() + plugin.SecondaryColor + " ---");
                         String time;
                         if (op.isOnline()) {
                             Long joinTime = warps.getLong("OnlineSince");
                             if (joinTime == 0) {
                                 time = "Unknown";
-                                sender.sendMessage(ChatColor.RED + "Online since " + ChatColor.GOLD + time);
+                                sender.sendMessage(plugin.PrimaryColor + "Online since " + plugin.SecondaryColor + time);
                             } else {
                                 Date date = new Date(joinTime);
                                 time = pt.format(date);
-                                sender.sendMessage(ChatColor.RED + "Online since " + ChatColor.GOLD + time);
+                                sender.sendMessage(plugin.PrimaryColor + "Online since " + plugin.SecondaryColor + time);
                             }
                         } else {
                             Long quitTime = warps.getLong("OfflineSince");
                             Date date = new Date(quitTime);
                             List<Duration> durationList = pt.calculatePreciseDuration(date);
                             time = pt.format(durationList);
-                            sender.sendMessage(ChatColor.RED + "Offline since " + ChatColor.GOLD + time);
+                            sender.sendMessage(plugin.PrimaryColor + "Offline since " + plugin.SecondaryColor + time);
                         }
                         if (plugin.WPPerms.getPlayerPermission(op.getUniqueId()) != null) {
-                            sender.sendMessage(ChatColor.RED + "Player Permission: "
-                                    + ChatColor.GOLD + plugin.WPPerms.getPlayerPermission(op.getUniqueId()).getName());
+                            sender.sendMessage(plugin.PrimaryColor + "Player Permission: "
+                                    + plugin.SecondaryColor + plugin.WPPerms.getPlayerPermission(op.getUniqueId()).getName());
                             List<Warp> publicWarps = plugin.WPWarps.getOwnedPublicWarps(op.getUniqueId());
-                            sender.sendMessage(ChatColor.RED + "Public Warps: " + ChatColor.GOLD + publicWarps.size()
-                                    + ChatColor.RED + " of " + ChatColor.GOLD
+                            sender.sendMessage(plugin.PrimaryColor + "Public Warps: " + plugin.SecondaryColor + publicWarps.size()
+                                    + plugin.PrimaryColor + " of " + plugin.SecondaryColor
                                     + plugin.WPPerms.getPermissionValue(op.getUniqueId(),
-                                    WarpPointPerms.Perm.PublicWarps) + ChatColor.RED + " used");
+                                    WarpPointPerms.Perm.PublicWarps) + plugin.PrimaryColor + " used");
                             if (publicWarps.size() > 0) {
-                                sender.sendMessage(ChatColor.BLUE +
+                                sender.sendMessage(plugin.SecondaryColor +
                                         publicWarps.toString().replace("[", "").replace("]", ""));
                             }
                             List<Warp> privateWarps = plugin.WPWarps.getPrivateWarps(op.getUniqueId());
-                            sender.sendMessage(ChatColor.RED + "Private Warps: " + ChatColor.GOLD
-                                    + privateWarps.size() + ChatColor.RED + " of " + ChatColor.GOLD
+                            sender.sendMessage(plugin.PrimaryColor + "Private Warps: " + plugin.SecondaryColor
+                                    + privateWarps.size() + plugin.PrimaryColor + " of " + plugin.SecondaryColor
                                     + plugin.WPPerms.getPermissionValue(op.getUniqueId(),
-                                    WarpPointPerms.Perm.Private) + ChatColor.RED + " used");
+                                    WarpPointPerms.Perm.Private) + plugin.PrimaryColor + " used");
                             if (privateWarps.size() > 0) {
-                                sender.sendMessage(ChatColor.BLUE +
+                                sender.sendMessage(plugin.SecondaryColor +
                                         privateWarps.toString().replace("[", "").replace("]", ""));
                             }
                             if (plugin.factions) {
                                 List<Warp> factionWarps = plugin.WPFactions.getOwnedWarps(op.getUniqueId());
-                                sender.sendMessage(ChatColor.RED + "Faction Warps: " + ChatColor.GOLD
-                                        + factionWarps.size() + ChatColor.RED + " of "
-                                        + ChatColor.GOLD + plugin.WPPerms.getPermissionValue(op.getUniqueId(),
-                                        WarpPointPerms.Perm.FactionWarps) + ChatColor.RED + " used");
+                                sender.sendMessage(plugin.PrimaryColor + "Faction Warps: " + plugin.SecondaryColor
+                                        + factionWarps.size() + plugin.PrimaryColor + " of "
+                                        + plugin.SecondaryColor + plugin.WPPerms.getPermissionValue(op.getUniqueId(),
+                                        WarpPointPerms.Perm.FactionWarps) + plugin.PrimaryColor + " used");
                                 if (factionWarps.size() > 0) {
-                                    sender.sendMessage(ChatColor.BLUE +
+                                    sender.sendMessage(plugin.SecondaryColor +
                                             factionWarps.toString().replace("[", "").replace("]", ""));
                                 }
                             }

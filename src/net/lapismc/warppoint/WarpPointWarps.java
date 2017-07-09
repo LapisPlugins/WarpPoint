@@ -31,7 +31,6 @@ public class WarpPointWarps {
         plugin = p;
     }
 
-
     public Warp getWarp(String name, WarpPoint.WarpType type, UUID uuid) {
         switch (type) {
             case Public:

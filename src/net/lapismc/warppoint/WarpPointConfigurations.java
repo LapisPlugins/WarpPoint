@@ -36,8 +36,6 @@ public class WarpPointConfigurations {
     WarpPoint plugin;
     private HashMap<UUID, YamlConfiguration> playerWarps = new HashMap<>();
     private YamlConfiguration Messages;
-    private String PrimaryColor = "&6";
-    private String SecondaryColor = "&c";
 
     WarpPointConfigurations(WarpPoint plugin) {
         this.plugin = plugin;
@@ -96,7 +94,7 @@ public class WarpPointConfigurations {
     }
 
     public String getColoredMessage(String path) {
-        return ChatColor.translateAlternateColorCodes('&', Messages.getString(path).replace("&p", PrimaryColor).replace("&s", SecondaryColor));
+        return ChatColor.translateAlternateColorCodes('&', Messages.getString(path).replace("&p", plugin.PrimaryColor).replace("&s", plugin.SecondaryColor));
     }
 
     public String getMessage(String path) {
@@ -197,8 +195,8 @@ public class WarpPointConfigurations {
                 }
             }
         }
-        PrimaryColor = Messages.getString("PrimaryColor");
-        SecondaryColor = Messages.getString("SecondaryColor");
+        plugin.PrimaryColor = ChatColor.translateAlternateColorCodes('&', Messages.getString("PrimaryColor"));
+        plugin.SecondaryColor = ChatColor.translateAlternateColorCodes('&', Messages.getString("SecondaryColor"));
     }
 
     void saveConfigurations() {

@@ -42,7 +42,7 @@ import java.util.zip.GZIPOutputStream;
 public class Metrics {
 
     // The version of this bStats class
-    public static final int B_STATS_VERSION = 1;
+    private static final int B_STATS_VERSION = 1;
     // The url to which the data is sent
     private static final String URL = "https://bStats.org/submitData/bukkit";
     // Should failed requests be logged?
@@ -71,7 +71,7 @@ public class Metrics {
      *
      * @param plugin The plugin which stats should be submitted.
      */
-    public Metrics(JavaPlugin plugin) {
+    Metrics(JavaPlugin plugin) {
         if (plugin == null) {
             throw new IllegalArgumentException("Plugin cannot be null!");
         }
@@ -209,12 +209,7 @@ public class Metrics {
                 }
                 // Nevertheless we want our code to run in the Bukkit main thread, so we have to use the Bukkit scheduler
                 // Don't be afraid! The connection to the bStats server is still async, only the stats collection is sync ;)
-                Bukkit.getScheduler().runTask(plugin, new Runnable() {
-                    @Override
-                    public void run() {
-                        submitData();
-                    }
-                });
+                Bukkit.getScheduler().runTask(plugin, () -> submitData());
             }
         }, 1000 * 60 * 5, 1000 * 60 * 30);
         // Submit the data every 30 minutes, first time after 5 minutes to give other plugins enough time to start
@@ -310,17 +305,14 @@ public class Metrics {
         data.put("plugins", pluginData);
 
         // Create a new thread for the connection to the bStats server
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    // Send the data
-                    sendData(data);
-                } catch (Exception e) {
-                    // Something went wrong! :(
-                    if (logFailedRequests) {
-                        plugin.getLogger().log(Level.WARNING, "Could not submit plugin stats of " + plugin.getName(), e);
-                    }
+        new Thread(() -> {
+            try {
+                // Send the data
+                sendData(data);
+            } catch (Exception e) {
+                // Something went wrong! :(
+                if (logFailedRequests) {
+                    plugin.getLogger().log(Level.WARNING, "Could not submit plugin stats of " + plugin.getName(), e);
                 }
             }
         }).start();
@@ -647,21 +639,21 @@ public class Metrics {
     public static abstract class CustomChart {
 
         // The id of the chart
-        protected final String chartId;
+        final String chartId;
 
         /**
          * Class constructor.
          *
          * @param chartId The id of the chart.
          */
-        public CustomChart(String chartId) {
+        CustomChart(String chartId) {
             if (chartId == null || chartId.isEmpty()) {
                 throw new IllegalArgumentException("ChartId cannot be null or empty!");
             }
             this.chartId = chartId;
         }
 
-        protected JSONObject getRequestJsonObject() {
+        JSONObject getRequestJsonObject() {
             JSONObject chart = new JSONObject();
             chart.put("chartId", chartId);
             try {
@@ -703,7 +695,7 @@ public class Metrics {
          *
          * @return The value of the pie.
          */
-        public abstract String getValue();
+        abstract String getValue();
 
         @Override
         protected JSONObject getChartData() {
@@ -739,7 +731,7 @@ public class Metrics {
          *                 You don't have to create a map yourself!
          * @return The values of the pie.
          */
-        public abstract HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap);
+        abstract HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap);
 
         @Override
         protected JSONObject getChartData() {
@@ -786,7 +778,7 @@ public class Metrics {
          *
          * @return The value of the chart.
          */
-        public abstract int getValue();
+        abstract int getValue();
 
         @Override
         protected JSONObject getChartData() {
@@ -823,7 +815,7 @@ public class Metrics {
          *                 You don't have to create a map yourself!
          * @return The values of the chart.
          */
-        public abstract HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap);
+        abstract HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap);
 
         @Override
         protected JSONObject getChartData() {
@@ -873,7 +865,7 @@ public class Metrics {
          *                 You don't have to create a map yourself!
          * @return The value of the chart.
          */
-        public abstract HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap);
+        abstract HashMap<String, Integer> getValues(HashMap<String, Integer> valueMap);
 
         @Override
         protected JSONObject getChartData() {
@@ -916,7 +908,7 @@ public class Metrics {
          *                 You don't have to create a map yourself!
          * @return The value of the chart.
          */
-        public abstract HashMap<String, int[]> getValues(HashMap<String, int[]> valueMap);
+        abstract HashMap<String, int[]> getValues(HashMap<String, int[]> valueMap);
 
         @Override
         protected JSONObject getChartData() {
@@ -968,7 +960,7 @@ public class Metrics {
          *
          * @return The value of the chart.
          */
-        public abstract Country getValue();
+        abstract Country getValue();
 
         @Override
         protected JSONObject getChartData() {
@@ -1006,7 +998,7 @@ public class Metrics {
          *                 You don't have to create a map yourself!
          * @return The value of the chart.
          */
-        public abstract HashMap<Country, Integer> getValues(HashMap<Country, Integer> valueMap);
+        abstract HashMap<Country, Integer> getValues(HashMap<Country, Integer> valueMap);
 
         @Override
         protected JSONObject getChartData() {

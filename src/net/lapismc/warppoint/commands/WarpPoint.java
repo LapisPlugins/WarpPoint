@@ -17,7 +17,6 @@
 package net.lapismc.warppoint.commands;
 
 import net.lapismc.warppoint.WarpPointPerms;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -40,9 +39,9 @@ public class WarpPoint {
             permitted = true;
         }
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.GOLD + "WarpPoint:" + ChatColor.RED + " v." + plugin.getDescription().getVersion());
-            sender.sendMessage(ChatColor.GOLD + "Author:" + ChatColor.RED + " dart2112");
-            sender.sendMessage(ChatColor.GOLD + "Spigot: " + ChatColor.RED + "https://goo.gl/vUJ8KC");
+            sender.sendMessage(plugin.PrimaryColor + "WarpPoint:" + plugin.SecondaryColor + " v." + plugin.getDescription().getVersion());
+            sender.sendMessage(plugin.PrimaryColor + "Author:" + plugin.SecondaryColor + " dart2112");
+            sender.sendMessage(plugin.PrimaryColor + "Spigot: " + plugin.SecondaryColor + "https://goo.gl/vUJ8KC");
         } else if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("update")) {
                 if (permitted) {
@@ -57,10 +56,8 @@ public class WarpPoint {
                 } else {
                     sender.sendMessage(plugin.WPConfigs.getColoredMessage("NoPermission"));
                 }
-
             } else if (args[0].equalsIgnoreCase("help")) {
                 help(sender);
-
             } else if (args[0].equalsIgnoreCase("reload")) {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
@@ -102,7 +99,7 @@ public class WarpPoint {
         } else {
             types = "private/public";
         }
-        sender.sendMessage(ChatColor.RED + "--- " + ChatColor.GOLD + "HomeSpawn Help" + ChatColor.RED + " ---");
+        sender.sendMessage(plugin.SecondaryColor + "--- " + plugin.PrimaryColor + "HomeSpawn Help" + plugin.SecondaryColor + " ---");
         sender.sendMessage(plugin.WPConfigs.getColoredMessage("Help.warp").replace("%types", types));
         sender.sendMessage(plugin.WPConfigs.getColoredMessage("Help.setWarp").replace("%types", types));
         if (admin) {

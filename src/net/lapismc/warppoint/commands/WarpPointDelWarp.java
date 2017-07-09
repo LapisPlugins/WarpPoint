@@ -21,7 +21,6 @@ import net.lapismc.warppoint.WarpPointPerms;
 import net.lapismc.warppoint.playerdata.Warp;
 import net.lapismc.warppoint.playerdata.WarpPointPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -91,30 +90,30 @@ public class WarpPointDelWarp {
                 case Faction:
                     if (warp != null) {
                         warp.deleteWarp();
-                        p.sendMessage(ChatColor.GOLD + "Removed your faction warp " + ChatColor.RED
+                        p.sendMessage(plugin.PrimaryColor + "Removed your faction warp " + plugin.SecondaryColor
                                 + warpName);
                     } else {
-                        p.sendMessage(ChatColor.RED + "Failed to remove faction warp " + ChatColor.DARK_RED
+                        p.sendMessage(plugin.PrimaryColor + "Failed to remove faction warp " + plugin.SecondaryColor
                                 + warpName);
                     }
                     break;
                 case Public:
                     if (warp != null) {
                         warp.deleteWarp();
-                        p.sendMessage(ChatColor.GOLD + "Removed your public warp " + ChatColor.RED
+                        p.sendMessage(plugin.PrimaryColor + "Removed your public warp " + plugin.SecondaryColor
                                 + warpName);
                     } else {
-                        p.sendMessage(ChatColor.RED + "Failed to remove public warp " + ChatColor.DARK_RED
+                        p.sendMessage(plugin.PrimaryColor + "Failed to remove public warp " + plugin.SecondaryColor
                                 + warpName);
                     }
                     break;
                 case Private:
                     if (warp != null) {
                         warp.deleteWarp();
-                        p.sendMessage(ChatColor.GOLD + "Removed your private warp " + ChatColor.RED
+                        p.sendMessage(plugin.PrimaryColor + "Removed your private warp " + plugin.SecondaryColor
                                 + warpName);
                     } else {
-                        p.sendMessage(ChatColor.RED + "Failed to remove private warp " + ChatColor.DARK_RED
+                        p.sendMessage(plugin.PrimaryColor + "Failed to remove private warp " + plugin.SecondaryColor
                                 + warpName);
                     }
                     break;

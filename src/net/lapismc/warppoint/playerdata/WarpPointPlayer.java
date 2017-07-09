@@ -77,9 +77,7 @@ public class WarpPointPlayer {
         switch (type) {
             case Public:
                 List<Warp> warpList = new ArrayList<>();
-                for (Warp warp : plugin.WPWarps.getAllPublicWarps()) {
-                    warpList.add(warp);
-                }
+                warpList.addAll(plugin.WPWarps.getAllPublicWarps());
                 return warpList;
             case Private:
                 return plugin.WPWarps.getPrivateWarps(op.getUniqueId());

@@ -70,7 +70,6 @@ public class WarpPointListeners implements Listener {
                 lowestPriority = map.get(WarpPointPerms.Perm.Priority);
             }
             if (p.hasPermission(perm)) {
-
                 if (map.get(WarpPointPerms.Perm.Priority) > priority) {
                     priority = map.get(WarpPointPerms.Perm.Priority);
                     currentPerm = perm;

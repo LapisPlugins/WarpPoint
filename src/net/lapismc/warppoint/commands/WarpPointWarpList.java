@@ -18,7 +18,6 @@ package net.lapismc.warppoint.commands;
 
 import net.lapismc.warppoint.WarpPoint;
 import net.lapismc.warppoint.playerdata.Warp;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -40,33 +39,29 @@ public class WarpPointWarpList {
         }
         Player p = (Player) sender;
         if (args.length == 0) {
-            //Send List of all warps
-            //public
             Set<Warp> warps2 = plugin.WPWarps.getAllPublicWarps();
             p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpList.public"));
             if (warps2.isEmpty()) {
                 p.sendMessage(plugin.WPConfigs.getColoredMessage("NoWarpsInList"));
             } else {
-                String warpsString2 = ChatColor.RED + warps2.toString().replace("[", "").replace("]", "");
+                String warpsString2 = plugin.SecondaryColor + warps2.toString().replace("[", "").replace("]", "");
                 p.sendMessage(warpsString2);
             }
-            //private
             List<Warp> warps1 = plugin.WPWarps.getPrivateWarps(p.getUniqueId());
             p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpList.private"));
             if (warps1.isEmpty()) {
                 p.sendMessage(plugin.WPConfigs.getColoredMessage("NoWarpsInList"));
             } else {
-                String warpsString1 = ChatColor.RED + warps1.toString().replace("[", "").replace("]", "");
+                String warpsString1 = plugin.SecondaryColor + warps1.toString().replace("[", "").replace("]", "");
                 p.sendMessage(warpsString1);
             }
-            //faction
             if (plugin.factions) {
                 List<Warp> warps0 = plugin.WPFactions.getFactionWarps(p.getUniqueId());
                 p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpList.faction"));
                 if (warps0.isEmpty()) {
                     p.sendMessage(plugin.WPConfigs.getColoredMessage("NoWarpsInList"));
                 } else {
-                    String warpsString0 = ChatColor.RED + warps0.toString().replace("[", "").replace("]", "");
+                    String warpsString0 = plugin.SecondaryColor + warps0.toString().replace("[", "").replace("]", "");
                     p.sendMessage(warpsString0);
                 }
             }
@@ -80,7 +75,7 @@ public class WarpPointWarpList {
                             p.sendMessage(plugin.WPConfigs.getColoredMessage("NoWarpsInList"));
                         } else {
                             p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpList.faction"));
-                            String warpsString0 = ChatColor.GOLD + warps0.toString().replace("[", "").replace("]", "");
+                            String warpsString0 = plugin.SecondaryColor + warps0.toString().replace("[", "").replace("]", "");
                             p.sendMessage(warpsString0);
                         }
                     } else {
@@ -93,7 +88,7 @@ public class WarpPointWarpList {
                         p.sendMessage(plugin.WPConfigs.getColoredMessage("NoWarpsInList"));
                     } else {
                         p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpList.private"));
-                        String warpsString1 = ChatColor.GOLD + warps1.toString().replace("[", "").replace("]", "");
+                        String warpsString1 = plugin.SecondaryColor + warps1.toString().replace("[", "").replace("]", "");
                         p.sendMessage(warpsString1);
                     }
                     break;
@@ -103,7 +98,7 @@ public class WarpPointWarpList {
                         p.sendMessage(plugin.WPConfigs.getColoredMessage("NoWarpsInList"));
                     } else {
                         p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpList.public"));
-                        String warpsString2 = ChatColor.GOLD + warps2.toString().replace("[", "").replace("]", "");
+                        String warpsString2 = plugin.SecondaryColor + warps2.toString().replace("[", "").replace("]", "");
                         p.sendMessage(warpsString2);
                     }
                     break;
