@@ -18,7 +18,9 @@ package net.lapismc.warppoint.commands;
 
 import net.lapismc.warppoint.WarpPoint;
 import net.lapismc.warppoint.WarpPointPerms;
+import net.lapismc.warppoint.api.WarpTeleportEvent;
 import net.lapismc.warppoint.playerdata.Warp;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -61,16 +63,28 @@ public class WarpPointWarp {
                                 p.sendMessage(plugin.WPConfigs.getColoredMessage("NoPermission"));
                             }
                             Warp warp = plugin.WPWarps.getWarp(warpName, WarpPoint.WarpType.Public, p.getUniqueId());
-                            warp.teleportPlayer(p);
-                            p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
+                            WarpTeleportEvent event = new WarpTeleportEvent(p, warp);
+                            Bukkit.getPluginManager().callEvent(event);
+                            if (!event.isCancelled()) {
+                                warp.teleportPlayer(p);
+                                p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
+                            } else {
+                                p.sendMessage(plugin.WPConfigs.getColoredMessage("ActionCancelled") + event.getCancelReason());
+                            }
                             break;
                         case Private:
                             if (!plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perm.Private)) {
                                 p.sendMessage(plugin.WPConfigs.getColoredMessage("NoPermission"));
                             }
                             Warp warp0 = plugin.WPWarps.getOwnedWarp(warpName, WarpPoint.WarpType.Private, p.getUniqueId());
-                            warp0.teleportPlayer(p);
-                            p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
+                            WarpTeleportEvent event0 = new WarpTeleportEvent(p, warp0);
+                            Bukkit.getPluginManager().callEvent(event0);
+                            if (!event0.isCancelled()) {
+                                warp0.teleportPlayer(p);
+                                p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
+                            } else {
+                                p.sendMessage(plugin.WPConfigs.getColoredMessage("ActionCancelled") + event0.getCancelReason());
+                            }
                             break;
                         case Faction:
                             if (!plugin.factions) {
@@ -80,8 +94,14 @@ public class WarpPointWarp {
                                 p.sendMessage(plugin.WPConfigs.getColoredMessage("NoPermission"));
                             }
                             Warp warp1 = plugin.WPWarps.getWarp(warpName, WarpPoint.WarpType.Faction, p.getUniqueId());
-                            warp1.teleportPlayer(p);
-                            p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
+                            WarpTeleportEvent event1 = new WarpTeleportEvent(p, warp1);
+                            Bukkit.getPluginManager().callEvent(event1);
+                            if (!event1.isCancelled()) {
+                                warp1.teleportPlayer(p);
+                                p.sendMessage(plugin.WPConfigs.getColoredMessage("Teleported").replace("%name", warpName));
+                            } else {
+                                p.sendMessage(plugin.WPConfigs.getColoredMessage("ActionCancelled") + event1.getCancelReason());
+                            }
                             break;
                     }
                 }

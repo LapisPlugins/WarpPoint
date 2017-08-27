@@ -18,6 +18,7 @@ package net.lapismc.warppoint.commands;
 
 import net.lapismc.warppoint.WarpPoint;
 import net.lapismc.warppoint.WarpPointPerms;
+import net.lapismc.warppoint.api.WarpDeleteEvent;
 import net.lapismc.warppoint.playerdata.Warp;
 import net.lapismc.warppoint.playerdata.WarpPointPlayer;
 import org.bukkit.Bukkit;
@@ -41,7 +42,7 @@ public class WarpPointDelWarp {
             return;
         }
         Player player = (Player) sender;
-        net.lapismc.warppoint.playerdata.WarpPointPlayer p = new net.lapismc.warppoint.playerdata.WarpPointPlayer(plugin, player);
+        WarpPointPlayer p = new WarpPointPlayer(plugin, player);
         if (args.length >= 2) {
             String warpTypeString = args[1];
             String warpName = args[0];
@@ -86,6 +87,12 @@ public class WarpPointDelWarp {
                 }
             }
             Warp warp = plugin.WPWarps.getOwnedWarp(warpName, warpType, p.getUniqueId());
+            WarpDeleteEvent event = new WarpDeleteEvent(warp);
+            Bukkit.getPluginManager().callEvent(event);
+            if (event.isCancelled()) {
+                p.sendMessage(plugin.WPConfigs.getColoredMessage("ActionCancelled") + event.getCancelReason());
+                return;
+            }
             switch (warpType) {
                 case Faction:
                     if (warp != null) {

@@ -18,6 +18,7 @@ package net.lapismc.warppoint.commands;
 
 import net.lapismc.warppoint.WarpPoint;
 import net.lapismc.warppoint.WarpPointPerms;
+import net.lapismc.warppoint.api.WarpSetEvent;
 import net.lapismc.warppoint.playerdata.Warp;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -100,6 +101,12 @@ public class WarpPointSetWarp {
                 if (!warpList.contains(warpName + "_" + warpType.toString())) {
                     warpList.add(warpName + "_" + warpType.toString());
                     warps.set("Warps.list", warpList);
+                }
+                WarpSetEvent event = new WarpSetEvent(warp);
+                Bukkit.getPluginManager().callEvent(event);
+                if (event.isCancelled()) {
+                    p.sendMessage(plugin.WPConfigs.getColoredMessage("ActionCancelled") + event.getCancelReason());
+                    return;
                 }
                 warps.set("Warps." + warpName + "_" + warpType.toString() + ".location", p.getLocation());
                 plugin.WPConfigs.reloadPlayerConfig(p.getUniqueId(), warps);
