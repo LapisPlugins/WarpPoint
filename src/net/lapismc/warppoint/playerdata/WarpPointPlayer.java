@@ -19,7 +19,6 @@ package net.lapismc.warppoint.playerdata;
 import net.lapismc.warppoint.WarpPoint;
 import net.lapismc.warppoint.WarpPointPerms;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -43,14 +42,23 @@ public class WarpPointPlayer {
         op = Bukkit.getOfflinePlayer(player.getUniqueId());
     }
 
+    /**
+     * @return Returns the OfflinePlayer object of this user
+     */
     public OfflinePlayer getPlayer() {
         return op;
     }
 
+    /**
+     * @return Returns the players UUID
+     */
     public UUID getUniqueId() {
         return op.getUniqueId();
     }
 
+    /**
+     * @param message The message you wish to send to the player
+     */
     public void sendMessage(String message) {
         if (op.isOnline()) {
             Player p = op.getPlayer();
@@ -58,21 +66,25 @@ public class WarpPointPlayer {
         }
     }
 
-    public void teleport(Location location) {
-        if (op.isOnline()) {
-            Player p = op.getPlayer();
-            p.teleport(location);
-        }
-    }
-
+    /**
+     * @return Returns the YAMLConfiguration for this user, only use this if you know what you are doing
+     */
     public YamlConfiguration getConfig() {
         return plugin.WPConfigs.getPlayerConfig(op.getUniqueId());
     }
 
+    /**
+     * @param perm The permission you wish to check
+     * @return returns true if the user has the given permission
+     */
     public Boolean isPermitted(WarpPointPerms.Perm perm) {
         return plugin.WPPerms.isPermitted(op.getUniqueId(), perm);
     }
 
+    /**
+     * @param type The type of warps you wish to search for
+     * @return returns a List of Warps that the player is able to teleport to
+     */
     public List<Warp> getAccessibleWarps(WarpPoint.WarpType type) {
         switch (type) {
             case Public:
@@ -89,6 +101,10 @@ public class WarpPointPlayer {
         return new ArrayList<>();
     }
 
+    /**
+     * @param type The type of warps you wish to search for
+     * @return Returns a List of Warps that the player has set themselves
+     */
     public List<Warp> getOwnedWarps(WarpPoint.WarpType type) {
         switch (type) {
             case Private:

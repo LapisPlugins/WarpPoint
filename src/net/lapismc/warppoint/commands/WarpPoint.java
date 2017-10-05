@@ -42,7 +42,7 @@ public class WarpPoint {
             sender.sendMessage(plugin.PrimaryColor + "WarpPoint:" + plugin.SecondaryColor + " v." + plugin.getDescription().getVersion());
             sender.sendMessage(plugin.PrimaryColor + "Author:" + plugin.SecondaryColor + " dart2112");
             sender.sendMessage(plugin.PrimaryColor + "Spigot: " + plugin.SecondaryColor + "https://goo.gl/vUJ8KC");
-        } else if (args.length >= 1) {
+        } else {
             if (args[0].equalsIgnoreCase("update")) {
                 if (permitted) {
                     sender.sendMessage(plugin.WPConfigs.getColoredMessage("Update.Checking"));

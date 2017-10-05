@@ -16,6 +16,7 @@
 
 package net.lapismc.warppoint;
 
+import net.lapismc.warppoint.api.WarpPointAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -51,6 +52,7 @@ public final class WarpPoint extends JavaPlugin {
         WPConfigs.loadConfigurations();
         new WarpPointCommands(this);
         new WarpPointListeners(this);
+        new WarpPointAPI(this);
         WPPerms = new WarpPointPerms(this);
         WPPerms.loadPermissions();
         logger.info("WarpPoint v." + getDescription().getVersion() + " has been enabled");

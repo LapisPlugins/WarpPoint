@@ -31,6 +31,9 @@ public class Warp {
     private OfflinePlayer op;
     private String name;
 
+    /**
+     * This should only be used by WarpPoint, please get the object from a players warp lists
+     */
     public Warp(WarpPoint plugin, WarpPoint.WarpType type, Location l, OfflinePlayer op, String name) {
         this.plugin = plugin;
         this.type = type;
@@ -46,6 +49,9 @@ public class Warp {
 
     //Methods
 
+    /**
+     * Deletes the warp
+     */
     public void deleteWarp() {
         switch (type) {
             case Public:
@@ -62,6 +68,9 @@ public class Warp {
         }
     }
 
+    /**
+     * @param p The player you wish to teleport to this warp
+     */
     public void teleportPlayer(Player p) {
         if (l == null) {
             l = (Location) plugin.WPConfigs.getPlayerConfig(op.getUniqueId()).get("Warps." + name + "_" + type.toString() + ".location");
@@ -82,34 +91,37 @@ public class Warp {
 
     //Setters and Getters
 
+    /**
+     * @return Returns the warp type
+     */
     public WarpPoint.WarpType getType() {
         return type;
     }
 
-    public void setType(WarpPoint.WarpType type) {
-        this.type = type;
-    }
-
+    /**
+     * @return Returns the location object for the warp
+     */
     public Location getLocation() {
         return l;
     }
 
-    public void setLocation(Location l) {
-        this.l = l;
-    }
-
+    /**
+     * @return Returns the offline player object for the owner of the warp
+     */
     public OfflinePlayer getOwner() {
         return op;
     }
 
-    public void setOwner(OfflinePlayer op) {
-        this.op = op;
-    }
-
+    /**
+     * @return Returns the name of the warp
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * This should only be used if you have already edited the name in the user file
+     */
     public void setName(String name) {
         this.name = name;
     }
