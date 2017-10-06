@@ -42,7 +42,7 @@ public final class WarpPoint extends JavaPlugin {
         } else {
             factions = false;
         }
-        lapisUpdater = new LapisUpdater(this, "WarpPoint", "Dart2112", "WarpPoint", "master");
+        lapisUpdater = new LapisUpdater(this, "WarpPoint", "LapisPlugins", "WarpPoint", "master");
         update();
         new Metrics(this);
         new WarpPointFileWatcher(this);
