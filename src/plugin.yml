@@ -2,7 +2,7 @@ name: WarpPoint
 version: ${version}
 main: net.lapismc.warppoint.WarpPoint
 authors: [dart2112]
-softdepend: [Factions]
+softdepend: [Factions,Multiverse-Core]
 description: The best way to warp
 commands:
   warp:
