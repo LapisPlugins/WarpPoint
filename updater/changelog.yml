@@ -38,3 +38,5 @@
 1.1.1:
   - "Added API for warp teleporting/setting/deleting"
   - "Updated to 1.12.1"
+1.1.2:
+  - "Fixed Null Pointer Exception on first warp teleport"
