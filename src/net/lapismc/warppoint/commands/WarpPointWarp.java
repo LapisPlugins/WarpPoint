@@ -143,7 +143,13 @@ public class WarpPointWarp {
                         break;
                 }
             } else {
-                p.sendMessage(plugin.WPConfigs.getColoredMessage("Help.warp"));
+                String types;
+                if (plugin.factions) {
+                    types = "private/public/faction";
+                } else {
+                    types = "private/public";
+                }
+                p.sendMessage(plugin.WPConfigs.getColoredMessage("Help.warp").replace("%types", types));
             }
         } else {
             sender.sendMessage(plugin.WPConfigs.getMessage("NotAPlayer"));
