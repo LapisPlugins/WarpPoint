@@ -40,3 +40,6 @@
   - "Updated to 1.12.1"
 1.1.2:
   - "Fixed Null Pointer Exception on first warp teleport"
+1.1.3:
+  - "Added tab completion"
+  - "Fixed types in /warp command help"
