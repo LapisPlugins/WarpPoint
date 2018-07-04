@@ -40,10 +40,12 @@ public class Warp {
         this.l = l;
         this.op = op;
         this.name = name;
-        YamlConfiguration warps = plugin.WPConfigs.getPlayerConfig(op.getUniqueId());
-        if (!warps.contains("Warps." + name + "_" + type.toString())) {
-            warps.set("Warps." + name + "_" + type.toString() + ".location", l);
-            plugin.WPConfigs.reloadPlayerConfig(op.getUniqueId(), warps);
+        if (op != null && op.hasPlayedBefore()) {
+            YamlConfiguration warps = plugin.WPConfigs.getPlayerConfig(op.getUniqueId());
+            if (!warps.contains("Warps." + name + "_" + type.toString())) {
+                warps.set("Warps." + name + "_" + type.toString() + ".location", l);
+                plugin.WPConfigs.reloadPlayerConfig(op.getUniqueId(), warps);
+            }
         }
     }
 

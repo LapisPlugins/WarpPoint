@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package net.lapismc.warppoint;
+package net.lapismc.warppoint.utils;
 
 
 import org.bukkit.Bukkit;
@@ -42,7 +42,7 @@ public class LapisUpdater {
     private Boolean force;
     private String newVersionRawString;
 
-    LapisUpdater(JavaPlugin plugin, String jarName, String username, String repoName, String branch) {
+    public LapisUpdater(JavaPlugin plugin, String jarName, String username, String repoName, String branch) {
         this.plugin = plugin;
         this.jarName = jarName;
         this.username = username;

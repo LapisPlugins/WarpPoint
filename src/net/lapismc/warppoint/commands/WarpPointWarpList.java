@@ -16,23 +16,35 @@
 
 package net.lapismc.warppoint.commands;
 
+import me.kangarko.ui.menu.menues.MenuPagged;
+import me.kangarko.ui.model.ItemCreator;
 import net.lapismc.warppoint.WarpPoint;
 import net.lapismc.warppoint.playerdata.Warp;
+import net.lapismc.warppoint.playerdata.WarpPointPlayer;
+import net.lapismc.warppoint.utils.LapisCommand;
+import org.bukkit.DyeColor;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-public class WarpPointWarpList {
+public class WarpPointWarpList extends LapisCommand {
 
     private WarpPoint plugin;
 
     public WarpPointWarpList(WarpPoint p) {
+        super("warplist", "shows the warps a player has access to",
+                new ArrayList<>(Arrays.asList("warpslist", "listwarp", "listwarps")));
         plugin = p;
     }
 
-    public void warpList(CommandSender sender, String[] args) {
+    @Override
+    public void onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
         if (!(sender instanceof Player)) {
             sender.sendMessage(plugin.WPConfigs.getMessage("NotAPlayer"));
             return;
@@ -67,6 +79,7 @@ public class WarpPointWarpList {
             }
         } else {
             String typeString = args[0].toLowerCase();
+            WarpPointPlayer player = new WarpPointPlayer(plugin, p.getUniqueId());
             switch (typeString) {
                 case "faction":
                     if (plugin.factions) {
@@ -74,9 +87,13 @@ public class WarpPointWarpList {
                         if (warps0.isEmpty()) {
                             p.sendMessage(plugin.WPConfigs.getColoredMessage("NoWarpsInList"));
                         } else {
-                            p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpList.faction"));
-                            String warpsString0 = plugin.SecondaryColor + warps0.toString().replace("[", "").replace("]", "");
-                            p.sendMessage(warpsString0);
+                            if (plugin.getConfig().getBoolean("WarpListGUI")) {
+                                new WarpsListUI(player, warps0, WarpPoint.WarpType.Faction).displayTo(p);
+                            } else {
+                                p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpList.faction"));
+                                String warpsString0 = plugin.SecondaryColor + warps0.toString().replace("[", "").replace("]", "");
+                                p.sendMessage(warpsString0);
+                            }
                         }
                     } else {
                         p.sendMessage(plugin.WPConfigs.getColoredMessage("FactionsDisabled"));
@@ -87,9 +104,13 @@ public class WarpPointWarpList {
                     if (warps1.isEmpty()) {
                         p.sendMessage(plugin.WPConfigs.getColoredMessage("NoWarpsInList"));
                     } else {
-                        p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpList.private"));
-                        String warpsString1 = plugin.SecondaryColor + warps1.toString().replace("[", "").replace("]", "");
-                        p.sendMessage(warpsString1);
+                        if (plugin.getConfig().getBoolean("WarpListGUI")) {
+                            new WarpsListUI(player, warps1, WarpPoint.WarpType.Private).displayTo(p);
+                        } else {
+                            p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpList.private"));
+                            String warpsString1 = plugin.SecondaryColor + warps1.toString().replace("[", "").replace("]", "");
+                            p.sendMessage(warpsString1);
+                        }
                     }
                     break;
                 case "public":
@@ -97,9 +118,13 @@ public class WarpPointWarpList {
                     if (warps2.isEmpty()) {
                         p.sendMessage(plugin.WPConfigs.getColoredMessage("NoWarpsInList"));
                     } else {
-                        p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpList.public"));
-                        String warpsString2 = plugin.SecondaryColor + warps2.toString().replace("[", "").replace("]", "");
-                        p.sendMessage(warpsString2);
+                        if (plugin.getConfig().getBoolean("WarpListGUI")) {
+                            new WarpsListUI(player, warps2, WarpPoint.WarpType.Public).displayTo(p);
+                        } else {
+                            p.sendMessage(plugin.WPConfigs.getColoredMessage("WarpList.public"));
+                            String warpsString2 = plugin.SecondaryColor + warps2.toString().replace("[", "").replace("]", "");
+                            p.sendMessage(warpsString2);
+                        }
                     }
                     break;
                 default:
@@ -113,6 +138,51 @@ public class WarpPointWarpList {
                     p.sendMessage(plugin.WPConfigs.getColoredMessage("Help.warpList").replace("%types", types));
                     break;
             }
+        }
+    }
+
+    private class WarpsListUI extends MenuPagged<Warp> {
+
+        Random r = new Random(System.currentTimeMillis());
+        OfflinePlayer op;
+        WarpPoint.WarpType type;
+
+        WarpsListUI(WarpPointPlayer p, Iterable<Warp> warps, WarpPoint.WarpType warpType) {
+            super(9 * 2, null, warps);
+            op = p.getPlayer();
+            type = warpType;
+            setTitle(getMenuTitle());
+        }
+
+        @Override
+        protected String getMenuTitle() {
+            return type == null ? "" : "Your " + type.toString() + " warps";
+        }
+
+        @Override
+        protected ItemStack convertToItemStack(Warp warp) {
+            return ItemCreator.of(Material.WOOL).color(DyeColor.values()[(r.nextInt(DyeColor.values().length))])
+                    .name(warp.getName()).build().make();
+        }
+
+        @Override
+        protected void onMenuClickPaged(Player player, Warp warp, ClickType clickType) {
+            if (clickType.isLeftClick()) {
+                player.closeInventory();
+                warp.teleportPlayer(player);
+            }
+        }
+
+        @Override
+        protected boolean updateButtonOnClick() {
+            return false;
+        }
+
+        @Override
+        protected String[] getInfo() {
+            return new String[]{
+                    "This is a list of your current homes", "", "Left click to teleport!"
+            };
         }
     }
 

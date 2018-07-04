@@ -16,7 +16,10 @@
 
 package net.lapismc.warppoint;
 
+import me.kangarko.ui.UIDesignerAPI;
 import net.lapismc.warppoint.api.WarpPointAPI;
+import net.lapismc.warppoint.utils.LapisUpdater;
+import net.lapismc.warppoint.utils.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -48,8 +51,8 @@ public final class WarpPoint extends JavaPlugin {
         new WarpPointFileWatcher(this);
         WPWarps = new WarpPointWarps(this);
         WPConfigs = new WarpPointConfigurations(this);
-        WPConfigs.generateConfigurations();
         WPConfigs.loadConfigurations();
+        UIDesignerAPI.setPlugin(this);
         new WarpPointCommands(this);
         new WarpPointListeners(this);
         new WarpPointAPI(this);

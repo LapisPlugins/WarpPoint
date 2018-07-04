@@ -21,21 +21,28 @@ import net.lapismc.warppoint.WarpPointPerms;
 import net.lapismc.warppoint.api.WarpDeleteEvent;
 import net.lapismc.warppoint.playerdata.Warp;
 import net.lapismc.warppoint.playerdata.WarpPointPlayer;
+import net.lapismc.warppoint.utils.LapisCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-public class WarpPointDelWarp {
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class WarpPointDelWarp extends LapisCommand {
 
     private WarpPoint plugin;
 
     public WarpPointDelWarp(WarpPoint p) {
+        super("delwarp", "deletes a warp", new ArrayList<>(Collections.singletonList("deletewarp")));
         this.plugin = p;
     }
 
-    public void delWarp(CommandSender sender, String[] args) {
+    @Override
+    public void onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
         WarpPoint.WarpType warpType;
         if (!(sender instanceof Player)) {
             sender.sendMessage(plugin.WPConfigs.getMessage("NotAPlayer"));

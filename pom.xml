@@ -73,6 +73,10 @@
                                     <pattern>org.ocpsoft.prettytime</pattern>
                                     <shadedPattern>net.lapismc.warppoint.prettytime</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>me.kangarko.ui</pattern>
+                                    <shadedPattern>net.lapismc.warppoint.ui</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
@@ -103,6 +107,10 @@
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
         <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
             <id>spigotmc-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
         </repository>
@@ -129,6 +137,12 @@
             <groupId>org.ocpsoft.prettytime</groupId>
             <artifactId>prettytime</artifactId>
             <version>4.0.0.Final</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.kangarko</groupId>
+            <artifactId>UIDesigner</artifactId>
+            <version>1.0.4</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

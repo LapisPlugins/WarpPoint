@@ -17,20 +17,26 @@
 package net.lapismc.warppoint.commands;
 
 import net.lapismc.warppoint.WarpPointPerms;
+import net.lapismc.warppoint.utils.LapisCommand;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class WarpPoint {
+import java.util.ArrayList;
+
+public class WarpPoint extends LapisCommand {
 
     private net.lapismc.warppoint.WarpPoint plugin;
     private WarpPointPlayer WPPlayer;
 
     public WarpPoint(net.lapismc.warppoint.WarpPoint plugin) {
+        super("warppoint", "shows plugin info", new ArrayList<>());
         this.plugin = plugin;
         WPPlayer = new WarpPointPlayer(plugin);
     }
 
-    public void warpPoint(CommandSender sender, String[] args) {
+    @Override
+    public void onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
         boolean permitted;
         if (sender instanceof Player) {
             Player p = (Player) sender;
@@ -62,8 +68,6 @@ public class WarpPoint {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
                     permitted = plugin.WPPerms.isPermitted(p.getUniqueId(), WarpPointPerms.Perm.Admin);
-                } else {
-                    permitted = true;
                 }
                 if (permitted) {
                     sender.sendMessage("Reloading WarpPoint, you might experience a small lag spike...");
@@ -110,5 +114,4 @@ public class WarpPoint {
             sender.sendMessage(plugin.WPConfigs.getColoredMessage("Help.warpPoint"));
         }
     }
-
 }

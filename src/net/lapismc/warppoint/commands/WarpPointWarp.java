@@ -20,21 +20,25 @@ import net.lapismc.warppoint.WarpPoint;
 import net.lapismc.warppoint.WarpPointPerms;
 import net.lapismc.warppoint.api.WarpTeleportEvent;
 import net.lapismc.warppoint.playerdata.Warp;
+import net.lapismc.warppoint.utils.LapisCommand;
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
-public class WarpPointWarp {
+public class WarpPointWarp extends LapisCommand {
 
     private net.lapismc.warppoint.WarpPoint plugin;
 
     public WarpPointWarp(net.lapismc.warppoint.WarpPoint p) {
+        super("warp", "sends you to a warp", new ArrayList<>());
         plugin = p;
     }
 
-    public void warp(CommandSender sender, String[] args) {
+    @Override
+    public void onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             if (args.length == 1) {

@@ -20,22 +20,27 @@ import net.lapismc.warppoint.WarpPoint;
 import net.lapismc.warppoint.WarpPointPerms;
 import net.lapismc.warppoint.api.WarpSetEvent;
 import net.lapismc.warppoint.playerdata.Warp;
+import net.lapismc.warppoint.utils.LapisCommand;
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class WarpPointSetWarp {
+public class WarpPointSetWarp extends LapisCommand {
 
     private WarpPoint plugin;
 
     public WarpPointSetWarp(WarpPoint plugin) {
+        super("setwarp", "sets a warp at your location", new ArrayList<>());
         this.plugin = plugin;
     }
 
-    public void setWarp(CommandSender sender, String[] args) {
+    @Override
+    public void onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
             YamlConfiguration warps = plugin.WPConfigs.getPlayerConfig(p.getUniqueId());

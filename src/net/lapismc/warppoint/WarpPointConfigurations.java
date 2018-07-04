@@ -31,29 +31,43 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+@SuppressWarnings("FieldCanBeLocal")
 public class WarpPointConfigurations {
 
-    WarpPoint plugin;
+    private WarpPoint plugin;
     private HashMap<UUID, YamlConfiguration> playerWarps = new HashMap<>();
-    private YamlConfiguration Messages;
+    private File messagesFile;
+    private YamlConfiguration messages;
+    private int configVersion = 2;
+    private int messagesVersion = 1;
 
     WarpPointConfigurations(WarpPoint plugin) {
         this.plugin = plugin;
+        messagesFile = new File(plugin.getDataFolder() + File.separator + "messages.yml");
+        generateConfigurations();
         Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> playerWarps = new HashMap<>(), 20 * 60 * 5, 20 * 60 * 5);
     }
 
-    void generateConfigurations() {
-        plugin.saveDefaultConfig();
-        if (plugin.getConfig().getInt("ConfigurationVersion") != 1) {
-            File f = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "config_old.yml");
-            File f1 = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "config.yml");
-            if (!f1.renameTo(f)) {
-                plugin.logger.info(plugin.getName() + " failed to update the config.yml");
-            }
+    private void checkConfigVersions() {
+        if (plugin.getConfig().getInt("ConfigurationVersion", 0) != configVersion) {
+            File oldConfig = new File(plugin.getDataFolder() + File.separator + "config_OLD.yml");
+            File config = new File(plugin.getDataFolder() + File.separator + "config.yml");
+            config.renameTo(oldConfig);
             plugin.saveDefaultConfig();
-            plugin.logger.info("New Configuration Generated for " + plugin.getName() + "," +
-                    " Please Transfer Values From config_old.yml");
+            plugin.logger.info("The config.yml file has been updated, it is now called config_OLD.yml," +
+                    " please transfer any values into the new config.yml");
         }
+        if (messages.getInt("ConfigVersion", 0) != messagesVersion) {
+            File oldMessages = new File(plugin.getDataFolder() + File.separator + "messages_OLD.yml");
+            messagesFile.renameTo(oldMessages);
+            generateMessages();
+            plugin.logger.info("The messages.yml file has been updated, it is now called messages_OLD.yml," +
+                    " please transfer any values into the new messages.yml");
+        }
+    }
+
+    private void generateConfigurations() {
+        plugin.saveDefaultConfig();
         File playerData = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "PlayerData");
         if (!playerData.exists()) {
             if (!playerData.mkdir()) {
@@ -64,14 +78,16 @@ public class WarpPointConfigurations {
         if (!f2.exists()) {
             try {
                 if (!f2.createNewFile()) {
-                    plugin.logger.info("WarpPoint failed to generate Messages.yml");
+                    plugin.logger.info("WarpPoint failed to generate messages.yml");
                 }
                 generateMessages();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        Messages = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "Messages.yml"));
+        messages = YamlConfiguration.loadConfiguration(
+                new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "Messages.yml"));
+        checkConfigVersions();
     }
 
     void generateNewPlayerData(File f, Player p) {
@@ -94,14 +110,14 @@ public class WarpPointConfigurations {
     }
 
     public String getColoredMessage(String path) {
-        return ChatColor.translateAlternateColorCodes('&', Messages.getString(path).replace("&p", plugin.PrimaryColor).replace("&s", plugin.SecondaryColor));
+        return ChatColor.translateAlternateColorCodes('&', messages.getString(path).replace("&p", plugin.PrimaryColor).replace("&s", plugin.SecondaryColor));
     }
 
     public String getMessage(String path) {
         return ChatColor.stripColor(getColoredMessage(path));
     }
 
-    void generateMessages() throws IOException {
+    void generateMessages() {
         try (InputStream is = plugin.getResource("Messages.yml");
              OutputStream os = new FileOutputStream(plugin.getDataFolder().getAbsolutePath() + File.separator + "Messages.yml")) {
             int readBytes;
@@ -115,7 +131,7 @@ public class WarpPointConfigurations {
     }
 
     void reloadMessages(File f) {
-        Messages = YamlConfiguration.loadConfiguration(f);
+        messages = YamlConfiguration.loadConfiguration(f);
     }
 
     public YamlConfiguration getPlayerConfig(UUID uuid) {
@@ -195,8 +211,8 @@ public class WarpPointConfigurations {
                 }
             }
         }
-        plugin.PrimaryColor = ChatColor.translateAlternateColorCodes('&', Messages.getString("PrimaryColor"));
-        plugin.SecondaryColor = ChatColor.translateAlternateColorCodes('&', Messages.getString("SecondaryColor"));
+        plugin.PrimaryColor = ChatColor.translateAlternateColorCodes('&', messages.getString("PrimaryColor"));
+        plugin.SecondaryColor = ChatColor.translateAlternateColorCodes('&', messages.getString("SecondaryColor"));
     }
 
     void saveConfigurations() {

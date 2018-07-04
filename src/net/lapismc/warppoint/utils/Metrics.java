@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package net.lapismc.warppoint;
+package net.lapismc.warppoint.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -39,6 +39,7 @@ import java.util.zip.GZIPOutputStream;
  * <p>
  * Check out https://bStats.org/ to learn more about bStats!
  */
+@SuppressWarnings("ALL")
 public class Metrics {
 
     // The version of this bStats class
@@ -71,7 +72,7 @@ public class Metrics {
      *
      * @param plugin The plugin which stats should be submitted.
      */
-    Metrics(JavaPlugin plugin) {
+    public Metrics(JavaPlugin plugin) {
         if (plugin == null) {
             throw new IllegalArgumentException("Plugin cannot be null!");
         }
