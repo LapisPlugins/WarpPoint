@@ -30,9 +30,9 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WarpPointCommands implements TabCompleter {
+class WarpPointCommands implements TabCompleter {
 
-    private WarpPoint plugin;
+    private final WarpPoint plugin;
 
     WarpPointCommands(WarpPoint p) {
         plugin = p;

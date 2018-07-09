@@ -1,5 +1,5 @@
 /*
- * Copyright  2017 Benjamin Martin
+ * Copyright  2018 Benjamin Martin
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@ import java.util.*;
 
 public class WarpPointWarps {
 
-    WarpPoint plugin;
-    private HashMap<Warp, UUID> publicWarps = new HashMap<>();
-    private HashMap<UUID, List<Warp>> privateWarps = new HashMap<>();
+    private final WarpPoint plugin;
+    private final HashMap<Warp, UUID> publicWarps = new HashMap<>();
+    private final HashMap<UUID, List<Warp>> privateWarps = new HashMap<>();
 
     WarpPointWarps(WarpPoint p) {
         plugin = p;

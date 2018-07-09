@@ -1,5 +1,5 @@
 /*
- * Copyright  2017 Benjamin Martin
+ * Copyright  2018 Benjamin Martin
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -34,12 +34,12 @@ import java.util.UUID;
 @SuppressWarnings("FieldCanBeLocal")
 public class WarpPointConfigurations {
 
-    private WarpPoint plugin;
+    private final WarpPoint plugin;
     private HashMap<UUID, YamlConfiguration> playerWarps = new HashMap<>();
-    private File messagesFile;
+    private final File messagesFile;
     private YamlConfiguration messages;
-    private int configVersion = 2;
-    private int messagesVersion = 1;
+    private final int configVersion = 2;
+    private final int messagesVersion = 1;
 
     WarpPointConfigurations(WarpPoint plugin) {
         this.plugin = plugin;

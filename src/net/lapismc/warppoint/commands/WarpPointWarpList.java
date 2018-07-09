@@ -1,5 +1,5 @@
 /*
- * Copyright  2017 Benjamin Martin
+ * Copyright  2018 Benjamin Martin
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ import java.util.*;
 
 public class WarpPointWarpList extends LapisCommand {
 
-    private WarpPoint plugin;
+    private final WarpPoint plugin;
 
     public WarpPointWarpList(WarpPoint p) {
         super("warplist", "shows the warps a player has access to",
@@ -143,9 +143,9 @@ public class WarpPointWarpList extends LapisCommand {
 
     private class WarpsListUI extends MenuPagged<Warp> {
 
-        Random r = new Random(System.currentTimeMillis());
-        OfflinePlayer op;
-        WarpPoint.WarpType type;
+        final Random r = new Random(System.currentTimeMillis());
+        final OfflinePlayer op;
+        final WarpPoint.WarpType type;
 
         WarpsListUI(WarpPointPlayer p, Iterable<Warp> warps, WarpPoint.WarpType warpType) {
             super(9 * 2, null, warps);

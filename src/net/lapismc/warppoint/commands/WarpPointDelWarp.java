@@ -1,5 +1,5 @@
 /*
- * Copyright  2017 Benjamin Martin
+ * Copyright  2018 Benjamin Martin
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import java.util.Collections;
 
 public class WarpPointDelWarp extends LapisCommand {
 
-    private WarpPoint plugin;
+    private final WarpPoint plugin;
 
     public WarpPointDelWarp(WarpPoint p) {
         super("delwarp", "deletes a warp", new ArrayList<>(Collections.singletonList("deletewarp")));

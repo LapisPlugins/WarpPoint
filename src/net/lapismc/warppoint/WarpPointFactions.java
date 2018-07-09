@@ -1,5 +1,5 @@
 /*
- * Copyright  2017 Benjamin Martin
+ * Copyright  2018 Benjamin Martin
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -37,8 +37,8 @@ import java.util.UUID;
 
 public class WarpPointFactions implements Listener {
 
-    WarpPoint plugin;
-    private HashMap<Faction, HashMap<Warp, UUID>> factionWarps = new HashMap<>();
+    private final WarpPoint plugin;
+    private final HashMap<Faction, HashMap<Warp, UUID>> factionWarps = new HashMap<>();
 
     WarpPointFactions(WarpPoint p) {
         plugin = p;

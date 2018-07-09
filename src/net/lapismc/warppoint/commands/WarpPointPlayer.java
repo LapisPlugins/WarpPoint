@@ -35,8 +35,8 @@ import static net.lapismc.warppoint.WarpPoint.WarpType.*;
 
 class WarpPointPlayer {
 
-    private WarpPoint plugin;
-    private PrettyTime pt = new PrettyTime(Locale.ENGLISH);
+    private final WarpPoint plugin;
+    private final PrettyTime pt = new PrettyTime(Locale.ENGLISH);
 
     WarpPointPlayer(WarpPoint p) {
         plugin = p;

@@ -1,5 +1,5 @@
 /*
- * Copyright  2017 Benjamin Martin
+ * Copyright  2018 Benjamin Martin
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -33,12 +33,12 @@ import java.util.logging.Logger;
 public class LapisUpdater {
 
     private String ID;
-    private String jarName;
-    private String username;
-    private String repoName;
-    private String branch;
-    private JavaPlugin plugin;
-    private Logger logger = Bukkit.getLogger();
+    private final String jarName;
+    private final String username;
+    private final String repoName;
+    private final String branch;
+    private final JavaPlugin plugin;
+    private final Logger logger = Bukkit.getLogger();
     private Boolean force;
     private String newVersionRawString;
 

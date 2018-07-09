@@ -1,5 +1,5 @@
 /*
- * Copyright  2017 Benjamin Martin
+ * Copyright  2018 Benjamin Martin
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import org.bukkit.event.HandlerList;
 public class WarpDeleteEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
-    private Warp warp;
+    private final Warp warp;
     private String cancelReason;
     private boolean cancelled;
 

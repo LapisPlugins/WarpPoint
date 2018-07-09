@@ -1,5 +1,5 @@
 /*
- * Copyright  2017 Benjamin Martin
+ * Copyright  2018 Benjamin Martin
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import static java.nio.file.StandardWatchEventKinds.*;
 
 class WarpPointFileWatcher {
 
-    private WarpPoint plugin;
+    private final WarpPoint plugin;
 
     WarpPointFileWatcher(WarpPoint p) {
         plugin = p;

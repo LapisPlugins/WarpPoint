@@ -1,5 +1,5 @@
 /*
- * Copyright  2017 Benjamin Martin
+ * Copyright  2018 Benjamin Martin
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ import java.util.List;
 
 public class WarpPointSetWarp extends LapisCommand {
 
-    private WarpPoint plugin;
+    private final WarpPoint plugin;
 
     public WarpPointSetWarp(WarpPoint plugin) {
         super("setwarp", "sets a warp at your location", new ArrayList<>());

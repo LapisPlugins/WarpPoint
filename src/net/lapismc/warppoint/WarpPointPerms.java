@@ -1,5 +1,5 @@
 /*
- * Copyright  2017 Benjamin Martin
+ * Copyright  2018 Benjamin Martin
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -33,8 +33,8 @@ import java.util.UUID;
 
 public class WarpPointPerms {
 
-    HashMap<Permission, HashMap<Perm, Integer>> pluginPerms = new HashMap<>();
-    private WarpPoint plugin;
+    final HashMap<Permission, HashMap<Perm, Integer>> pluginPerms = new HashMap<>();
+    private final WarpPoint plugin;
     private HashMap<UUID, Permission> playerPerms = new HashMap<>();
 
     WarpPointPerms(WarpPoint p) {

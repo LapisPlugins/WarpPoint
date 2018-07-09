@@ -25,10 +25,10 @@ import org.bukkit.entity.Player;
 
 public class Warp {
 
-    private WarpPoint plugin;
-    private WarpPoint.WarpType type;
+    private final WarpPoint plugin;
+    private final WarpPoint.WarpType type;
     private Location l;
-    private OfflinePlayer op;
+    private final OfflinePlayer op;
     private String name;
 
     /**

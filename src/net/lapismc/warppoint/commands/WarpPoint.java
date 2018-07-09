@@ -1,5 +1,5 @@
 /*
- * Copyright  2017 Benjamin Martin
+ * Copyright  2018 Benjamin Martin
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,8 +26,8 @@ import java.util.ArrayList;
 
 public class WarpPoint extends LapisCommand {
 
-    private net.lapismc.warppoint.WarpPoint plugin;
-    private WarpPointPlayer WPPlayer;
+    private final net.lapismc.warppoint.WarpPoint plugin;
+    private final WarpPointPlayer WPPlayer;
 
     public WarpPoint(net.lapismc.warppoint.WarpPoint plugin) {
         super("warppoint", "shows plugin info", new ArrayList<>());

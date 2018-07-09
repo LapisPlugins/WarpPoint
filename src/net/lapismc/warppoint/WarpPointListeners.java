@@ -1,5 +1,5 @@
 /*
- * Copyright  2017 Benjamin Martin
+ * Copyright  2018 Benjamin Martin
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -29,9 +29,9 @@ import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 
-public class WarpPointListeners implements Listener {
+class WarpPointListeners implements Listener {
 
-    WarpPoint plugin;
+    private final WarpPoint plugin;
 
     WarpPointListeners(WarpPoint plugin) {
         this.plugin = plugin;

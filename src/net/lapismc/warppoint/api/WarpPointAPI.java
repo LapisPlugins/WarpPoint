@@ -1,5 +1,5 @@
 /*
- * Copyright  2017 Benjamin Martin
+ * Copyright  2018 Benjamin Martin
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,13 +21,14 @@ import net.lapismc.warppoint.playerdata.WarpPointPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class WarpPointAPI {
 
     private static WarpPoint plugin;
-    private static List<JavaPlugin> plugins;
+    private static final List<JavaPlugin> plugins = new ArrayList<>();
 
     public WarpPointAPI(WarpPoint p) {
         plugin = p;
@@ -49,6 +50,13 @@ public class WarpPointAPI {
             return null;
         }
         return new WarpPointPlayer(plugin, uuid);
+    }
+
+    /**
+     * @return Returns the list of plugins currently hooked into the API
+     */
+    public List<JavaPlugin> getPlugins() {
+        return plugins;
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright  2017 Benjamin Martin
+ * Copyright  2018 Benjamin Martin
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -29,8 +29,8 @@ import java.util.UUID;
 
 public class WarpPointPlayer {
 
-    private OfflinePlayer op;
-    private WarpPoint plugin;
+    private final OfflinePlayer op;
+    private final WarpPoint plugin;
 
     public WarpPointPlayer(WarpPoint p, UUID uuid) {
         plugin = p;
@@ -88,9 +88,7 @@ public class WarpPointPlayer {
     public List<Warp> getAccessibleWarps(WarpPoint.WarpType type) {
         switch (type) {
             case Public:
-                List<Warp> warpList = new ArrayList<>();
-                warpList.addAll(plugin.WPWarps.getAllPublicWarps());
-                return warpList;
+                return new ArrayList<>(plugin.WPWarps.getAllPublicWarps());
             case Private:
                 return plugin.WPWarps.getPrivateWarps(op.getUniqueId());
             case Faction:

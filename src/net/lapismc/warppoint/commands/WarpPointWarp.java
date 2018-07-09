@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 public class WarpPointWarp extends LapisCommand {
 
-    private net.lapismc.warppoint.WarpPoint plugin;
+    private final net.lapismc.warppoint.WarpPoint plugin;
 
     public WarpPointWarp(net.lapismc.warppoint.WarpPoint p) {
         super("warp", "sends you to a warp", new ArrayList<>());
