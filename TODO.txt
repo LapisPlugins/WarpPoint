@@ -1,0 +1,19 @@
+3 Warp Types
+    Public
+    Private
+    Faction
+
+Player stats
+
+/SetWarp [warp name] [type]
+warp name: this is the name that you want to be given to your warp, you will need to remember this
+type: this determines who can use your warp. Public means everyone with the PublicTele permission can use it, Private means only you can use it and Factions means everyone in your faction can use it. If you move factions, the faction warp moves with you. Note that faction warps only work on servers with factions installed.
+
+/DelWarp [name] [type]
+Deletes the warp with the matching name and type, it will only let you delete warps you own.
+Refer to the name and type meanings above.
+
+/Warp [name] [type]
+Will send you to a warp of that name and type.
+Type is only needed if you have access to two or more warps of the same name.
+e.g. you might have access to a public warp named mine and a faction warp named mine. In this case, you will need to include the type so that the plugin knows which warp to send you to.

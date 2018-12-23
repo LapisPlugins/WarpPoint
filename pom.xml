@@ -26,7 +26,7 @@
     <build>
         <finalName>${project.artifactId}</finalName>
         <defaultGoal>clean install</defaultGoal>
-        <sourceDirectory>${basedir}/src/</sourceDirectory>
+        <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -77,6 +77,10 @@
                                     <pattern>me.kangarko.ui</pattern>
                                     <shadedPattern>net.lapismc.warppoint.ui</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>net.lapismc.lapiscore</pattern>
+                                    <shadedPattern>net.lapismc.warppoint.core</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
@@ -85,7 +89,7 @@
         </plugins>
         <resources>
             <resource>
-                <directory>${basedir}/src/</directory>
+                <directory>${basedir}/src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
                     <include>*.yml</include>
@@ -150,6 +154,12 @@
             <artifactId>spigot-api</artifactId>
             <version>1.12.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.lapismc</groupId>
+            <artifactId>LapisCore</artifactId>
+            <version>LATEST</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>
